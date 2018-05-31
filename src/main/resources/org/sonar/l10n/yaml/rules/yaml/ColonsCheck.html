@@ -1,0 +1,47 @@
+<p>Use this rule to control the number of spaces before and after colons (<code>:</code>).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>max-spaces-before</dt>
+    <dd>Defines the maximal number of spaces allowed before colons (use -1 to disable).</dd>
+    <dt>max-spaces-after</dt>
+    <dd>Defines the maximal number of spaces allowed after colons (use -1 to disable).</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>max-spaces-before = 0</code> and <code>max-spaces-after = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+      object:
+        - a
+        - b
+      key: value
+</pre>
+
+<p>With <code>max-spaces-before = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    object :
+      - a
+      - b
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    object  :
+      - a
+      - b
+</pre>
+
+<p>With <code>max-spaces-after = 2</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    first:  1
+    second: 2
+    third:  3
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    first: 1
+    2nd:   2
+    third: 3
+</pre>

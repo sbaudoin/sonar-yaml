@@ -1,0 +1,38 @@
+<p>Use this rule to enforce alphabetical ordering of keys in mappings. The sorting order uses the Unicode code point
+    number. As a result, the ordering is case-sensitive and not accent-friendly (see examples below).</p>
+
+<p>Examples</p>
+<p>When enabled the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - key 1: v
+      key 2: val
+      key 3: value
+    - {a: 1, b: 2, c: 3}
+    - T-shirt: 1
+      T-shirts: 2
+      t-shirt: 3
+      t-shirts: 4
+    - hair: true
+      hais: true
+      haïr: true
+      haïssable: true
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    - key 2: v
+      key 1: val
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>- {b: 1, a: 2}</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    - T-shirt: 1
+      t-shirt: 2
+      T-shirts: 3
+      t-shirts: 4
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    - haïr: true
+      hais: true
+</pre>

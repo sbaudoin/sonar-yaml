@@ -1,0 +1,44 @@
+<p>Use this rule to require or forbid the use of document start marker (<code>---</code>).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>present</dt>
+    <dd>Set to <code>true</code> when the document end marker is required, or to <code>false</code> when it is forbidden.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>present = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    ---
+    this:
+      is: [a, document]
+    ...
+    ---
+    - this
+    - is: another one
+    ...
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    this:
+      is: [a, document]
+    ---
+    - this
+    - is: another one
+</pre>
+
+<p>With <code>present = false</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    this:
+      is: [a, document]
+    ...
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    ---
+    this:
+      is: [a, document]
+    ...
+</pre>

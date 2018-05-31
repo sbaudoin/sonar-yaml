@@ -1,0 +1,14 @@
+{
+  "title": "For readability hyphens should have a fixed number of spaces after",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Minor",
+  "sqKey": "HyphensCheck"
+}

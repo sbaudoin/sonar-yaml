@@ -1,0 +1,14 @@
+{
+  "title": "For readability documents should not contain more than a certain number of consecutive empty lines",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Info",
+  "sqKey": "EmptyLinesCheck"
+}

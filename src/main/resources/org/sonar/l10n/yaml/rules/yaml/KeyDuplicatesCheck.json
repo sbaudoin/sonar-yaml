@@ -1,0 +1,14 @@
+{
+  "title": "For proper interpretation and variable definition keys should be duplicated",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Major",
+  "sqKey": "KeyDuplicatesCheck"
+}

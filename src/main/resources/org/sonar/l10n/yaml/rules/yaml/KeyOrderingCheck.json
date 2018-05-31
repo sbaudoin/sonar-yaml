@@ -1,0 +1,14 @@
+{
+  "title": "For readability and maintenance keys should be alphabetically ordered",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Minor",
+  "sqKey": "KeyOrderingCheck"
+}

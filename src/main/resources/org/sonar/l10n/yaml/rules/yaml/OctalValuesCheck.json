@@ -1,0 +1,14 @@
+{
+  "title": "For proper parsing and interpretation octal numbers should not be used",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Major",
+  "sqKey": "OctalValuesCheck"
+}

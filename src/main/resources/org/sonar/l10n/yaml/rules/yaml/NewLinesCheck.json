@@ -1,0 +1,14 @@
+{
+  "title": "For maintenance reasons documents should use the same new line characters",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Minor",
+  "sqKey": "NewLinesCheck"
+}

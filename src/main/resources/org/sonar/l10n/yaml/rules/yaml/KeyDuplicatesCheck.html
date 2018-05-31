@@ -1,0 +1,29 @@
+<p>Use this rule to prevent multiple entries with the same key in mappings.</p>
+
+<p>Examples</p>
+<p>When enabled the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - key 1: v
+      key 2: val
+      key 3: value
+    - {a: 1, b: 2, c: 3}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    - key 1: v
+      key 2: val
+      key 1: value
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>- {a: 1, b: 2, b: 3}</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    duplicated key: 1
+    "duplicated key": 2
+
+    other duplication: 1
+    ? &gt;-
+        other
+        duplication
+    : 2
+</pre>

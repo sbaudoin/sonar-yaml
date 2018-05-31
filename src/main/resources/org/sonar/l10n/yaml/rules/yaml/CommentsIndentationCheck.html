@@ -1,0 +1,48 @@
+<p>Use this rule to force comments to be indented like content.</p>
+
+<p>Examples</p>
+<p>When the rule is enabled the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    # Fibonacci
+    [0, 1, 1, 2, 3, 5]
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+      # Fibonacci
+    [0, 1, 1, 2, 3, 5]
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    list:
+        - 2
+        - 3
+        # - 4
+        - 5
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    list:
+        - 2
+        - 3
+    #    - 4
+        - 5
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    # This is the first object
+    obj1:
+      - item A
+      # - item B
+    # This is the second object
+    obj2: []
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    # This sentence
+    # is a block comment
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    # This sentence
+     # is a block comment
+</pre>

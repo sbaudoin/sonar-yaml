@@ -1,0 +1,35 @@
+<p>Use this rule to set a maximal number of allowed consecutive blank lines.</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>max</dt>
+    <dd>Defines the maximal number of consecutive empty lines allowed in the document.</dd>
+    <dt>max-start</dt>
+    <dd>Defines the maximal number of empty lines allowed at the beginning of the file. This option takes precedence over <code>max</code>.</dd>
+    <dt>max-end</dt>
+    <dd>Defines the maximal number of empty lines allowed at the end of the file. This option takes precedence over <code>max</code>.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>max = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - foo:
+        - 1
+        - 2
+
+    - bar1: [3, 4]
+
+    - bar2: [3, 4]
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    - foo:
+        - 1
+        - 2
+
+
+    - bar1: [3, 4]
+
+    - bar2: [3, 4]
+</pre>

@@ -1,0 +1,14 @@
+{
+  "title": "In order to avoid unexpected null values, the document should not contain empty nodes",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Major",
+  "sqKey": "EmptyValuesCheck"
+}

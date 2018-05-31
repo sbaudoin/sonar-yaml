@@ -1,0 +1,14 @@
+{
+  "title": "For readability braces should have a fixed number of spaces before and after",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Info",
+  "sqKey": "BracesCheck"
+}

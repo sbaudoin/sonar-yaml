@@ -1,0 +1,42 @@
+<p>Use this rule to control the number of spaces inside brackets (<code>[</code> and <code>]</code>).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>min-spaces-inside</dt>
+    <dd>Defines the minimal number of spaces required inside brackets.</dd>
+    <dt>max-spaces-inside</dt>
+    <dd>Defines the maximal number of spaces allowed inside brackets.</dd>
+    <dt>min-spaces-inside-empty</dt>
+    <dd>Defines the minimal number of spaces required inside empty brackets.</dd>
+    <dt>max-spaces-inside-empty</dt>
+    <dd>Defines the maximal number of spaces allowed inside empty brackets.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>min-spaces-inside = 0</code> and <code>max-spaces-inside = 0</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>object: [1, 2, abc]</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>object: [ 1, 2, abc ]</pre>
+
+<p>With <code>min-spaces-inside = 1</code> and <code>max-spaces-inside = 3</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>object: [ 1, 2, abc ]</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>object: [ 1, 2, abc   ]</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>object: [    1, 2, abc   ]</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>object: [1, 2, abc ]</pre>
+
+<p>With <code>min-spaces-inside-empty = 0</code> and <code>max-spaces-inside-empty = 0</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>object: []</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>object: [ ]</pre>
+
+<p>With <code>min-spaces-inside-empty = 1</code> and <code>max-spaces-inside-empty = -1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>object: [         ]</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>object: []</pre>

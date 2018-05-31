@@ -1,0 +1,39 @@
+<p>Use this rule to control the number of spaces after hyphens (<code>-</code>).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>max-spaces-after</dt>
+    <dd>Defines the maximal number of spaces allowed after hyphens.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>max-spaces-after = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - first list:
+        - a
+        - b
+    - - 1
+      - 2
+      - 3
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    -  first list:
+         - a
+         - b
+</pre>
+
+<p>With <code>max-spaces-after = 3</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    -   key
+    -  key2
+    - key42
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    -    key
+    -   key2
+    -  key42
+</pre>

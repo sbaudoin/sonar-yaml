@@ -1,0 +1,14 @@
+{
+  "title": "For correct parsing especially in the case of multiple or embedded documents, documents should start with a document start marker",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Major",
+  "sqKey": "DocumentStartCheck"
+}

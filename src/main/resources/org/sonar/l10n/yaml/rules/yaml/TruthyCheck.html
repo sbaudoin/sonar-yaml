@@ -1,0 +1,41 @@
+<p>Use this rule to forbid non-explicitly typed truthy values other than <code>true</code> and <code>false</code>, for
+    example <code>YES</code>, <code>False</code> and <code>off</code>.</p>
+
+<p>This can be useful to prevent surprises from YAML parsers transforming <code>[yes, FALSE, Off]</code> into
+    <code>[true, false, false]</code> or <code>{y: 1, yes: 2, on: 3, true: 4, True: 5}</code> into <code>{y: 1, true: 5}</code>.</p>
+
+<p>Examples</p>
+<p>When enabled the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    boolean: true
+
+    object: {"True": 1, 1: "True"}
+
+    "yes":  1
+    "on":   2
+    "True": 3
+
+    explicit:
+      string1: !!str True
+      string2: !!str yes
+      string3: !!str off
+      encoded: !!binary |
+                 True
+                 OFF
+                 pad==  # this decodes as 'N\xbb\x9e8Qii'
+    boolean1: !!bool true
+    boolean2: !!bool "false"
+    boolean3: !!bool FALSE
+    boolean4: !!bool True
+    boolean5: !!bool off
+    boolean6: !!bool NO
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    object: {True: 1, 1: True}
+</pre>
+<pre>
+    yes:  1
+    on:   2
+    True: 3
+</pre>

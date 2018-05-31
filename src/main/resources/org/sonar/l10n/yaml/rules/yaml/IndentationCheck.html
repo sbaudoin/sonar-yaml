@@ -1,0 +1,158 @@
+<p>Use this rule to control the indentation.</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>spaces</dt>
+    <dd>Defines the indentation width, in spaces. Set either to an integer (e.g. <code>2</code> or <code>4</code>,
+        representing the number of spaces in an indentation level) or to <code>consistent</code> to allow any number,
+        as long as it remains the same within the file.</dd>
+    <dt>indent-sequences</dt>
+    <dd>Defines whether block sequences should be indented or not (when in a mapping, this indentation is not mandatory
+        -- some people perceive the <code>-</code> as part of the indentation). Possible values: <code>true</code>,
+        <code>false</code>, <code>whatever</code> and <code>consistent</code>. <code>consistent</code>
+        requires either all block sequences to be indented, or none to be. {@code whatever} means
+        either indenting or not indenting individual block sequences is OK.</dd>
+    <dt>check-multi-line-strings</dt>
+    <dd>Defines whether to lint indentation in multi-line strings. Set to <code>true</code> to enable, <code>false</code> to disable.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>spaces = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    history:
+     - name: Unix
+       date: 1969
+     - name: Linux
+       date: 1991
+    nest:
+     recurse:
+      - haystack:
+         needle
+</pre>
+
+<p>With <code>spaces = 4</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    history:
+        - name: Unix
+          date: 1969
+        - name: Linux
+          date: 1991
+    nest:
+        recurse:
+            - haystack:
+                  needle
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    history:
+      - name: Unix
+        date: 1969
+      - name: Linux
+        date: 1991
+    nest:
+      recurse:
+        - haystack:
+            needle
+</pre>
+
+<p>With <code>spaces = consistent</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    history:
+       - name: Unix
+         date: 1969
+       - name: Linux
+         date: 1991
+    nest:
+       recurse:
+          - haystack:
+               needle
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    some:
+      Russian:
+          dolls
+</pre>
+
+<p>With <code>spaces = 2</code> and <code>indent-sequences = false</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    list:
+    - flying
+    - spaghetti
+    - monster
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    list:
+      - flying
+      - spaghetti
+      - monster
+</pre>
+
+<p>With <code>spaces = 2</code> and <code>indent-sequences = whatever</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    list:
+    - flying:
+      - spaghetti
+      - monster
+    - not flying:
+        - spaghetti
+        - sauce
+</pre>
+
+<p>With <code>spaces = 2</code> and <code>indent-sequences = consistent</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - flying:
+        - spaghetti
+        - monster
+    - not flying:
+        - spaghetti
+        - sauce
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    - flying:
+        - spaghetti
+        - monster
+    - not flying:
+      - spaghetti
+      - sauce
+</pre>
+
+<p>With <code>spaces = 4</code> and <code>check-multi-line-strings = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Blaise Pascal:
+        Je vous écris une longue lettre parce que
+        je n'ai pas le temps d'en écrire une courte.
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Blaise Pascal: Je vous écris une longue lettre parce que
+                   je n'ai pas le temps d'en écrire une courte.
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    Blaise Pascal: Je vous écris une longue lettre parce que
+      je n'ai pas le temps d'en écrire une courte.
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    C code:
+        void main() {
+            printf("foo");
+        }
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    C code:
+        void main() {
+        printf("bar");
+        }
+</pre>

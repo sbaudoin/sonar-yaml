@@ -1,0 +1,15 @@
+<p>Use this rule to forbid trailing spaces at the end of lines.</p>
+
+<p>Examples</p>
+<p>When enabled the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    this document doesn't contain
+    any trailing
+    spaces
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    this document contains     " "
+    trailing spaces
+    on lines 1 and 3         " "
+</pre>

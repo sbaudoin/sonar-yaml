@@ -1,0 +1,25 @@
+<p>Use this rule to control that the YAML documents do not contain a key. Key names can be defined as a regular expression.
+
+<h2>Parameters</h2>
+<dl>
+    <!--dt>key-path</dt>
+    <dd>YPath syntax to the key</dd-->
+    <dt>key-name</dt>
+    <dd>Regular expression that matches forbidden key names</dd>
+</dl>
+
+<h2>Examples</h2>
+<p>With <code>key-name = [tT]e.*t</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Test1: value
+    tesT: {key1: 4, key2: 8}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    test: value
+</pre>
+<pre>
+    tesT: {Test: 4, key2: 8}
+</pre>
+

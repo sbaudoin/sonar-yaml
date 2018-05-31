@@ -1,0 +1,14 @@
+{
+  "title": "For readability comments should have a fixed number of spaces before and after the #",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Info",
+  "sqKey": "CommentsCheck"
+}

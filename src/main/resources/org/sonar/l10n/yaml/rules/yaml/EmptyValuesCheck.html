@@ -1,0 +1,38 @@
+<p>Use this rule to prevent nodes with empty content, that implicitly result in <code>null</code> values.</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>forbid-in-block-mappings</dt>
+    <dd>Use <code>forbid-in-block-mappings</code> to prevent empty values in block mappings.</dd>
+    <dt>forbid-in-flow-mappings</dt>
+    <dd>Use <code>forbid-in-flow-mappings</code> to prevent empty values in flow mappings.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>forbid-in-block-mappings = true</code>
+    the following code snippets would <strong>PASS</strong>:</p>
+<pre>
+    some-mapping:
+      sub-element: correctly indented
+</pre>
+<pre>
+    explicitly-null: null
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    some-mapping:
+    sub-element: incorrectly indented
+</pre>
+<pre>
+    implicitly-null:
+</pre>
+
+<p>With <code>forbid-in-flow-mappings = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    {prop: null}
+    {a: 1, b: 2, c: 3}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>{prop: }</pre>
+<pre> {a: 1, b:, c: 3}</pre>

@@ -1,0 +1,32 @@
+<p>Use this rule to prevent values with octal numbers. In YAML, numbers that start with {@code 0} are interpreted as
+    octal, but this is not always wanted. For instance <code>010</code> is the city code of Beijing, and should not be
+    converted to <code>8</code>.</p>
+
+<p>Examples</p>
+<p>With <code>forbid-implicit-octal = true</code>
+    the following code snippets would <strong>PASS</strong>:</p>
+<pre>
+    user:
+      city-code: '010'
+</pre>
+<pre>
+    user:
+      city-code: 010,021
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    user:
+      city-code: 010
+</pre>
+
+<p>With <code>forbid-explicit-octal = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    user:
+      city-code: '0o10'
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    user:
+      city-code: 0o10
+</pre>

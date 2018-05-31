@@ -1,0 +1,63 @@
+<p>Use this rule to set a limit to lines length.</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>max</dt>
+    <dd>Defines the maximal (inclusive) length of lines.</dd>
+    <dt>allow-non-breakable-words</dt>
+    <dd>Is used to allow non breakable words (without spaces inside) to overflow the limit. This is useful for long
+        URLs, for instance. Use <code>true</code> to allow, <code>false</code> to forbid.</dd>
+    <dt>allow-non-breakable-inline-mappings</dt>
+    <dd>Implies <code>allow-non-breakable-words</code> and extends it to also allow non-breakable words in inline mappings.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>max = 70</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    long sentence:
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+      eiusmod tempor incididunt ut labore et dolore magna aliqua.
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    long sentence:
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua.
+</pre>
+
+<p>With <code>max = 60</code> and <code>allow-non-breakable-words = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    this:
+      is:
+        - a:
+            http://localhost/very/very/very/very/very/very/very/very/long/url
+
+    # this comment is too long,
+    # but hard to split:
+    # http://localhost/another/very/very/very/very/very/very/very/very/long/url
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    - this line is waaaaaaaaaaaaaay too long but could be easily split...
+</pre>
+<p>and the following code snippet would <strong>FAIL</strong> as well:</p>
+<pre>
+    - foobar: http://localhost/very/very/very/very/very/very/very/very/long/url
+</pre>
+
+<p>With <code>max = 60</code>, <code>allow-non-breakable-words = true</code> and <code>allow-non-breakable-inline-mappings = true</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    - foobar: http://localhost/very/very/very/very/very/very/very/very/long/url
+</pre>
+
+<p>With <code>max = 60</code> and <code>allow-non-breakable-words = false</code>
+    the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    this:
+      is:
+        - a:
+            http://localhost/very/very/very/very/very/very/very/very/long/url
+</pre>

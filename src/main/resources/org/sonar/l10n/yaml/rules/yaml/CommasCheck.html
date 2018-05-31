@@ -1,0 +1,59 @@
+<p>Use this rule to control the number of spaces before and after commas (<code>,</code>).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>max-spaces-before</dt>
+    <dd>Defines the maximal number of spaces allowed before commas (use -1 to disable).</dd>
+    <dt>min-spaces-after</dt>
+    <dd>Defines the minimal number of spaces allowed after commas.</dd>
+    <dt>max-spaces-after</dt>
+    <dd>Defines the maximal number of spaces allowed after commas (use -1 to disable).</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>max-spaces-before = 0</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    strange var:
+      [10, 20, 30, {x: 1, y: 2}]
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    strange var:
+      [10, 20 , 30, {x: 1, y: 2}]
+</pre>
+
+<p>With <code>max-spaces-before = 2</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    strange var:
+      [10,
+       20   , 30
+       ,   {x: 1, y: 2}]
+</pre>
+
+<p>With <code>min-spaces-after = 1</code> and <code>max-spaces-after = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    strange var:
+      [10, 20,30, {x: 1, y: 2}]
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    strange var:
+      [10, 20,30,   {x: 1,   y: 2}]
+</pre>
+
+<p>With <code>min-spaces-after = 1</code> and <code>max-spaces-after = 3</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    strange var:
+      [10, 20,  30,  {x: 1,   y: 2}]
+</pre>
+
+<p>With <code>min-spaces-after = 0</code> and <code>max-spaces-after = 1</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    strange var:
+      [10, 20,30, {x: 1, y: 2}]
+</pre>
