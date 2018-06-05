@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Minor",
-  "sqKey": "KeyOrderingCheck"
+  "defaultSeverity": "Minor"
 }

@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Info",
-  "sqKey": "ColonsCheck"
+  "defaultSeverity": "Info"
 }

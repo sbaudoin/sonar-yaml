@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Major",
-  "sqKey": "KeyDuplicatesCheck"
+  "defaultSeverity": "Major"
 }

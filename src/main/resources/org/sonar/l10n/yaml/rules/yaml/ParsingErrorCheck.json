@@ -8,6 +8,5 @@
   },
   "tags": [
   ],
-  "defaultSeverity": "Blocker",
-  "sqKey": "ParsingErrorCheck"
+  "defaultSeverity": "Blocker"
 }

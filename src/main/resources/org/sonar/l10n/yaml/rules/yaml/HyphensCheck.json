@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Minor",
-  "sqKey": "HyphensCheck"
+  "defaultSeverity": "Minor"
 }

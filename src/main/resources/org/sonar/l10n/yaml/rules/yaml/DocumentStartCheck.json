@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Major",
-  "sqKey": "DocumentStartCheck"
+  "defaultSeverity": "Major"
 }

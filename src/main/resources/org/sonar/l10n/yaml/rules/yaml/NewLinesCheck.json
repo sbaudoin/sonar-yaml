@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Minor",
-  "sqKey": "NewLinesCheck"
+  "defaultSeverity": "Minor"
 }

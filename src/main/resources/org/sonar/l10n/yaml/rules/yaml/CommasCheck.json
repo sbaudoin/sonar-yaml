@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Info",
-  "sqKey": "CommasCheck"
+  "defaultSeverity": "Info"
 }

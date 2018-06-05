@@ -9,6 +9,5 @@
   "tags": [
     "convention"
   ],
-  "defaultSeverity": "Minor",
-  "sqKey": "TrailingSpacesCheck"
+  "defaultSeverity": "Minor"
 }
