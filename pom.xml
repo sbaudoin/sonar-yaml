@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>sonar-plugin</packaging>
 
-    <name>YAML SonarQube Plugin</name>
+    <name>SonarQube YAML Plugin</name>
     <description>YAML 1.1 plugin for SonarQube</description>
     <inceptionYear>2018</inceptionYear>
 
