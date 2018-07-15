@@ -17,12 +17,21 @@ package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
 import org.yaml.snakeyaml.error.Mark;
 
+/**
+ * Wrapper class used to locate tokens in YAML code and help highlight it
+ */
 public class YamlLocation {
     private final String content;
     private final int line;
     private final int column;
     private final int characterOffset;
 
+
+    /**
+     * Constructor
+     *
+     * @param content the YAML content to highlight
+     */
     YamlLocation(String content) {
         // based on YAML parser:
         // - lines start at 1
@@ -31,25 +40,55 @@ public class YamlLocation {
         this(content, 1, 1, 0);
     }
 
+    /**
+     * Constructor
+     *
+     * @param content the YAML content to highlight
+     * @param mark a mark to be pointed to (and certainly highlighted) in the YAML code
+     */
     YamlLocation(String content, Mark mark) {
         this(content, mark.getLine() + 1, mark.getColumn() + 1, mark.getPointer());
     }
 
-    public YamlLocation(String content, int line, int column, int characterOfffset) {
+    /**
+     * Xonstrctor
+     *
+     * @param content the YAML content to highlight
+     * @param line a line to point to (by convention, lines start at 1)
+     * @param column a column to point to (by convention, columns start at 1)
+     * @param characterOffset a character offset in the content equals to the number of characters read so far between
+     *                        the content's start and the given column of the given line
+     */
+    public YamlLocation(String content, int line, int column, int characterOffset) {
         this.content = content;
         this.line = line;
         this.column = column;
-        this.characterOffset = characterOfffset;
+        this.characterOffset = characterOffset;
     }
 
+    /**
+     * Returns the line pointer remembered by this class
+     *
+     * @return the line pointer remembered by this class
+     */
     public int line() {
         return line;
     }
 
+    /**
+     * Returns the column pointer remembered by this class
+     *
+     * @return the column pointer remembered by this class
+     */
     public int column() {
         return column;
     }
 
+    /**
+     * Returns a string representation of this class
+     *
+     * @return a string representation of this class
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder("{ ");
         sb.append("content: \"").append(content).append("\"; ");
@@ -61,6 +100,16 @@ public class YamlLocation {
         return sb.toString();
     }
 
+    /**
+     * Returns a {@code YamlLocation} that corresponds to this instance + line, column and offset parameters moved
+     * froward of the passed number of characters
+     *
+     * @param nbChar a number of character to move forward
+     * @return a {@code YamlLocation} updated with the passed additional offset
+     * @throws IllegalStateException if the passed number of character added to the offset will point to a character
+     * beyond the content's end (i.e. if {@code offset + nbChar > content.length()})
+     * @see #shift(char)
+     */
     public YamlLocation shift(int nbChar) {
         if (characterOffset + nbChar > content.length()) {
             throw new IllegalStateException("Cannot shift by " + nbChar + "characters");
@@ -72,17 +121,26 @@ public class YamlLocation {
         return res;
     }
 
-    public YamlLocation moveBackward() {
-        if (column == 1) {
-            throw new IllegalStateException("Cannot move backward from column 1");
-        }
-        return new YamlLocation(content, line, column - 1, characterOffset - 1);
-    }
-
+    /**
+     * Returns the character of the YAML content pointed to by the offset
+     *
+     * @return a character
+     */
     public char readChar() {
         return content.charAt(characterOffset);
     }
 
+    /**
+     * Shifts the internal pointers (line, column and offset) of one character. The column and line pointers are
+     * updated depended on the fact that the passed character is a new line character or not (the passed character
+     * is supposed to be the character currently pointed to by the offset)
+     *
+     * @param c a character
+     * @return a new {@code YamlLocation} moved forward of 1 character
+     * @throws IllegalStateException if the passed number of character added to the offset will point to a character
+     * beyond the content's end (i.e. if {@code offset + nbChar > content.length()})
+     * @see #shift(int)
+     */
     private YamlLocation shift(char c) {
         if (c == '\n') {
             return new YamlLocation(content, line + 1, 1, characterOffset + 1);
@@ -90,14 +148,13 @@ public class YamlLocation {
         return new YamlLocation(content, line, column + 1, characterOffset + 1);
     }
 
-    public boolean startsWith(String prefix) {
-        return content.substring(characterOffset).startsWith(prefix);
-    }
-
-    public YamlLocation moveAfter(String substring) {
-        return moveBefore(substring).shift(substring.length());
-    }
-
+    /**
+     * Moves the internal pointers (line, column and offset) to the first character of the next coming occurrence of the
+     * passed string in the YAML content
+     *
+     * @param substring a string to move forward to
+     * @return a new {@code YamlLocation} for updated internal pointers
+     */
     public YamlLocation moveBefore(String substring) {
         int index = content.substring(characterOffset).indexOf(substring);
         if (index == -1) {
@@ -106,26 +163,15 @@ public class YamlLocation {
         return shift(index);
     }
 
+    /**
+     * Tells if the passed {@code YamlLocation} has the same offset or not (this is a kind of shallow version of the
+     * {@code equals} method)
+     *
+     * @param other another {@code YamlLocation}
+     * @return {@code true} if the offset of the passed {@code YamlLocation} equals to the offset of this class,
+     * {@code false} if not
+     */
     public boolean isSameAs(YamlLocation other) {
         return this.characterOffset == other.characterOffset;
-    }
-
-    public YamlLocation moveAfterWhitespaces() {
-        YamlLocation res = this;
-        while (Character.isWhitespace(res.readChar())) {
-            res = res.shift(1);
-        }
-        return res;
-    }
-
-    public boolean has(String substring, YamlLocation max) {
-        YamlLocation location = this;
-        while (location.characterOffset < max.characterOffset) {
-            if (location.startsWith(substring)) {
-                return true;
-            }
-            location = location.shift(1);
-        }
-        return false;
     }
 }
