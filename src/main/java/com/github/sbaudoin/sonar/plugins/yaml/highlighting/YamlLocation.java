@@ -154,9 +154,10 @@ public class YamlLocation {
      *
      * @param substring a string to move forward to
      * @return a new {@code YamlLocation} for updated internal pointers
+     * @throws IllegalStateException if the passed string cannot be found
      */
     public YamlLocation moveBefore(String substring) {
-        int index = content.substring(characterOffset).indexOf(substring);
+        int index = content.indexOf(substring, characterOffset);
         if (index == -1) {
             throw new IllegalStateException("Cannot find " + substring + " in " + content.substring(characterOffset));
         }

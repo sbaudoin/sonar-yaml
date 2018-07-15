@@ -39,5 +39,12 @@ public class YamlLocationTest extends TestCase {
         assertEquals(2, location2.line());
         assertEquals(6, location2.column());
         assertTrue(location2.isSameAs(new YamlLocation(yaml, 1, 1, 9)));
+
+        try {
+            location2.moveBefore("foo");
+            fail("string not found in the remaining buffer should raise an exception");
+        } catch (IllegalStateException e) {
+            assertTrue(true);
+        }
     }
 }
