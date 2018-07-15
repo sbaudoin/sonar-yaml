@@ -22,6 +22,5 @@ public class ParsingErrorCheck extends YamlLintCheck {
     @Override
     public void validate() {
         // Do nothing, syntax errors are actually done in YamlSensor
-        return;
     }
 }
