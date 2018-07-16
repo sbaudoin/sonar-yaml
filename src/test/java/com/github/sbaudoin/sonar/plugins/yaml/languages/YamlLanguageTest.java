@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.config.internal.MapSettings;
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
+import org.sonar.api.resources.AbstractLanguage;
 
 public class YamlLanguageTest {
     private MapSettings settings;
@@ -40,7 +41,32 @@ public class YamlLanguageTest {
 
     @Test
     public void customSuffixes() {
-        settings.setProperty(YamlSettings.FILE_SUFFIXES_KEY, ".myYaml");
+        settings.setProperty(YamlSettings.FILE_SUFFIXES_KEY, ".myYaml, ");
         Assert.assertArrayEquals(new String[] { ".myYaml" }, yaml.getFileSuffixes());
+    }
+
+    @Test
+    public void testEquals() {
+        Assert.assertFalse(yaml.equals("foo"));
+        Assert.assertTrue(yaml.equals(yaml));
+        Assert.assertTrue(yaml.equals(new YamlLanguage(settings.asConfig())));
+        Assert.assertTrue(yaml.equals(new FakeLanguage()));
+    }
+
+    @Test
+    public void testHashCode() {
+        Assert.assertEquals("yaml".hashCode(), yaml.hashCode());
+    }
+
+
+    private class FakeLanguage extends AbstractLanguage {
+        public FakeLanguage() {
+            super("yaml");
+        }
+
+        @Override
+        public String[] getFileSuffixes() {
+            return new String[0];
+        }
     }
 }
