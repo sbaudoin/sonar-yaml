@@ -19,7 +19,7 @@ import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 
 /**
- * Default, BuiltIn Quality Profile for the projects having YAML files
+ * Default, built-in quality profile for the projects having YAML files
  */
 public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
     @Override
@@ -27,8 +27,10 @@ public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
         NewBuiltInQualityProfile profile = context.createBuiltInQualityProfile("Sonar way", YamlLanguage.KEY);
         profile.setDefault(true);
 
+        // Syntax error check
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "ParsingErrorCheck");
 
+        // Other regular checks
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "BracesCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "BracketsCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "ColonsCheck");
@@ -47,8 +49,6 @@ public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "OctalValuesCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "TrailingSpacesCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "TruthyCheck");
-
-
 
         profile.done();
     }
