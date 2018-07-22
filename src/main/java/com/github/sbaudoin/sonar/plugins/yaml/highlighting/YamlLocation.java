@@ -112,7 +112,7 @@ public class YamlLocation {
      */
     public YamlLocation shift(int nbChar) {
         if (characterOffset + nbChar > content.length()) {
-            throw new IllegalStateException("Cannot shift by " + nbChar + "characters");
+            throw new IllegalStateException("Cannot shift by " + nbChar + " characters");
         }
         YamlLocation res = this;
         for (int i = 0; i < nbChar; i++) {

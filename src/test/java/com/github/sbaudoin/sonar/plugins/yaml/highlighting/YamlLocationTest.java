@@ -30,6 +30,12 @@ public class YamlLocationTest extends TestCase {
         assertEquals(2, location2.line());
         assertEquals(4, location2.column());
         assertTrue(location2.isSameAs(new YamlLocation(yaml, 1, 1, 7)));
+        try {
+            location2.shift(40);
+            fail("Invalid shift value accepted");
+        } catch (IllegalStateException e) {
+            assertEquals("Cannot shift by 40 characters", e.getMessage());
+        }
     }
 
     public void testMoveBefore() {
