@@ -1,6 +1,7 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
+import com.github.sbaudoin.yamllint.LintProblem;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
@@ -47,9 +48,12 @@ public class YamlSourceCodeTest {
     public void testYamlIssue() {
         // There is a brace issue in the tested file but as the sensor has not run and no rule has been enabled, nothing can be returned here yet
         assertEquals(0, code.getYamlIssues().size());
-        YamlIssue issue = new YamlIssue(null, "brace error", 2, 7);
-        code.addViolation(issue);
-        assertEquals(1, code.getYamlIssues().size());
-        assertEquals(issue, code.getYamlIssues().get(0));
+        YamlLintIssue issue1 = new YamlLintIssue(new LintProblem(7, 2, null, "brace error"), null);
+        code.addViolation(issue1);
+        YamlIssue issue2 = new YamlIssue(null, "brace error", 2, 7);
+        code.addViolation(issue2);
+        assertEquals(2, code.getYamlIssues().size());
+        assertEquals(issue1, code.getYamlIssues().get(0));
+        assertEquals(issue2, code.getYamlIssues().get(1));
     }
 }
