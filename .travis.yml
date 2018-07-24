@@ -15,17 +15,17 @@ addons:
 jdk:
   - oraclejdk8
 script:
-  - echo "Building version $MAVEN_VERSION"
+  - echo "Building version [$MAVEN_VERSION]"
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 deploy:
   # Only the master branch is entitled to deployment for snapshots
   - provider: script
-    script: mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
+    script: echo $MAVEN_VERSION && mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
     skip_cleanup: true
     on:
       repo: sbaudoin/sonar-yaml
       branch: master
-      condition: $MAVEN_VERSION =~ -SNAPSHOT$
+#      condition: $MAVEN_VERSION =~ -SNAPSHOT$
   # Also deploy tags
   - provider: script
     script: mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
