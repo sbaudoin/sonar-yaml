@@ -20,7 +20,6 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
-import org.yaml.snakeyaml.scanner.ScannerException;
 import org.yaml.snakeyaml.tokens.KeyToken;
 import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
@@ -48,6 +47,10 @@ public class ForbiddenKeyCheck extends YamlCheck {
 
         try {
             LintScanner parser = new LintScanner(new StreamReader(yamlSourceCode.getContent()));
+            if (!yamlSourceCode.hasCorrectSyntax()) {
+                LOGGER.warn("Syntax error found, cannot continue checking keys: " + yamlSourceCode.getSyntaxError().getMessage());
+                return;
+            }
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
@@ -62,9 +65,6 @@ public class ForbiddenKeyCheck extends YamlCheck {
                     }
                 }
             }
-        } catch (ScannerException e) {
-            LOGGER.warn("Syntax error found, cannot continue checking keys: " + e.getMessage());
-            LOGGER.debug("Corresponding stacktrace:", e);
         } catch (IOException e) {
             // Should not happen: a first call to getYamlSourceCode().getContent() was done in the constructor of
             // the YamlSourceCode instance of this check, but in case...
