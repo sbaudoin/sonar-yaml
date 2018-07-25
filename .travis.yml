@@ -1,7 +1,8 @@
 language: java
 sudo: false
 env:
-  - MAVEN_VERSION=$(grep '<version>' pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
+#  - MAVEN_VERSION=$(grep '<version>' pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
+  - MAVEN_VERSION=1.0.0-SNAPSHOT
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 before_install:
@@ -25,8 +26,7 @@ deploy:
     on:
       repo: sbaudoin/sonar-yaml
       branch: master
-#      condition: "$MAVEN_VERSION = 1.0.0-SNAPSHOT"
-      condition: "$TRAVIS_BRANCH = master"
+      condition: $MAVEN_VERSION =~ -SNAPSHOT$
   # Also deploy tags
   - provider: script
     script: mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
