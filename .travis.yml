@@ -25,7 +25,8 @@ deploy:
     on:
       repo: sbaudoin/sonar-yaml
       branch: master
-      condition: "$MAVEN_VERSION = 1.0.0-SNAPSHOT"
+#      condition: "$MAVEN_VERSION = 1.0.0-SNAPSHOT"
+      condition: "$TRAVIS_BRANCH = master"
   # Also deploy tags
   - provider: script
     script: mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
