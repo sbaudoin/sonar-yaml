@@ -1,8 +1,5 @@
 language: java
 sudo: false
-env:
-#  - MAVEN_VERSION=$(grep '<version>' pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
-  - MAVEN_VERSION=1.0.0-SNAPSHOT
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 before_install:
@@ -18,6 +15,8 @@ jdk:
 script:
   - echo "Building version $MAVEN_VERSION"
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+before_deploy:
+  - export MAVEN_VERSION=$(grep '<version>' pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
 deploy:
   # Only the master branch is entitled to deployment for snapshots
   - provider: script
