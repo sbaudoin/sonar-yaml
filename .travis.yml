@@ -15,19 +15,17 @@ jdk:
 script:
   - echo "Building version $MAVEN_VERSION"
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
-before_deploy:
-  - export MAVEN_VERSION=$(grep '<version>' pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
 deploy:
   # Only the master branch is entitled to deployment for snapshots
   - provider: script
-    script: bassh .travis/deploy.sh
+    script: bash .travis/deploy.sh
     skip_cleanup: true
     on:
       repo: sbaudoin/sonar-yaml
       branch: master
   # Also deploy tags
   - provider: script
-    script: bassh .travis/deploy.sh
+    script: bash .travis/deploy.sh
     skip_cleanup: true
     on:
       repo: sbaudoin/sonar-yaml
