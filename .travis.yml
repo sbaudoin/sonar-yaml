@@ -20,7 +20,7 @@ script:
 deploy:
   # Only the master branch is entitled to deployment for snapshots
   - provider: script
-    script: [[ $MAVEN_VERSION =~ -SNAPSHO$ ]] && mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
+    script: test $MAVEN_VERSION =~ -SNAPSHO$ && mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
     skip_cleanup: true
     on:
       repo: sbaudoin/sonar-yaml
