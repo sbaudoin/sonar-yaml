@@ -104,17 +104,37 @@ public class YamlLintCheckTest {
     @Test
     public void testGetYamlLintconfig() throws YamlLintConfigException {
         new CommentsIndentationCheck().getYamlLintconfig();
-        assertThat(logTester.logs(LoggerLevel.DEBUG).get(0), containsString("'---\n" +
-                "rules:\n" +
-                "  comments-indentation: enable'"));
+        boolean found = false;
+        for (String message : logTester.logs(LoggerLevel.DEBUG)) {
+            if (!message.startsWith("Got RuleProperty ")) {
+                found = true;
+                assertThat(message, containsString("'---\n" +
+                        "rules:\n" +
+                        "  comments-indentation: enable'"));
+            }
+        }
+        if (!found) {
+            fail("Expected rule configuration YAML fragment");
+        }
+
+        logTester.clear();
 
         // The default max-spaces-after parameter is 1 but as we construct the check ourselves
         // the SonarQube init process cannot happen and this is a simple int attribute init
         new HyphensCheck().getYamlLintconfig();
-        assertThat(logTester.logs(LoggerLevel.DEBUG).get(2), containsString("'---\n" +
-                "rules:\n" +
-                "  hyphens:\n" +
-                "    max-spaces-after: 0\n'"));
+        found = false;
+        for (String message : logTester.logs(LoggerLevel.DEBUG)) {
+            if (!message.startsWith("Got RuleProperty ")) {
+                found = true;
+                assertThat(message, containsString("'---\n" +
+                        "rules:\n" +
+                        "  hyphens:\n" +
+                        "    max-spaces-after: 0\n'"));
+            }
+        }
+        if (!found) {
+            fail("Expected rule configuration YAML fragment");
+        }
     }
 
 
