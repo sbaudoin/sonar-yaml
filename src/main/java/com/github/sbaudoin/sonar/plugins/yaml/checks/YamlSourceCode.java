@@ -81,6 +81,9 @@ public class YamlSourceCode {
      */
     public void addViolation(YamlIssue issue) {
         this.yamlIssues.add(issue);
+        if (issue.isSyntaxError() && syntaxError == null) {
+            syntaxError = issue;
+        }
     }
 
     /**

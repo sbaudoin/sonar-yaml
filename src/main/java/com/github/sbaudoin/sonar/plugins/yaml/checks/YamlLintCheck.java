@@ -78,12 +78,17 @@ public abstract class YamlLintCheck extends YamlCheck {
     }
 
     /**
-     * Check with ant style filepattern if the file is included.
+     * Tells with Ant style {@code filepattern} if the file analyzed being is included. / are always used as the
+     * file separator
+     *
+     * @param filePattern an Ant style file pattern ({@code **\/*.yaml}, etc.)
+     * @return {@code true} is the path of the file source code being checked matches the passed pattern,
+     * {@code false} otherwise
      */
     protected boolean isFileIncluded(@Nullable String filePattern) {
         if (filePattern != null) {
             return WildcardPattern.create(filePattern)
-                    .match(getYamlSourceCode().getYamlFile().filename());
+                    .match(getYamlSourceCode().getYamlFile().uri().getPath());
 
         } else {
             return true;
