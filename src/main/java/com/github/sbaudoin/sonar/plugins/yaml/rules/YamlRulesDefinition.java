@@ -23,7 +23,13 @@ import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Rules definition class for this plugin
+ */
 public class YamlRulesDefinition implements RulesDefinition {
+    /**
+     * Path to the directory/folder containing the descriptor files (JSON and HTML) for the rules
+     */
     public static final String RULES_DEFINITION_FOLDER = "org/sonar/l10n/yaml/rules/yaml";
 
 

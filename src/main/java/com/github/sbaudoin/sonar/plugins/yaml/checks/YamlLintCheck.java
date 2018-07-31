@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 
+/**
+ * Abstract class for all YAML checks representing a YAML lint rule
+ */
 public abstract class YamlLintCheck extends YamlCheck {
     private static final Logger LOGGER = Loggers.get(YamlLintCheck.class);
 

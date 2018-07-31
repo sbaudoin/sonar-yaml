@@ -21,10 +21,29 @@ import org.sonar.api.rule.RuleKey;
  * Wrapper class for {@see LintProblem} to add some additional features
  */
 public class YamlIssue {
+    /**
+     * The {@code RuleKey} of the rule that identified the issue
+     */
     protected final RuleKey ruleKey;
+
+    /**
+     * Flag that tells if this issue represents a syntax error or not
+     */
     protected boolean syntaxError;
+
+    /**
+     * The line number at which the issue was found
+     */
     protected int line;
+
+    /**
+     * The column at which the issue was found
+     */
     protected int column;
+
+    /**
+     * A message describing the issue
+     */
     protected String message;
 
 
@@ -32,6 +51,9 @@ public class YamlIssue {
      * Constructor for "standard" (non-syntactical issue)
      *
      * @param ruleKey the key of the rule that identified the issue
+     * @param message a message describing the issue
+     * @param line the line number at which the issue was found
+     * @param column the column number at which the issue was found
      */
     public YamlIssue(RuleKey ruleKey, String message, int line, int column) {
         this.ruleKey = ruleKey;
@@ -45,6 +67,10 @@ public class YamlIssue {
      * Constructor for "standard" (non-syntactical issue)
      *
      * @param ruleKey the key of the rule that identified the issue
+     * @param line the line number at which the issue was found
+     * @param column the column number at which the issue was found
+     * @param message a message describing the issue
+     * @param syntaxError {@code true} if this issue corresponds to a syntax error, {@code false} otherwise
      */
     public YamlIssue(RuleKey ruleKey, String message, int line, int column, boolean syntaxError) {
         this.ruleKey = ruleKey;
@@ -54,6 +80,11 @@ public class YamlIssue {
         this.syntaxError = syntaxError;
     }
 
+    /**
+     * Returns a message describing the issue
+     *
+     * @return a description of the issue
+     */
     public String getMessage() {
         return message;
     }

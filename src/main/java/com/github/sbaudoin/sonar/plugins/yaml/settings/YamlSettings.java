@@ -22,15 +22,26 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Wrapper class for the class settings
+ */
 public class YamlSettings {
     public static final String FILE_SUFFIXES_KEY = "sonar.yaml.file.suffixes";
     public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".yaml,.yml";
 
 
+    /**
+     * Hide constructor
+     */
     private YamlSettings() {
     }
 
 
+    /**
+     * Returns the configuration properties of the plugin
+     *
+     * @return the configuration properties of the plugin
+     */
     public static List<PropertyDefinition> getProperties() {
         return asList(PropertyDefinition.builder(FILE_SUFFIXES_KEY)
                 .name("File Suffixes")

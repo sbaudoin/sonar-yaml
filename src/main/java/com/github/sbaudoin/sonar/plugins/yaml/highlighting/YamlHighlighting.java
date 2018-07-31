@@ -27,10 +27,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Class in charge of YAML code highlighting in SonarQube
+ */
 public class YamlHighlighting {
     private static final Logger LOGGER = Loggers.get(YamlHighlighting.class);
-    public static final String BOM_CHAR = "\ufeff";
+
     private static final String YAML_DECLARATION_TAG = "---";
+
+    /**
+     * The optional series of 3 characters that mark the beginning of an UTF-8 file
+     */
+    public static final String BOM_CHAR = "\ufeff";
 
     private List<HighlightingData> highlighting = new ArrayList<>();
 
@@ -39,6 +47,12 @@ public class YamlHighlighting {
     private YamlLocation yamlFileStartLocation;
     private String content;
 
+    /**
+     * Constructor
+     *
+     * @param yamlFile the YAML file whose content is to be highlighted
+     * @throws IOException if an error occurred reading the file
+     */
     public YamlHighlighting(InputFile yamlFile) throws IOException {
         this(yamlFile.contents(), String.format("Can't highlight file: %s", yamlFile.filename()));
     }
@@ -47,6 +61,14 @@ public class YamlHighlighting {
         this(yamlStrContent, String.format("Can't highlight code: %n%s", yamlStrContent));
     }
 
+
+    /**
+     * Constructor that actually processes the YAML string and constructs a list of highlighting data to be saved later
+     * in SonarQube
+     *
+     * @param yamlStrContent the YAML code to be highlighted in SonarQube
+     * @param errorMessage an error message to be logged if highlighting the code failed
+     */
     private YamlHighlighting(String yamlStrContent, String errorMessage) {
         if (yamlStrContent.startsWith(BOM_CHAR)) {
             // remove it immediately
@@ -70,11 +92,19 @@ public class YamlHighlighting {
         }
     }
 
+    /**
+     * Returns the list of highlighting data found for the YAML code
+     *
+     * @return the list of highlighting data found for the YAML code (possibly empty but never {@code null})
+     */
     public List<HighlightingData> getHighlightingData() {
         return highlighting;
     }
 
 
+    /**
+     * Parses the YAML code to create highlightings
+     */
     private void highlightYAML() {
         Iterator<Parser.Lined> items = Parser.getTokensOrComments(content).iterator();
         while (items.hasNext()) {
@@ -87,6 +117,11 @@ public class YamlHighlighting {
         }
     }
 
+    /**
+     * Creates an {@code HighlightingData} for a comment
+     *
+     * @param comment a comment to be highlighted
+     */
     private void highlightComment(Parser.Comment comment) {
         YamlLocation startLocation = new YamlLocation(content, comment.getLineNo(), comment.getColumnNo(), 0);
         YamlLocation endLocation = new YamlLocation(content, comment.getTokenAfter().getStartMark());
@@ -95,6 +130,11 @@ public class YamlHighlighting {
         addHighlighting(startLocation, endLocation, TypeOfText.COMMENT);
     }
 
+    /**
+     * Creates an {@code HighlightingData} for a code token
+     *
+     * @param token a token to be highlighted
+     */
     private void highlightToken(Parser.Token token) {
         Token currentToken = token.getCurr();
         YamlLocation startLocation = new YamlLocation(content, currentToken.getStartMark());
@@ -141,6 +181,13 @@ public class YamlHighlighting {
         }
     }
 
+    /**
+     * Creates an {@code HighlightingData} with the passed characteristics
+     *
+     * @param start the highlighting start location
+     * @param end the highlighting end location
+     * @param typeOfText the type of highlighted text
+     */
     private void addHighlighting(YamlLocation start, YamlLocation end, TypeOfText typeOfText) {
         if (start.isSameAs(end)) {
             throw new IllegalArgumentException("Cannot highlight an empty range");

@@ -17,15 +17,35 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.api.rule.RuleKey;
 
+/**
+ * Abstract class that all YAML checks should extend
+ */
 public abstract class YamlCheck {
+    /**
+     * The {@code RuleKey} of this check
+     */
     protected RuleKey ruleKey = null;
+
+    /**
+     * The {@code YamlSourceCode} instance this check has analyzed or will analyze
+     */
     protected YamlSourceCode yamlSourceCode = null;
 
 
+    /**
+     * Sets the {@code RuleKey} of this check
+     *
+     * @param ruleKey the {@code RuleKey} of this check
+     */
     public final void setRuleKey(RuleKey ruleKey) {
         this.ruleKey = ruleKey;
     }
 
+    /**
+     * Returns the {@code RuleKey} of this check
+     *
+     * @return the {@code RuleKey} of this check, possibly {@code null}
+     */
     public RuleKey getRuleKey() {
         return ruleKey;
     }
@@ -40,6 +60,11 @@ public abstract class YamlCheck {
         this.yamlSourceCode = yamlSourceCode;
     }
 
+    /**
+     * Returns the {@code YamlSourceCode} instance this check has analyzed or will analyze
+     *
+     * @return the {@code YamlSourceCode} instance this check has analyzed or will analyze
+     */
     public YamlSourceCode getYamlSourceCode() {
         return yamlSourceCode;
     }

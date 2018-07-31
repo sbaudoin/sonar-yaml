@@ -22,6 +22,9 @@ import com.github.sbaudoin.sonar.plugins.yaml.rules.YamlSensor;
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
 import org.sonar.api.Plugin;
 
+/**
+ * Main plugin class
+ */
 public class YamlPlugin implements Plugin {
     @Override
     public void define(Context context) {

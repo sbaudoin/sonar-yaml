@@ -27,6 +27,9 @@ import org.sonar.api.utils.log.Loggers;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ * Class used to count the code and comment lines of a YAML file and save these "facts" into SonarQube are measures
+ */
 public class LineCounter {
     private static final Logger LOGGER = Loggers.get(LineCounter.class);
 
@@ -37,6 +40,13 @@ public class LineCounter {
     }
 
 
+    /**
+     * Analyzes a file and saves its line measures. This method is called by dependency injection by the Sonar runner.
+     *
+     * @param context the {@code SensorContext}
+     * @param fileLinesContextFactory {@code FileLinesContextFactory} used to save line measures
+     * @param inputFile the file to be analyzed
+     */
     public static void analyse(SensorContext context, FileLinesContextFactory fileLinesContextFactory, InputFile inputFile) {
         LOGGER.debug("Count lines in {}", inputFile.filename());
 
@@ -50,6 +60,14 @@ public class LineCounter {
         }
     }
 
+    /**
+     * Saves the measures of the passed YAML file: lines of code and comments
+     *
+     * @param yamlFile the YAML file being analyzed
+     * @param data the {@code LineCountData} describing this YAML file
+     * @param fileLinesContext {@code FileLinesContext} used to save the code lines and comments of the YAML file
+     * @param context the {@code SensorContext}
+     */
     private static void saveMeasures(InputFile yamlFile, LineCountData data, FileLinesContext fileLinesContext, SensorContext context) {
         for (int line = 1; line <= data.linesNumber(); line++) {
             fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, line, data.linesOfCodeLines().contains(line) ? 1 : 0);
@@ -61,6 +79,14 @@ public class LineCounter {
         saveMeasure(context, yamlFile, CoreMetrics.NCLOC, data.linesOfCodeLines().size());
     }
 
+    /**
+     * Saves the passed measure in SonarQube's database
+     *
+     * @param context the {@code SensorContext}, used to save the measure
+     * @param inputFile the file being analyzed
+     * @param metric a metric to be saved
+     * @param value the metric's value
+     */
     private static <T extends Serializable> void saveMeasure(SensorContext context, InputFile inputFile, Metric<T> metric, T value) {
         context.<T>newMeasure()
                 .withValue(value)

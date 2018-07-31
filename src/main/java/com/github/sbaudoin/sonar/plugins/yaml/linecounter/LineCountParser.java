@@ -30,6 +30,13 @@ public final class LineCountParser {
     private LineCountData data;
 
 
+    /**
+     * Constructor. The passed string is parsed and an instance of {@code LineCountData} is created and ready for
+     * retrieval with the method {@linkplain #getLineCountData()}
+     *
+     * @param contents the YAML content to be parsed
+     * @see #getLineCountData()
+     */
     public LineCountParser(String contents) {
         this.commentLines = new HashSet<>();
         this.linesOfCodeLines = new HashSet<>();
@@ -56,6 +63,11 @@ public final class LineCountParser {
                 commentLines);
     }
 
+    /**
+     * Returns the {@code LineCountData} describing the pased YAML document
+     *
+     * @return the {@code LineCountData} describing the pased YAML document
+     */
     public LineCountData getLineCountData() {
         return data;
     }
@@ -65,7 +77,7 @@ public final class LineCountParser {
      * Tells if the passed line is a comment line, i.e. a line with only a comment
      *
      * @param lineContent
-     * @return
+     * @return {@code true} if the passed string represents a line of comment. Inline comments return {@code false}.
      */
     private boolean isCommentLine(String lineContent) {
         assert lineContent != null;

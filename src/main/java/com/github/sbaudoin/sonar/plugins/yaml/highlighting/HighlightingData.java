@@ -18,6 +18,10 @@ package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 
+/**
+ * Class that stores the parameters a portion of YAML code to be highlighted and that is responsible for
+ * highlighting code in Sonar
+ */
 public class HighlightingData {
     private final TypeOfText typeOfText;
 
@@ -26,6 +30,15 @@ public class HighlightingData {
     private int endLine;
     private int endColumnOffset;
 
+    /**
+     * Constructor
+     *
+     * @param startLine the line number where the highlighted portion of code starts
+     * @param startColumnIndex the column number where the highlighted portion of code starts
+     * @param endLine the line number where the highlighted portion of code ends
+     * @param endColumnIndex the column number where the highlighted portion of code ends
+     * @param typeOfText the type of text. Depending on this parameter, the highlighting in SonarQube will be different.
+     */
     public HighlightingData(int startLine, int startColumnIndex, int endLine, int endColumnIndex, TypeOfText typeOfText) {
         this.startLine = startLine;
         this.startColumnOffset = startColumnIndex - 1;
@@ -54,6 +67,11 @@ public class HighlightingData {
         return typeOfText;
     }
 
+    /**
+     * Highlights the portion of code in SonarQube as described by this class
+     *
+     * @param highlighting SonarQube's highlighting for this portion of code
+     */
     public void highlight(NewHighlighting highlighting) {
         highlighting.highlight(startLine, startColumnOffset, endLine, endColumnOffset, typeOfText);
     }
