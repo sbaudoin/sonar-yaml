@@ -47,26 +47,6 @@ public class HighlightingData {
         this.typeOfText = typeOfText;
     }
 
-    public int startLine() {
-        return startLine;
-    }
-
-    public int startColumn() {
-        return startColumnOffset;
-    }
-
-    public int endLine() {
-        return endLine;
-    }
-
-    public int endColumn() {
-        return endColumnOffset;
-    }
-
-    public TypeOfText highlightCode() {
-        return typeOfText;
-    }
-
     /**
      * Highlights the portion of code in SonarQube as described by this class
      *

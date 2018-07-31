@@ -57,10 +57,6 @@ public class YamlHighlighting {
         this(yamlFile.contents(), String.format("Can't highlight file: %s", yamlFile.filename()));
     }
 
-    public YamlHighlighting(String yamlStrContent) {
-        this(yamlStrContent, String.format("Can't highlight code: %n%s", yamlStrContent));
-    }
-
 
     /**
      * Constructor that actually processes the YAML string and constructs a list of highlighting data to be saved later
