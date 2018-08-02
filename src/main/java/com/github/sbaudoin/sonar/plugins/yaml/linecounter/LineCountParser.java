@@ -74,7 +74,7 @@ public final class LineCountParser {
 
 
     /**
-     * Tells if the passed line is a comment line, i.e. a line with only a comment
+     * Tells if the passed line is a comment line, i.e. a line with only a non-empty comment
      *
      * @param lineContent
      * @return {@code true} if the passed string represents a line of comment. Inline comments return {@code false}.
@@ -82,6 +82,6 @@ public final class LineCountParser {
     private boolean isCommentLine(String lineContent) {
         assert lineContent != null;
 
-        return lineContent.matches("^\\s*#\\s*\\S.*");
+        return lineContent.matches("^\\h*#\\h*\\S.*\r");
     }
 }

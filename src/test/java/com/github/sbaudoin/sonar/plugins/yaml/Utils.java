@@ -17,19 +17,27 @@ package com.github.sbaudoin.sonar.plugins.yaml;
 
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Utils {
+    public static final String MODULE_KEY = "moduleKey";
+
+
     private Utils() {
     }
 
 
     public static InputFile getInputFile(String relativePath) throws IOException {
-        return TestInputFileBuilder.create("", relativePath)
+        return TestInputFileBuilder.create(MODULE_KEY, relativePath)
                 .setContents(new String(Files.readAllBytes(Paths.get(relativePath))))
                 .build();
+    }
+
+    public static SensorContextTester getSensorContext() {
+        return SensorContextTester.create(Paths.get("src", "test", "files"));
     }
 }
