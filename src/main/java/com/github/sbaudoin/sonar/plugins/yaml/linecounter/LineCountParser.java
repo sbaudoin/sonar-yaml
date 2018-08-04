@@ -82,6 +82,6 @@ public final class LineCountParser {
     private boolean isCommentLine(String lineContent) {
         assert lineContent != null;
 
-        return lineContent.matches("^\\h*#\\h*\\S.*\r");
+        return lineContent.trim().matches("^\\h*#\\h*\\S.*");
     }
 }
