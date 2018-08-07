@@ -52,6 +52,7 @@ public final class LineCountParser {
                 linesOfCodeLines.add(line.getLineNo());
             }
 
+            // Is it useful? Lists are ordered
             if (line.getLineNo() > linesNumber) {
                 linesNumber = line.getLineNo();
             }
