@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.check.RuleProperty;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,6 +136,11 @@ public class YamlLintCheckTest {
         if (!found) {
             fail("Expected rule configuration YAML fragment");
         }
+
+        // Test what happens if the check contains a private property
+        logTester.clear();
+        assertNull(new BrokenYamlCheck().getYamlLintconfig());
+        assertEquals("Cannot get field value for 'maxSpacesBefore'", logTester.logs(LoggerLevel.WARN).get(0));
     }
 
 
@@ -148,5 +154,10 @@ public class YamlLintCheckTest {
     }
 
     private class DummyYamlCheck extends YamlLintCheck {
+    }
+
+    private class BrokenYamlCheck extends YamlLintCheck {
+        @RuleProperty(key = "max-spaces-before", description = "Maximal number of spaces allowed before colons (use -1 to disable)", defaultValue = "0")
+        private int maxSpacesBefore;
     }
 }
