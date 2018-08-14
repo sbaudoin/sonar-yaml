@@ -10,11 +10,17 @@ public class HighlightingDataTest extends TestCase {
     public void test() {
         NewHighlightingTester highlighting = new NewHighlightingTester();
 
-        new HighlightingData(1, 2, 3, 4, TypeOfText.COMMENT).highlight(highlighting);
+        HighlightingData hd = new HighlightingData(1, 2, 3, 4, TypeOfText.COMMENT);
+        hd.highlight(highlighting);
+        assertEquals(1, hd.getStartLine());
         assertEquals(1, highlighting.getStartLine());
+        assertEquals(2, hd.getStartColumnIndex());
         assertEquals(1, highlighting.getStartLineOffset());
+        assertEquals(3, hd.getEndLine());
         assertEquals(3, highlighting.getEndLine());
+        assertEquals(4, hd.getEndColumnIndex());
         assertEquals(3, highlighting.getEndLineOffset());
+        assertEquals(TypeOfText.COMMENT, hd.getTypeOfText());
         assertEquals(TypeOfText.COMMENT, highlighting.getTypeOfText());
     }
 

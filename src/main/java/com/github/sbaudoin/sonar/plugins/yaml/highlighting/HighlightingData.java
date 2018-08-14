@@ -55,4 +55,49 @@ public class HighlightingData {
     public void highlight(NewHighlighting highlighting) {
         highlighting.highlight(startLine, startColumnOffset, endLine, endColumnOffset, typeOfText);
     }
+
+    /**
+     * Returns the line number where the highlighted portion of code starts
+     *
+     * @return the line number where the highlighted portion of code starts
+     */
+    public int getStartLine() {
+        return startLine;
+    }
+
+    /**
+     * Returns the column number where the highlighted portion of code starts
+     *
+     * @return the column number where the highlighted portion of code starts
+     */
+    public int getStartColumnIndex() {
+        return startColumnOffset + 1;
+    }
+
+    /**
+     * Returns the line number where the highlighted portion of code ends
+     *
+     * @return the line number where the highlighted portion of code ends
+     */
+    public int getEndLine() {
+        return endLine;
+    }
+
+    /**
+     * Returns the column number where the highlighted portion of code ends
+     *
+     * @return the column number where the highlighted portion of code ends
+     */
+    public int getEndColumnIndex() {
+        return endColumnOffset + 1;
+    }
+
+    /**
+     * Returns the type of text
+     *
+     * @return the type of text
+     */
+    public TypeOfText getTypeOfText() {
+        return typeOfText;
+    }
 }
