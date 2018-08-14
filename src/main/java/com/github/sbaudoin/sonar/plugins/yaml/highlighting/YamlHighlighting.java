@@ -22,6 +22,7 @@ import org.sonar.api.utils.log.Loggers;
 import org.yaml.snakeyaml.tokens.Token;
 import com.github.sbaudoin.yamllint.Parser;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -53,9 +54,13 @@ public class YamlHighlighting {
      *
      * @param yamlFile the YAML file whose content is to be highlighted
      * @throws IOException if an error occurred reading the file
+     * @throws IllegalArgumentException if {@code yamlFile} is {@code null}
      */
     public YamlHighlighting(InputFile yamlFile) throws IOException {
-        this(yamlFile.contents());
+        if (yamlFile == null) {
+            throw new IllegalArgumentException("Input YAML file cannot be null");
+        }
+        process(yamlFile.contents());
     }
 
     /**
@@ -63,12 +68,22 @@ public class YamlHighlighting {
      * in SonarQube
      *
      * @param yamlStrContent the YAML code to be highlighted in SonarQube
+     * @throws IllegalArgumentException if {@code yamlStrContent} is {@code null}
      */
     public YamlHighlighting(String yamlStrContent) {
         if (yamlStrContent == null) {
-            throw new IllegalArgumentException("Input string cannot be null");
+            throw new IllegalArgumentException("Input YAML string cannot be null");
         }
+        process(yamlStrContent);
+    }
 
+
+    /**
+     * Processes the passed YAML string
+     *
+     * @param yamlStrContent the YAML code to be highlighted in SonarQube. Cannot be {@code null}.
+     */
+    private void process(String yamlStrContent) {
         if ("".equals(yamlStrContent)) {
             return;
         }
@@ -124,6 +139,7 @@ public class YamlHighlighting {
      */
     private void highlightComment(Parser.Comment comment) {
         YamlLocation startLocation = new YamlLocation(content, comment.getLineNo(), comment.getColumnNo(), 0);
+        // We stop the highlighting right after the comment, not at the very end of it
         YamlLocation endLocation = new YamlLocation(content, comment.getTokenAfter().getStartMark());
 
         LOGGER.trace("Highlighting comment: " + comment.toString());
