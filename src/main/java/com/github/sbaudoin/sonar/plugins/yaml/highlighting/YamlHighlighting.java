@@ -23,6 +23,7 @@ import org.yaml.snakeyaml.tokens.Token;
 import com.github.sbaudoin.yamllint.Parser;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,7 @@ public class YamlHighlighting {
     private static final String YAML_DECLARATION_TAG = "---";
 
     /**
-     * The optional series of 3 characters that mark the beginning of an UTF-8 file
+     * The optional series of 3 bytes that mark the beginning of an UTF-8 file
      */
     public static final String BOM_CHAR = "\ufeff";
 
@@ -54,38 +55,41 @@ public class YamlHighlighting {
      * @throws IOException if an error occurred reading the file
      */
     public YamlHighlighting(InputFile yamlFile) throws IOException {
-        this(yamlFile.contents(), String.format("Can't highlight file: %s", yamlFile.filename()));
+        this(yamlFile.contents());
     }
-
 
     /**
      * Constructor that actually processes the YAML string and constructs a list of highlighting data to be saved later
      * in SonarQube
      *
      * @param yamlStrContent the YAML code to be highlighted in SonarQube
-     * @param errorMessage an error message to be logged if highlighting the code failed
      */
-    private YamlHighlighting(String yamlStrContent, String errorMessage) {
+    public YamlHighlighting(String yamlStrContent) {
+        if (yamlStrContent == null) {
+            throw new IllegalArgumentException("Input string cannot be null");
+        }
+
+        if ("".equals(yamlStrContent)) {
+            return;
+        }
+
         if (yamlStrContent.startsWith(BOM_CHAR)) {
             // remove it immediately
             LOGGER.debug("Document starts with BOM sequence");
             yamlStrContent = yamlStrContent.substring(1);
         }
+
         int realStartIndex = yamlStrContent.indexOf(YAML_DECLARATION_TAG);
         LOGGER.debug("realStartIndex = " + realStartIndex);
-        try {
-            // No YAML declaration tag?
-            if (realStartIndex == -1) {
-                yamlFileStartLocation = new YamlLocation(yamlStrContent);
-                content = yamlStrContent;
-            } else {
-                yamlFileStartLocation = new YamlLocation(yamlStrContent).moveBefore(YAML_DECLARATION_TAG);
-                content = yamlStrContent.substring(realStartIndex);
-            }
-            highlightYAML();
-        } catch (IllegalStateException e) {
-            LOGGER.warn(errorMessage, e);
+        // No YAML declaration tag?
+        if (realStartIndex == -1) {
+            yamlFileStartLocation = new YamlLocation(yamlStrContent);
+            content = yamlStrContent;
+        } else {
+            yamlFileStartLocation = new YamlLocation(yamlStrContent).moveBefore(YAML_DECLARATION_TAG);
+            content = yamlStrContent.substring(realStartIndex);
         }
+        highlightYAML();
     }
 
     /**
