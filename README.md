@@ -55,4 +55,4 @@ Once installed, go to the profile management screens to create your own profile 
 
 Plugin for SonarQube 6.6+
 
-Just download the plugin JAR file and copy it to the `extensions/plugins` directory of SonarQube and restart.
+Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
