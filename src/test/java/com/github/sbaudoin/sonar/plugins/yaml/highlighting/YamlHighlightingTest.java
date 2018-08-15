@@ -26,7 +26,7 @@ public class YamlHighlightingTest {
             assertEquals("Input YAML file cannot be null", e.getMessage());
         }
 
-        YamlHighlighting yh = new YamlHighlighting(Utils.getInputFile("src/test/files/dummy-file.yaml"));
+        YamlHighlighting yh = new YamlHighlighting(Utils.getInputFile("dummy-file.yaml"));
         assertEquals(6, yh.getHighlightingData().size());
 
         try {

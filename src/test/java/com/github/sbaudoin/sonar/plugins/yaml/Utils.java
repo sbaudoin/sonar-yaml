@@ -32,12 +32,12 @@ public class Utils {
 
 
     public static InputFile getInputFile(String relativePath) throws IOException {
-        return TestInputFileBuilder.create(MODULE_KEY, relativePath)
-                .setContents(new String(Files.readAllBytes(Paths.get(relativePath))))
+        return TestInputFileBuilder.create(MODULE_KEY, "src/test/resources/" + relativePath)
+                .setContents(new String(Files.readAllBytes(Paths.get("src", "test", "resources", relativePath))))
                 .build();
     }
 
     public static SensorContextTester getSensorContext() {
-        return SensorContextTester.create(Paths.get("src", "test", "files"));
+        return SensorContextTester.create(Paths.get("src", "test", "resources"));
     }
 }

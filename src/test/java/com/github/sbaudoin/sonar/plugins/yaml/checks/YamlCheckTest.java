@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.rule.RuleKey;
 
-import java.io.File;
 import java.io.IOException;
 
 public class YamlCheckTest extends TestCase {
@@ -33,7 +32,7 @@ public class YamlCheckTest extends TestCase {
 
     public void testSetGetYamlSourceCode() throws IOException {
         YamlCheck check = new DummyYamlCheck();
-        InputFile inputFile = Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "braces" + File.separator + "min-spaces-01.yaml");
+        InputFile inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
         YamlSourceCode sc = new YamlSourceCode(inputFile);
         check.setYamlSourceCode(sc);
 

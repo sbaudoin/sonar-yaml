@@ -15,5 +15,16 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.sonar.api.utils.log.LogTester;
+
 public class YamlSensorTest {
+    @Rule
+    public LogTester logTester = new LogTester();
+
+    @Test
+    public void testSensor() {
+
+    }
 }

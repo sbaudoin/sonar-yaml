@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
@@ -17,7 +16,7 @@ public class YamlSourceCodeTest {
 
     @Before
     public void setInputFile() throws IOException {
-        inputFile = Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "braces" + File.separator + "min-spaces-01.yaml");
+        inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
         code = new YamlSourceCode(inputFile);
     }
 

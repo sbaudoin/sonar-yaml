@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -142,6 +141,6 @@ public class ForbiddenKeyCheckTest {
     }
 
     private YamlSourceCode getSourceCode(String filename) throws IOException {
-        return new YamlSourceCode(Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "forbidden-key" + File.separator + filename));
+        return new YamlSourceCode(Utils.getInputFile("forbidden-key/" + filename));
     }
 }

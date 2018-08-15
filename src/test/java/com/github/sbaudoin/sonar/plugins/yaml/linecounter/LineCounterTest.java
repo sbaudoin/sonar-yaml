@@ -12,7 +12,6 @@ import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -38,10 +37,9 @@ public class LineCounterTest {
     @Test
     public void testNormal() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
-        String filePath = "src/test/files/dummy-file.yaml";
+        String filePath = "dummy-file.yaml";
         InputFile inputFile = Utils.getInputFile(filePath);
         LineCounter.analyse(context, fileLinesContextFactory, inputFile);
-
         assertEquals(new Integer(2), context.measure(getComponentKey(filePath), CoreMetrics.NCLOC).value());
         assertEquals(new Integer(2), context.measure(getComponentKey(filePath), CoreMetrics.COMMENT_LINES).value());
     }
@@ -49,7 +47,7 @@ public class LineCounterTest {
     @Test
     public void testIOException() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
-        InputFile inputFile = Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "dummy-file.yaml");
+        InputFile inputFile = Utils.getInputFile("dummy-file.yaml");
         InputFile spy = spy(inputFile);
         when(spy.contents()).thenThrow(new IOException("Cannot read file"));
 
@@ -59,6 +57,6 @@ public class LineCounterTest {
     }
 
     private String getComponentKey(String filePath) {
-        return Utils.MODULE_KEY + ":" + filePath;
+        return Utils.MODULE_KEY + ":src/test/resources/" + filePath;
     }
 }

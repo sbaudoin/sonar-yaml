@@ -9,7 +9,6 @@ import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
 import org.sonar.check.RuleProperty;
 
-import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -34,7 +33,7 @@ public class YamlLintCheckTest {
         getDummyCheck().validate();
         assertEquals("Cannot get YamlLintConfig for rule 'yaml-lint-check-test$-dummy-yaml'", logTester.logs(LoggerLevel.WARN).get(0));
 
-        YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "dummy-file.yaml"));
+        YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"));
         YamlSourceCode spy = spy(code);
         when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
         DummyYamlCheck check1 = new DummyYamlCheck();
@@ -90,11 +89,11 @@ public class YamlLintCheckTest {
         // All other tests with directories
         assertTrue(check.isFileIncluded("**/dummy-file.yaml"));
         assertTrue(check.isFileIncluded("**/*dummy*"));
-        assertTrue(check.isFileIncluded("**/files/dummy-*"));
+        assertTrue(check.isFileIncluded("**/resources/dummy-*"));
         assertTrue(check.isFileIncluded("**/test/*/dummy-*.yaml"));
         assertTrue(check.isFileIncluded("**/src/**/dummy-*.yaml"));
-        assertTrue(check.isFileIncluded("**/files/dummy-*.yaml"));
-        assertFalse(check.isFileIncluded("**/files/dummy-*.yml"));
+        assertTrue(check.isFileIncluded("**/resources/dummy-*.yaml"));
+        assertFalse(check.isFileIncluded("**/resources/dummy-*.yml"));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class YamlLintCheckTest {
     private DummyYamlCheck getDummyCheck() throws IOException {
         DummyYamlCheck check = new DummyYamlCheck();
         check.setYamlSourceCode(
-                new YamlSourceCode(Utils.getInputFile("src" + File.separator + "test" + File.separator + "files" + File.separator + "dummy-file.yaml"))
+                new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"))
         );
 
         return check;
