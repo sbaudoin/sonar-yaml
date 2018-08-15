@@ -13,7 +13,6 @@ addons:
 jdk:
   - oraclejdk8
 script:
-  - echo "Building version $MAVEN_VERSION"
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
 deploy:
   - provider: script
