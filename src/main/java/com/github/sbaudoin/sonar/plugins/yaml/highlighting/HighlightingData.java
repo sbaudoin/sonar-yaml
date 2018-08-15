@@ -36,7 +36,8 @@ public class HighlightingData {
      * @param startLine the line number where the highlighted portion of code starts
      * @param startColumnIndex the column number where the highlighted portion of code starts
      * @param endLine the line number where the highlighted portion of code ends
-     * @param endColumnIndex the column number where the highlighted portion of code ends
+     * @param endColumnIndex the column number where the highlighted portion of code ends (this column is not part of
+     *                       the highlighting)
      * @param typeOfText the type of text. Depending on this parameter, the highlighting in SonarQube will be different.
      */
     public HighlightingData(int startLine, int startColumnIndex, int endLine, int endColumnIndex, TypeOfText typeOfText) {
