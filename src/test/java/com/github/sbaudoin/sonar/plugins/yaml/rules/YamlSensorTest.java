@@ -15,16 +15,167 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
+import com.github.sbaudoin.sonar.plugins.yaml.Utils;
+import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
+import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultFileSystem;
+import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.CheckFactory;
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.api.config.Configuration;
+import org.sonar.api.measures.FileLinesContext;
+import org.sonar.api.measures.FileLinesContextFactory;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.LogTester;
 
+import java.util.function.Predicate;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class YamlSensorTest {
+    private final RuleKey ruleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, "BracesCheck");
+    private final String parsingErrorCheckKey = "ParsingErrorCheck";
+    private final RuleKey parsingErrorCheckRuleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, parsingErrorCheckKey);
+
+    private YamlSensor sensor;
+    private SensorContextTester context;
+    private DefaultFileSystem fs;
+
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
     @Rule
     public LogTester logTester = new LogTester();
 
     @Test
-    public void testSensor() {
+    public void testSensor() throws Exception {
+        init(false);
+        fs.add(Utils.getInputFile("braces/min-spaces-02.yaml"));
 
+        DummySensorDescriptor descriptor = new DummySensorDescriptor();
+        sensor.describe(descriptor);
+        assertEquals("YAML Sensor", descriptor.sensorName);
+        assertEquals(YamlLanguage.KEY, descriptor.languageKey);
+
+        sensor.execute(context);
+
+        assertEquals(1, context.allIssues().size());
+        context.allIssues().stream().forEach(issue -> {
+            assertEquals(ruleKey, issue.ruleKey());
+            assertEquals(2, issue.primaryLocation().textRange().start().line());
+        });
+    }
+
+    @Test
+    public void testSensorSyntaxError() throws Exception {
+        init(true);
+        fs.add(Utils.getInputFile("braces/min-spaces-01.yaml"));
+
+        sensor.execute(context);
+
+        assertEquals(1, context.allIssues().size());
+        context.allIssues().stream().forEach(issue -> {
+            assertEquals(parsingErrorCheckRuleKey, issue.ruleKey());
+            assertEquals("Parse error: syntax error: expected <block end>, but found '-'", issue.primaryLocation().message());
+            assertEquals(4, issue.primaryLocation().textRange().start().line());
+        });
+    }
+
+
+    private void init(boolean activateParsingErrorCheck) throws Exception {
+        context = Utils.getSensorContext();
+
+        fs = Utils.getFileSystem();
+        fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
+
+        ActiveRules activeRules = null;
+        if (activateParsingErrorCheck) {
+            activeRules = new ActiveRulesBuilder()
+                    .create(ruleKey)
+                    .activate()
+                    .create(parsingErrorCheckRuleKey)
+                    .setInternalKey(parsingErrorCheckKey)
+                    .activate()
+                    .build();
+        } else {
+            activeRules = new ActiveRulesBuilder()
+                    .create(ruleKey)
+                    .activate()
+                    .build();
+        }
+        CheckFactory checkFactory = new CheckFactory(activeRules);
+
+        FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);
+        when(fileLinesContextFactory.createFor(any(InputFile.class))).thenReturn(mock(FileLinesContext.class));
+
+        sensor = new YamlSensor(fs, checkFactory, fileLinesContextFactory);
+    }
+
+
+    private class DummySensorDescriptor implements SensorDescriptor {
+        private String sensorName;
+        private String languageKey;
+
+        @Override
+        public SensorDescriptor name(String sensorName) {
+            this.sensorName = sensorName;
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor onlyOnLanguage(String languageKey) {
+            this.languageKey = languageKey;
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor onlyOnLanguages(String... languageKeys) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor onlyOnFileType(InputFile.Type type) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor createIssuesForRuleRepository(String... repositoryKey) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor createIssuesForRuleRepositories(String... repositoryKeys) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor requireProperty(String... propertyKey) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor requireProperties(String... propertyKeys) {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor global() {
+            return this;
+        }
+
+        @Override
+        public SensorDescriptor onlyWhenConfiguration(Predicate<Configuration> predicate) {
+            return this;
+        }
     }
 }
