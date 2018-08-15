@@ -22,9 +22,7 @@ import org.sonar.api.utils.log.Loggers;
 import org.yaml.snakeyaml.tokens.Token;
 import com.github.sbaudoin.yamllint.Parser;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,19 +33,16 @@ import java.util.List;
 public class YamlHighlighting {
     private static final Logger LOGGER = Loggers.get(YamlHighlighting.class);
 
-    private static final String YAML_DECLARATION_TAG = "---";
-
     /**
      * The optional series of 3 bytes that mark the beginning of an UTF-8 file
      */
     public static final String BOM_CHAR = "\ufeff";
 
+
     private List<HighlightingData> highlighting = new ArrayList<>();
-
     private TypeOfText currentCode = null;
-
-    private YamlLocation yamlFileStartLocation;
     private String content;
+
 
     /**
      * Constructor
@@ -94,16 +89,7 @@ public class YamlHighlighting {
             yamlStrContent = yamlStrContent.substring(1);
         }
 
-        int realStartIndex = yamlStrContent.indexOf(YAML_DECLARATION_TAG);
-        LOGGER.debug("realStartIndex = " + realStartIndex);
-        // No YAML declaration tag?
-        if (realStartIndex == -1) {
-            yamlFileStartLocation = new YamlLocation(yamlStrContent);
-            content = yamlStrContent;
-        } else {
-            yamlFileStartLocation = new YamlLocation(yamlStrContent).moveBefore(YAML_DECLARATION_TAG);
-            content = yamlStrContent.substring(realStartIndex);
-        }
+        content = yamlStrContent;
         highlightYAML();
     }
 
@@ -139,7 +125,7 @@ public class YamlHighlighting {
      */
     private void highlightComment(Parser.Comment comment) {
         YamlLocation startLocation = new YamlLocation(content, comment.getLineNo(), comment.getColumnNo(), 0);
-        // We stop the highlighting right after the comment, not at the very end of it
+        // We stop the highlighting right before the next token, not at the very end of the comment
         YamlLocation endLocation = new YamlLocation(content, comment.getTokenAfter().getStartMark());
 
         LOGGER.trace("Highlighting comment: " + comment.toString());
@@ -156,7 +142,7 @@ public class YamlHighlighting {
         YamlLocation startLocation = new YamlLocation(content, currentToken.getStartMark());
         YamlLocation endLocation = new YamlLocation(content, currentToken.getEndMark());
 
-        switch (token.getCurr().getTokenId()) {
+        switch (currentToken.getTokenId()) {
             case DocumentStart: case DocumentEnd:
                 LOGGER.trace("Highlighting document start: ---");
                 addHighlighting(startLocation, endLocation, TypeOfText.CONSTANT);
@@ -208,10 +194,7 @@ public class YamlHighlighting {
         if (start.isSameAs(end)) {
             throw new IllegalArgumentException("Cannot highlight an empty range");
         }
-        int startLine = start.line() + yamlFileStartLocation.line() - 1;
-        int startColumn = start.column() + (start.line() == yamlFileStartLocation.line() ? (yamlFileStartLocation.column() - 1) : 0);
-        int endLine = end.line() + yamlFileStartLocation.line() - 1;
-        int endColumn = end.column() + (end.line() == yamlFileStartLocation.line() ? (yamlFileStartLocation.column() - 1) : 0);
-        highlighting.add(new HighlightingData(startLine, startColumn, endLine, endColumn, typeOfText));
+
+        highlighting.add(new HighlightingData(start.line(), start.column(), end.line(), end.column(), typeOfText));
     }
 }
