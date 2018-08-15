@@ -18,9 +18,12 @@ deploy:
   - provider: script
     script: bash .travis/deploy.sh
     skip_cleanup: true
+    on:
+      repo: sbaudoin/sonar-yaml
+      all_branches: true
   - provider: releases
     api_key:
-      secure: "XLPQqb794G1PMULyF0L/2OvZV5S+6UNF/HNxnvS3dBr/uPOZsPnG7Uxg+ywEhWzraPCE3G/IEq8iWvxRl3ktpesGDOgoI4FoIYEu97Qf5xQXtxSPqEzc+4MgBl0iqcUMt7YxG5rQiDmHNFYzQ2ZiFMNHNtv9E5ooerjUpt07PkdpnNECMVpMAal8Qu6YBnyNo5Djxff4PlOBVSpJzNlqzxvrCTI1mX3jlG2qwsS0ajl+LkSuSIPHAwAoiAHmU4Iy861wVL2Yiu6IPYcZKTeWgtJ1p3g2EsP/xYZn/1r9lYnSRl84oPcNRWoDsot67J7HR3p7bBquuOcuqj4ccmSOfI27FGTWzSlPQ5aapuafFfbYFFvpxv25/vJ+H2i4r0+xi4pK1fZaXfIPhq3U1UPVN6PZ27JxsNRTht5lmyJ0S2CLUCKwAWv6ck+GAv4/guxEk+AnePkc0SO8lYAh6Can2B76aFrjPd6K5DpnnbphQBeTk35k3k3lWed4LUjFu4Z2jga+1oreWlGO6aagdEkIL0m0khL5NqO2ijHwPzJIQnuJ2qP59XRAyEhAEKD5gURKT61jcrZ3vYbCLhIb2z/bc9CfjuGMVKx1Xm2VSXswCRC0mOvceLcbxOxo6NnU55e4Obvw5j2UIqFSc7Om2iN44g8Wof6MDJysT0LH7ziDoks="
+      secure: "kiGVs8LRsaEtrluxsMx77ZZsP491VGfyF6dA2+/qTfLih1VGxuhtNndsa9oUOfUlhCptaLDULWQYc+lD3qvf9ffXZHirpFi1Qe1GbH5kom7F/DybFLrGyhqK+ma6iUB8vRAqeRd/RSu5tzBFxdzELD058Wio2ziUWs2+55QFaqj8X3tCMLpDerm82UNBmnBVyw3gT1YV0vFmDl3Y8jgr615xWwwhjJ7DKu0265UkfIh9yWRHS6ThTnLAvNNH3AFEqJzevNxyM0/n9TBR6lNcXJlBb9QuQS32//Y0j03SaxKjb5OmjTvhnoY2vdLnOc22la2eiK3aWTMkQXdSFBFbXdDzEZqtxwKp5+24069apBQUqu2u/af2VGIKOI7bPr5wKOmwA+Hs9fEqh5PJiiaxmssDgrUxLfuuJySa/IjFXnAeNyX0LEkU5EFvvNq21QWI+MJhCfbaMl/xj3C0rUEHLOCtd99svKOi8bUR+9XUkz33ucnUaIWmDVXlwOyVCGp8HQTrRQ2hypZgfMeXnQUe/oGVGfiGOQJwiZpo5FK2MPhX/5MX+9/xkvEV1DtwgUXZXNOCoQvagHKuJXNgzGH7rFUNBsqYKYocfjO63JB2Yk7NitUuRD/o0kHDv5HUgYWNlhhWkmzKUZ5n9BNoGBywafjkhk7UL+1QtCwCA5bKQN4="
     file_glob: true
     file:
       - target/sonar-yaml-plugin-*.jar
@@ -31,4 +34,4 @@ deploy:
 cache:
   directories:
     - '$HOME/.m2/repository'
-#    - '$HOME/.sonar/cache'
+    - '$HOME/.sonar/cache'
