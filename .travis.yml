@@ -1,19 +1,29 @@
 language: java
-sudo: false
-install:
-  - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
-before_install:
-  - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
-  - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
+jdk:
+  - oraclejdk8
 addons:
   sonarcloud:
     organization: "sbaudoin-github"
     token:
       secure: "m88KirUCH0/d7o2u19b1vBOyQOcMLXQmlAx3GdoYNQgOdjzLVqHUV70+FmIeVM/DqgzyUG31BZkwWR5mpl0S7ZKQ3IlES6xPp7xvf4QbVsmVoWTBce69/Nfn2YsecmEFGwhRJ4+0ehxaE3/3NL0WDCCCkVbnpsVaiCaru+b1jdmX5VvX0yIOM8lmKStr1Tbdvb05tCl0dN6Q4bZUU/hMw/RXHLG9+kiDFB94Wuo7QUiZA+lAA9//tnPCaYHtAOF9HVByBZTQdYJghwX0RnR3y7irtsLaW48r1EHO+2I/dHzJKXX131ZR2f9M2UuSk5fOTQ59emcLWKA6ILeeVdYyNr/V7ZmcS70j3YzhQE6Q05KzEqG090onRltq3r8J+OmlzjNUE0Zw6EU4wrCA2zBCQUvUHyyMiXsCe892GiBSU55BVTa7RBOSo2zrYhR9GOXKIv6uVIqavlOOKOXKF3+8AZZcc0uABEnR9YD9QfU9zXsTzZhYTuvIQ1a0XUsueSVRYpzr6hS+o8l4FFOC0PSskeelWFFlbM2CpDUCc5netRi9M44y9yCxC0S+DemUuKxRd8TpRAI4EWADkQUuYg4YagDQzirZZTORmYjURwDxYRUebi/VMh6vPam6e7oTr3EqlBsEQSeHa7Cl/9lsCMzFRFNfMO6+BmPmzzf0W2vYRh4="
-jdk:
-  - oraclejdk8
+sudo: required
+services:
+  - docker
+cache:
+  directories:
+  - '$HOME/.m2/repository'
+  - '$HOME/.sonar/cache'
+before_install:
+  - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
+  - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
+install:
+  - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+  - bash it/it.sh 6.6 3.2.0.1227
+  - bash it/it.sh 6.7 3.2.0.1227
+  - bash it/it.sh 7.0 3.2.0.1227
+  - bash it/it.sh 7.1 3.2.0.1227
 deploy:
   - provider: script
     script: bash .travis/deploy.sh
@@ -31,7 +41,3 @@ deploy:
     on:
       repo: sbaudoin/sonar-yaml
       tags: true
-cache:
-  directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'

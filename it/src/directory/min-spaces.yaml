@@ -1,0 +1,3 @@
+---
+dict: {key: "fail" }  # This is going to raise an error
+fdgsfg: fgdfg
