@@ -11,7 +11,7 @@ echo "sonar.host.url=http://sonarqube:9000" > /tmp/sonar-scanner-$SCANNER_VERSIO
 
 # Audit code
 cd /usr/src/myapp/it
-/tmp/sonar-scanner-$SCANNER_VERSION-linux/bin/sonar-scanner
+sonar-scanner
 if [ $? -ne 0 ]
 then
     echo "Error scanning YAML files" >&2
