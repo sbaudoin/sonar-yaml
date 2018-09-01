@@ -6,7 +6,7 @@
     <version>1.0.1-SNAPSHOT</version>
     <packaging>sonar-plugin</packaging>
 
-    <name>SonarQube YAML Plugin</name>
+    <name>YAML Analyzer</name>
     <description>YAML 1.1 plugin for SonarQube</description>
     <url>https://github.com/sbaudoin/sonar-yaml</url>
     <inceptionYear>2018</inceptionYear>
