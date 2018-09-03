@@ -28,7 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Utils {
-    public static final String MODULE_KEY = "moduleKey";
+    public static final String MODULE_KEY = "sonar-yaml";
 
     public static final Path BASE_DIR = Paths.get("src", "test", "resources");
 
@@ -39,6 +39,7 @@ public class Utils {
 
     public static InputFile getInputFile(String relativePath) throws IOException {
         return TestInputFileBuilder.create(MODULE_KEY, BASE_DIR.resolve(relativePath).toString())
+                .setModuleBaseDir(Paths.get("."))
                 .setContents(new String(Files.readAllBytes(BASE_DIR.resolve(relativePath))))
                 .setLanguage(YamlLanguage.KEY)
                 .setCharset(StandardCharsets.UTF_8)
