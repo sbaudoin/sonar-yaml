@@ -36,7 +36,7 @@ public class YamlLanguageTest {
     @Test
     public void defaultSuffixes() {
         settings.setProperty(YamlSettings.FILE_SUFFIXES_KEY, "");
-        Assert.assertArrayEquals(new String[] { ".yaml", ".yml" }, yaml.getFileSuffixes());
+        Assert.assertArrayEquals(new String[] { ".yaml", ".yml", ".raml" }, yaml.getFileSuffixes());
     }
 
     @Test
