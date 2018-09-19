@@ -38,19 +38,19 @@ if 'component' not in data or 'measures' not in data['component']:
 lines = ncloc = files = directories = comment_lines = False
 for measure in data['component']['measures']:
     if measure['metric'] == 'lines' and measure['value'] == '9':
-        print 'lines metric OK'
+        print 'lines metrics OK'
         lines = True
     if measure['metric'] == 'ncloc' and measure['value'] == '6':
-        print 'ncloc metric OK'
+        print 'ncloc metrics OK'
         ncloc = True
     if measure['metric'] == 'files' and measure['value'] == '2':
-        print 'files metric OK'
+        print 'files metrics OK'
         files = True
     if measure['metric'] == 'directories' and measure['value'] == '2':
-        print 'directories metric OK'
+        print 'directories metrics OK'
         directories = True
     if measure['metric'] == 'comment_lines' and measure['value'] == '1':
-        print 'comment_lines metric OK'
+        print 'comment_lines metrics OK'
         comment_lines = True
 
 r = requests.get('http://sonarqube:9000/api/issues/search?componentKeys=my:project:src/directory/min-spaces.yaml&statuses=OPEN', auth=('admin', 'admin'))
