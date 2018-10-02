@@ -24,13 +24,13 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/sbaudoin/yamllint/issues</url>
+        <url>https://github.com/sbaudoin/sonar-yaml/issues</url>
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/sbaudoin/yamllint.git</connection>
-        <developerConnection>scm:git:ssh://github.com/sbaudoin/yamllint.git</developerConnection>
-        <url>https://github.com/sbaudoin/yamllint.git</url>
+        <connection>scm:git:https://github.com/sbaudoin/sonar-yaml.git</connection>
+        <developerConnection>scm:git:ssh://github.com/sbaudoin/sonar-yaml.git</developerConnection>
+        <url>https://github.com/sbaudoin/sonar-yaml.git</url>
         <tag>HEAD</tag>
     </scm>
 
