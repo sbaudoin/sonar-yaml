@@ -2,7 +2,7 @@
 
 # Install sonar-runner
 cd /tmp
-wget -q https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SCANNER_VERSION-linux.zip
+wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SCANNER_VERSION-linux.zip
 unzip sonar-scanner-cli-$SCANNER_VERSION-linux.zip
 export PATH=/tmp/sonar-scanner-$SCANNER_VERSION-linux/bin:$PATH
 
