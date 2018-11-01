@@ -69,6 +69,7 @@ public class YamlSourceCode {
      * Returns the content of the YAML file as a {@code String}
      *
      * @return the YAML content
+     * @throws IOException if an error occurred reading the YAML file
      */
     public String getContent() throws IOException {
         return yamlFile.contents();
@@ -100,6 +101,8 @@ public class YamlSourceCode {
     /**
      * Returns {@code true} if succeeded or {@code false} if the file is corrupted (i.e. it contains
      * a syntax error you can get with {@link #getSyntaxError()})
+     *
+     * @return {@code true} if succeeded or {@code false} if the file is corrupted
      */
     public boolean hasCorrectSyntax() {
         return syntaxError == null;

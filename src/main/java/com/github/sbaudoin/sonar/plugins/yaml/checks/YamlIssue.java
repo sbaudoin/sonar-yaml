@@ -18,7 +18,7 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.api.rule.RuleKey;
 
 /**
- * Wrapper class for {@see LintProblem} to add some additional features
+ * Wrapper class for {@link com.github.sbaudoin.yamllint.LintProblem} to add some additional features
  */
 public class YamlIssue {
     /**
