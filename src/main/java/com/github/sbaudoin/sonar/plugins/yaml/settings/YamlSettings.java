@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
  */
 public class YamlSettings {
     public static final String FILE_SUFFIXES_KEY = "sonar.yaml.file.suffixes";
-    public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".yaml,.yml";
+    public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".yaml,.yml,.raml";
 
 
     /**
