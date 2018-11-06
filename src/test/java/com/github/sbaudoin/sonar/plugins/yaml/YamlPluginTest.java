@@ -25,6 +25,6 @@ public class YamlPluginTest extends TestCase {
     public void testExtensionCounts() {
         Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6, 2), SonarQubeSide.SERVER));
         new YamlPlugin().define(context);
-        assertEquals(5, context.getExtensions().size());
+        assertEquals(6, context.getExtensions().size());
     }
 }

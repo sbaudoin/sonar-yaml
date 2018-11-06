@@ -15,7 +15,7 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
-import org.sonar.api.batch.fs.InputFile;
+import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -47,29 +47,15 @@ public class YamlHighlighting {
     /**
      * Constructor
      *
-     * @param yamlFile the YAML file whose content is to be highlighted
+     * @param sourceCode the YAML source code to be highlighted
      * @throws IOException if an error occurred reading the file
      * @throws IllegalArgumentException if {@code yamlFile} is {@code null}
      */
-    public YamlHighlighting(InputFile yamlFile) throws IOException {
-        if (yamlFile == null) {
-            throw new IllegalArgumentException("Input YAML file cannot be null");
+    public YamlHighlighting(YamlSourceCode sourceCode) throws IOException {
+        if (sourceCode == null) {
+            throw new IllegalArgumentException("Input YAML source code cannot be null");
         }
-        process(yamlFile.contents());
-    }
-
-    /**
-     * Constructor that actually processes the YAML string and constructs a list of highlighting data to be saved later
-     * in SonarQube
-     *
-     * @param yamlStrContent the YAML code to be highlighted in SonarQube
-     * @throws IllegalArgumentException if {@code yamlStrContent} is {@code null}
-     */
-    public YamlHighlighting(String yamlStrContent) {
-        if (yamlStrContent == null) {
-            throw new IllegalArgumentException("Input YAML string cannot be null");
-        }
-        process(yamlStrContent);
+        process(sourceCode.getContent());
     }
 
 

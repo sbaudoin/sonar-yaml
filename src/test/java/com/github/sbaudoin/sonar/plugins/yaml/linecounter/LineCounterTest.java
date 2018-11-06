@@ -1,6 +1,7 @@
 package com.github.sbaudoin.sonar.plugins.yaml.linecounter;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
+import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -39,7 +41,7 @@ public class LineCounterTest {
         SensorContextTester context = Utils.getSensorContext();
         String filePath = "dummy-file.yaml";
         InputFile inputFile = Utils.getInputFile(filePath);
-        LineCounter.analyse(context, fileLinesContextFactory, inputFile);
+        LineCounter.analyse(context, fileLinesContextFactory, new YamlSourceCode(inputFile, Optional.of(false)));
         assertEquals(new Integer(2), context.measure(getComponentKey(filePath), CoreMetrics.NCLOC).value());
         assertEquals(new Integer(2), context.measure(getComponentKey(filePath), CoreMetrics.COMMENT_LINES).value());
     }
@@ -48,8 +50,9 @@ public class LineCounterTest {
     public void testIOException() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
         InputFile inputFile = Utils.getInputFile("dummy-file.yaml");
-        InputFile spy = spy(inputFile);
-        when(spy.contents()).thenThrow(new IOException("Cannot read file"));
+        YamlSourceCode sourceCode = new YamlSourceCode(inputFile, Optional.of(false));
+        YamlSourceCode spy = spy(sourceCode);
+        when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
 
         LineCounter.analyse(context, fileLinesContextFactory, spy);
         assertEquals(1, logTester.logs(LoggerLevel.WARN).size());

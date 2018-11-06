@@ -132,7 +132,7 @@ public class YamlLocation {
 
     /**
      * Shifts the internal pointers (line, column and offset) of one character. The column and line pointers are
-     * updated depended on the fact that the passed character is a new line character or not (the passed character
+     * updated depending on the fact that the passed character is a new line character or not (the passed character
      * is supposed to be the character currently pointed to by the offset)
      *
      * @param c a character
