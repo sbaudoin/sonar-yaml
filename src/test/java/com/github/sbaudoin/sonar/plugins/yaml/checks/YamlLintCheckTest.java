@@ -10,6 +10,7 @@ import org.sonar.api.utils.log.LoggerLevel;
 import org.sonar.check.RuleProperty;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
@@ -33,7 +34,7 @@ public class YamlLintCheckTest {
         getDummyCheck().validate();
         assertEquals("Cannot get YamlLintConfig for rule 'yaml-lint-check-test$-dummy-yaml'", logTester.logs(LoggerLevel.WARN).get(0));
 
-        YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"));
+        YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false));
         YamlSourceCode spy = spy(code);
         when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
         DummyYamlCheck check1 = new DummyYamlCheck();
@@ -146,7 +147,7 @@ public class YamlLintCheckTest {
     private DummyYamlCheck getDummyCheck() throws IOException {
         DummyYamlCheck check = new DummyYamlCheck();
         check.setYamlSourceCode(
-                new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"))
+                new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false))
         );
 
         return check;

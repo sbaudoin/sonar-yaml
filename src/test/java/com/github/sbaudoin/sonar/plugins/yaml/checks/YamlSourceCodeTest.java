@@ -7,8 +7,11 @@ import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 public class YamlSourceCodeTest {
     InputFile inputFile;
@@ -17,7 +20,7 @@ public class YamlSourceCodeTest {
     @Before
     public void setInputFile() throws IOException {
         inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
-        code = new YamlSourceCode(inputFile);
+        code = new YamlSourceCode(inputFile, Optional.of(Boolean.FALSE));
     }
 
     @Test
@@ -54,5 +57,21 @@ public class YamlSourceCodeTest {
         assertEquals(2, code.getYamlIssues().size());
         assertEquals(issue1, code.getYamlIssues().get(0));
         assertEquals(issue2, code.getYamlIssues().get(1));
+    }
+
+    @Test
+    public void testFilter() throws IOException {
+        String code = "---\nlist: ['one',\u2028 'two']";
+        InputFile file = Utils.getInputFile("dummy-file.yaml");
+        InputFile spy = spy(file);
+        when(spy.contents()).thenReturn(code);
+
+        YamlSourceCode sourceCode;
+        sourceCode = new YamlSourceCode(spy, Optional.empty());
+        assertEquals(code.length(), sourceCode.getContent().length());
+        sourceCode = new YamlSourceCode(spy, Optional.of(false));
+        assertEquals(code.length(), sourceCode.getContent().length());
+        sourceCode = new YamlSourceCode(spy, Optional.of(true));
+        assertEquals(code.length() - 1, sourceCode.getContent().length());
     }
 }

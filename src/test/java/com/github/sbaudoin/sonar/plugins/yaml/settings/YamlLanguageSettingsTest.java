@@ -24,8 +24,10 @@ public class YamlLanguageSettingsTest extends TestCase {
     public void testGetProperties() {
         List<PropertyDefinition> defs = YamlSettings.getProperties();
 
-        assertEquals(1, defs.size());
+        assertEquals(2, defs.size());
         assertEquals(YamlSettings.FILE_SUFFIXES_KEY, defs.get(0).key());
         assertEquals(YamlSettings.FILE_SUFFIXES_DEFAULT_VALUE, defs.get(0).defaultValue());
+        assertEquals(YamlSettings.FILTER_UTF8_LB_KEY, defs.get(1).key());
+        assertEquals("false", defs.get(1).defaultValue());
     }
 }

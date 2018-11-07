@@ -15,6 +15,7 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
+import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -84,7 +85,7 @@ public class YamlSensor implements Sensor {
         for (InputFile inputFile : fileSystem.inputFiles(mainFilesPredicate)) {
             LOGGER.debug("Analyzing file: " + inputFile.filename());
             try {
-                YamlSourceCode sourceCode = new YamlSourceCode(inputFile);
+                YamlSourceCode sourceCode = new YamlSourceCode(inputFile, context.config().getBoolean(YamlSettings.FILTER_UTF8_LB_KEY));
 
                 // First check for syntax errors
                 if (!sourceCode.hasCorrectSyntax()) {
@@ -92,7 +93,7 @@ public class YamlSensor implements Sensor {
                     processAnalysisError(context, sourceCode, inputFile, parsingErrorKey);
                 }
 
-                computeLinesMeasures(context, inputFile);
+                computeLinesMeasures(context, sourceCode);
                 runChecks(context, sourceCode);
             } catch (IOException e) {
                 LOGGER.warn("Error reading source file " + inputFile.filename(), e);
@@ -105,10 +106,10 @@ public class YamlSensor implements Sensor {
      * Calculates and feeds line measures (comments, actual number of code lines)
      *
      * @param context the sensor context
-     * @param yamlFile the YAML file to be analyzed
+     * @param sourceCode the YAML source code to be analyzed
      */
-    private void computeLinesMeasures(SensorContext context, InputFile yamlFile) {
-        LineCounter.analyse(context, fileLinesContextFactory, yamlFile);
+    private void computeLinesMeasures(SensorContext context, YamlSourceCode sourceCode) {
+        LineCounter.analyse(context, fileLinesContextFactory, sourceCode);
     }
 
     /**
@@ -143,7 +144,7 @@ public class YamlSensor implements Sensor {
         }
         saveIssues(context, sourceCode);
         try {
-            saveSyntaxHighlighting(context, new YamlHighlighting(sourceCode.getYamlFile()).getHighlightingData(), sourceCode.getYamlFile());
+            saveSyntaxHighlighting(context, new YamlHighlighting(sourceCode).getHighlightingData(), sourceCode.getYamlFile());
         } catch (IOException e) {
             throw new IllegalStateException("Could not analyze file " + sourceCode.getYamlFile().filename(), e);
         }

@@ -56,3 +56,14 @@ Once installed, go to the profile management screens to create your own profile 
 Plugin for SonarQube 6.6+
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
+
+## Troubleshooting/known issues
+
+### Scan fail with "ERROR: Caused by: _x_ is not a valid line offset for pointer. File _xyz.yml_ has _y_ character(s) at line _z_"
+
+This may be due to [issue #6](issues/6): if your YAML file contains YAML-valid UTF-8 line break characters such as U+2028, SonarQube
+may just strip them, causing the character and lines references being different between the YAML parser and SonarQube.
+
+If such an error is met, go to the main or project general settings of the YAML plugin and enable the option "Filter UTF-8 Line Breaks".
+This will make the plugin to ignore some valid UTF-8 line break characters (U+2028, U+2029 and U+0085) so that SonarQube and the plugin
+both use the same character and line indices and the scan should complete.

@@ -21,6 +21,7 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.rule.RuleKey;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class YamlCheckTest extends TestCase {
     public void testSetGetRuleKey() {
@@ -33,7 +34,7 @@ public class YamlCheckTest extends TestCase {
     public void testSetGetYamlSourceCode() throws IOException {
         YamlCheck check = new DummyYamlCheck();
         InputFile inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
-        YamlSourceCode sc = new YamlSourceCode(inputFile);
+        YamlSourceCode sc = new YamlSourceCode(inputFile, Optional.of(false));
         check.setYamlSourceCode(sc);
 
         assertEquals(sc, check.getYamlSourceCode());

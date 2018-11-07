@@ -15,6 +15,7 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.linecounter;
 
+import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.measures.CoreMetrics;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * Class used to count the code and comment lines of a YAML file and save these "facts" into SonarQube are measures
+ * Class used to count the code and comment lines of a YAML file and save these "facts" into SonarQube as measures
  */
 public class LineCounter {
     private static final Logger LOGGER = Loggers.get(LineCounter.class);
@@ -45,15 +46,16 @@ public class LineCounter {
      *
      * @param context the {@code SensorContext}
      * @param fileLinesContextFactory {@code FileLinesContextFactory} used to save line measures
-     * @param inputFile the file to be analyzed
+     * @param sourceCode the source code to be analyzed
      */
-    public static void analyse(SensorContext context, FileLinesContextFactory fileLinesContextFactory, InputFile inputFile) {
+    public static void analyse(SensorContext context, FileLinesContextFactory fileLinesContextFactory, YamlSourceCode sourceCode) {
+        InputFile inputFile = sourceCode.getYamlFile();
         LOGGER.debug("Count lines in {}", inputFile.filename());
 
         try {
             saveMeasures(
                     inputFile,
-                    new LineCountParser(inputFile.contents()).getLineCountData(),
+                    new LineCountParser(sourceCode.getContent()).getLineCountData(),
                     fileLinesContextFactory.createFor(inputFile), context);
         } catch (IOException e) {
             LOGGER.warn("Unable to count lines for file " + inputFile.filename() + ", ignoring measures", e);
