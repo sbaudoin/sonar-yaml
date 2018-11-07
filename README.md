@@ -61,7 +61,7 @@ Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/relea
 
 ### Scan fail with "ERROR: Caused by: _x_ is not a valid line offset for pointer. File _xyz.yml_ has _y_ character(s) at line _z_"
 
-This may be due to [issue #6](issues/6): if your YAML file contains YAML-valid UTF-8 line break characters such as U+2028, SonarQube
+This may be due to [issue #6](https://github.com/sbaudoin/sonar-yaml/issues/6): if your YAML file contains YAML-valid UTF-8 line break characters such as U+2028, SonarQube
 may just strip them, causing the character and lines references being different between the YAML parser and SonarQube.
 
 If such an error is met, go to the main or project general settings of the YAML plugin and enable the option "Filter UTF-8 Line Breaks".
