@@ -1,0 +1,94 @@
+<p>Use this rule to control that the YAML documents do not contain a <strong>scalar</strong> value. Forbidden values can
+    be defined as a regular expression. That can be globally forbidden (for any key) or forbidden for a specific key
+    (also identifiable with a regular expression).</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>key-name</dt>
+    <dd>Regular expression that matches keys for which the value is forbidden. In order to match any key, set it to
+    <code>.*</code>. The start and end line markers <code>^</code> and <code>$</code> are implicit: this means that
+    setting <code>foo</code> is equivalent to <code>^foo$</code>.</dd>
+    <dt>value</dt>
+    <dd>Regular expression that matches forbidden values. This regex will be checked against all lines of multiline
+        values. As a consequence and contrary to the <code>key-name</code> parameter, if you want to match a single word
+        you must use the start and end line markers <code>^</code> and <code>$</code>. For example, if you set <code>foo</code>
+        as the regular expression then any value containing the "foo" word will be caught, whereas <code>^foo$</code>
+        will match only the values that are exactly <code>foo</code>.<br/>
+        Setting <code>.*</code> would have the same effect as the rule <code>ForbiddenKeyCheck</code>.</dd>
+</dl>
+
+<h2>Examples</h2>
+<p>With <code>key-name = [tT]e.*t</code> and <code>value = ^forbi.*en$</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Test: any forbidden value
+    tesT: {key1: 4, key2: forbidden}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    Test: forbidden
+</pre>
+<pre>
+    test: forbi anything in between
+</pre>
+<pre>
+    Test: {key1: 4, forbidden: forbidden}
+</pre>
+
+<p>With <code>key-name = [tT]e.*t</code> and <code>value = .*forbidden.*</code> or <code>value = forbidden</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Test: any value
+    tesT: {key1: 4, key2: forbidden}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    Test: any forbidden value
+</pre>
+<pre>
+    tesT: {key1: 4, forbidden: forbidden}
+</pre>
+<pre>
+    test: >
+      with
+      a forbidden
+      value
+</pre>
+<pre>
+    test: |
+      with
+      a forbidden
+      value
+</pre>
+
+<p>With <code>key-name = .*</code> and <code>value = ^forbi.*en$</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    foo: any forbidden value
+    Bar: {key1: 4, key2: 8}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    foo: forbidden
+</pre>
+<pre>
+    Bar: forbi anything in between
+</pre>
+<pre>
+    Bar: {key1: 4, key2: forbidden}
+</pre>
+
+<p>With <code>key-name = [tT]e.*t</code> and <code>value = .*</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    Test1: value
+    tesT: {key1: 4, key2: 8}
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    test: value
+</pre>
+<pre>
+    tesT: {Test: 4, key2: 8}
+</pre>
+

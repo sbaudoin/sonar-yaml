@@ -23,7 +23,7 @@ public class CheckRepositoryTest extends TestCase {
     }
 
     public void testGetCheckClasses() {
-        assertEquals(22, CheckRepository.getCheckClasses().size());
+        assertEquals(23, CheckRepository.getCheckClasses().size());
         assertTrue(CheckRepository.getCheckClasses().contains(ParsingErrorCheck.class));
     }
 

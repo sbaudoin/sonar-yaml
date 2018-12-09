@@ -29,19 +29,19 @@ import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class ForbiddenKeyCheckTest {
+public class ForbiddenValueCheckTest {
     @Rule
     public LogTester logTester = new LogTester();
 
     @Test
     public void testCheck() {
-        assertNotNull(new ForbiddenKeyCheck());
+        assertNotNull(new ForbiddenValueCheck());
     }
 
     @Test
     public void testFailedValidateNoSource() {
         try {
-            new ForbiddenKeyCheck().validate();
+            new ForbiddenValueCheck().validate();
             fail("No source code should raise an exception");
         } catch (IllegalStateException e) {
             assertEquals("Source code not set, cannot validate anything", e.getMessage());
@@ -51,12 +51,13 @@ public class ForbiddenKeyCheckTest {
     @Test
     public void testFailedValidateIOException() throws IOException {
         // Prepare error
-        YamlSourceCode code = getSourceCode("forbidden-key-01.yaml", false);
+        YamlSourceCode code = getSourceCode("forbidden-value-01.yaml", false);
         YamlSourceCode spy = spy(code);
         when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
 
-        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
         check.keyName = "forbidden";
+        check.value = "forbidden";
 
         check.setYamlSourceCode(spy);
         check.validate();
@@ -67,11 +68,12 @@ public class ForbiddenKeyCheckTest {
 
     @Test
     public void testValidateSyntaxError() throws IOException {
-        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
         check.keyName = "forbidden";
+        check.value = "forbidden";
 
         // Syntax error
-        YamlSourceCode code = getSourceCode("forbidden-key-01.yaml", false);
+        YamlSourceCode code = getSourceCode("forbidden-value-01.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
@@ -86,25 +88,26 @@ public class ForbiddenKeyCheckTest {
 
     @Test
     public void testValidateNoIssue() throws IOException {
-        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
         check.keyName = "forbidden";
+        check.value = "forbidden";
 
         // Syntax 1
-        YamlSourceCode code = getSourceCode("forbidden-key-02.yaml", false);
+        YamlSourceCode code = getSourceCode("forbidden-value-02.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertTrue(code.hasCorrectSyntax());
         assertEquals(0, code.getYamlIssues().size());
 
         // Syntax 2
-        code = getSourceCode("forbidden-key-03.yaml", false);
+        code = getSourceCode("forbidden-value-03.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertTrue(code.hasCorrectSyntax());
         assertEquals(0, code.getYamlIssues().size());
 
         // Syntax 3
-        code = getSourceCode("forbidden-key-04.yaml", false);
+        code = getSourceCode("forbidden-value-04.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertTrue(code.hasCorrectSyntax());
@@ -113,35 +116,77 @@ public class ForbiddenKeyCheckTest {
 
     @Test
     public void testValidateWithForbiddenKey1() throws IOException {
-        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
         check.keyName = "forbidden";
+        check.value = "^forbidden$";
 
-        YamlSourceCode code = getSourceCode("forbidden-key-05.yaml", false);
+        YamlSourceCode code = getSourceCode("forbidden-value-05.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertTrue(code.hasCorrectSyntax());
-        assertEquals(1, code.getYamlIssues().size());
-        assertEquals("Forbidden key found", code.getYamlIssues().get(0).getMessage());
-        assertEquals(4, code.getYamlIssues().get(0).getLine());
+        assertEquals(2, code.getYamlIssues().size());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(5, code.getYamlIssues().get(0).getLine());
         assertEquals(3, code.getYamlIssues().get(0).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(1).getMessage());
+        assertEquals(7, code.getYamlIssues().get(1).getLine());
+        assertEquals(19, code.getYamlIssues().get(1).getColumn());
     }
 
     @Test
     public void testValidateWithForbiddenKey2() throws IOException {
-        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
-        check.keyName = "^forbid*en";
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
+        check.keyName = "forbidden";
+        check.value = "forbidden";
 
-        YamlSourceCode code = getSourceCode("forbidden-key-06.yaml", false);
+        YamlSourceCode code = getSourceCode("forbidden-value-05.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
         assertTrue(code.hasCorrectSyntax());
-        assertEquals(1, code.getYamlIssues().size());
-        assertEquals("Forbidden key found", code.getYamlIssues().get(0).getMessage());
-        assertEquals(4, code.getYamlIssues().get(0).getLine());
+        assertEquals(5, code.getYamlIssues().size());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(5, code.getYamlIssues().get(0).getLine());
+        assertEquals(3, code.getYamlIssues().get(0).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(1).getMessage());
+        assertEquals(7, code.getYamlIssues().get(1).getLine());
+        assertEquals(19, code.getYamlIssues().get(1).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(2).getMessage());
+        assertEquals(9, code.getYamlIssues().get(2).getLine());
+        assertEquals(3, code.getYamlIssues().get(2).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(2).getMessage());
+        assertEquals(14, code.getYamlIssues().get(3).getLine());
+        assertEquals(3, code.getYamlIssues().get(3).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(3).getMessage());
+        assertEquals(19, code.getYamlIssues().get(4).getLine());
+        assertEquals(3, code.getYamlIssues().get(4).getColumn());
+    }
+
+    @Test
+    public void testValidateWithForbiddenKey3() throws IOException {
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
+        check.keyName = "^forbid*en";
+        check.value = ".*forbidden.*";
+
+        YamlSourceCode code = getSourceCode("forbidden-value-06.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(4, code.getYamlIssues().size());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(5, code.getYamlIssues().get(0).getLine());
         assertEquals(5, code.getYamlIssues().get(0).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(1).getMessage());
+        assertEquals(7, code.getYamlIssues().get(1).getLine());
+        assertEquals(21, code.getYamlIssues().get(1).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(2).getMessage());
+        assertEquals(13, code.getYamlIssues().get(2).getLine());
+        assertEquals(5, code.getYamlIssues().get(2).getColumn());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(3).getMessage());
+        assertEquals(21, code.getYamlIssues().get(3).getLine());
+        assertEquals(5, code.getYamlIssues().get(3).getColumn());
     }
 
     private YamlSourceCode getSourceCode(String filename, boolean filter) throws IOException {
-        return new YamlSourceCode(Utils.getInputFile("forbidden-key/" + filename), Optional.of(filter));
+        return new YamlSourceCode(Utils.getInputFile("forbidden-value/" + filename), Optional.of(filter));
     }
 }

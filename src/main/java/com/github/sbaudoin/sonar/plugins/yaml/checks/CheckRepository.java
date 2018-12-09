@@ -37,6 +37,7 @@ public class CheckRepository {
             EmptyLinesCheck.class,
             EmptyValuesCheck.class,
             ForbiddenKeyCheck.class,
+            ForbiddenValueCheck.class,
             HyphensCheck.class,
             IndentationCheck.class,
             KeyDuplicatesCheck.class,

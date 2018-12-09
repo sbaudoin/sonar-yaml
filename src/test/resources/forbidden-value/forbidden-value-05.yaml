@@ -1,0 +1,19 @@
+---
+key1:
+  subkey: value
+  allowed: forbidden
+  forbidden: forbidden
+  map1: {key1: 4, not: forbidden}
+  map2: {key1: 4, forbidden: forbidden}
+key2:
+  forbidden: >
+    with
+    a forbidden
+    value
+key3:
+  forbidden: |
+    with
+    a forbidden
+    value
+key4:
+  forbidden: may be forbidden

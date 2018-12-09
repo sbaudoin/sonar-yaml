@@ -54,7 +54,8 @@ public class ForbiddenKeyCheck extends YamlCheck {
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
-                    Token t2 = parser.getToken();
+                    // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
+                    Token t2 = parser.peekToken();
                     if (t2 instanceof ScalarToken && ((ScalarToken)t2).getValue().matches(keyName)) {
                         // Report new error
                         getYamlSourceCode().addViolation(new YamlIssue(
