@@ -34,10 +34,7 @@ import java.util.regex.Pattern;
  * Check to be used that the YAML file does not contain forbidden values
  */
 @Rule(key = "ForbiddenValueCheck")
-public class ForbiddenValueCheck extends YamlCheck {
-    private static final Logger LOGGER = Loggers.get(ForbiddenValueCheck.class);
-
-
+public class ForbiddenValueCheck extends ForbiddenCheck {
     @RuleProperty(key = "key-name", description = "Regexp that matches the name of the key whose value is forbidden")
     String keyName;
 
@@ -45,39 +42,13 @@ public class ForbiddenValueCheck extends YamlCheck {
     String value;
 
 
-    @Override
-    public void validate() {
-        if (yamlSourceCode == null) {
-            throw new IllegalStateException("Source code not set, cannot validate anything");
-        }
-
-        try {
-            LintScanner parser = new LintScanner(new StreamReader(yamlSourceCode.getContent()));
-            if (!yamlSourceCode.hasCorrectSyntax()) {
-                LOGGER.warn("Syntax error found, cannot continue checking keys: " + yamlSourceCode.getSyntaxError().getMessage());
-                return;
-            }
-            while (parser.hasMoreTokens()) {
-                YamlIssue issue = analyzeNextToken(parser);
-                if (issue != null) {
-                    getYamlSourceCode().addViolation(issue);
-                }
-            }
-        } catch (IOException e) {
-            // Should not happen: a first call to getYamlSourceCode().getContent() was done in the constructor of
-            // the YamlSourceCode instance of this check, but in case...
-            LOGGER.warn("Cannot read source code", e);
-        }
-    }
-
     /**
      * Takes the next token and, if it is a key that matches the {@code key-name} regex, analyzes its value against the
      * {@code value} regex, possibly returning an issue if there is a match
      *
      * @param parser the scanner that holds the tokens
-     * @return an issue if both the key name and value match
      */
-    private YamlIssue analyzeNextToken(LintScanner parser) {
+    protected void checkNextToken(LintScanner parser) {
         Token t1 = parser.getToken();
         if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
             Token t2 = parser.peekToken();
@@ -91,18 +62,11 @@ public class ForbiddenValueCheck extends YamlCheck {
                         Matcher m = Pattern.compile("(?m)" + value).matcher(((ScalarToken)t3).getValue());
                         if (m.find()) {
                             // Report new error
-                            return new YamlIssue(
-                                    getRuleKey(),
-                                    "Forbidden value found",
-                                    t2.getStartMark().getLine() + 1,
-                                    t2.getStartMark().getColumn() + 1);
+                            addViolation("Forbidden value found", t2);
                         }
                     }
                 }
             }
         }
-
-        // No match (key or value): return nothing
-        return null;
     }
 }

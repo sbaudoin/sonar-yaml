@@ -49,7 +49,14 @@ The plugin comes with a default "Sonar way" profile with most common rules enabl
 * Trailing spaces check
 * Truthy check
 
-Once installed, go to the profile management screens to create your own profile and add or remove rules, change levels, and parameters, etc.
+Some additional rules are provided but not enabled by default:
+
+* Document end check
+* Forbidden key check
+* Forbidden value check
+* Key ordering check
+
+Once installed, you may go to the profile management screens to create your own profile and add or remove rules, change levels, and parameters, etc.
 
 ## Installation
 

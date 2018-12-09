@@ -31,7 +31,7 @@ import java.io.IOException;
  * Check to be used that the YAML file does not contain forbidden keys
  */
 @Rule(key = "ForbiddenKeyCheck")
-public class ForbiddenKeyCheck extends YamlCheck {
+public class ForbiddenKeyCheck extends ForbiddenCheck {
     private static final Logger LOGGER = Loggers.get(ForbiddenKeyCheck.class);
 
 
@@ -39,37 +39,15 @@ public class ForbiddenKeyCheck extends YamlCheck {
     String keyName;
 
 
-    @Override
-    public void validate() {
-        if (yamlSourceCode == null) {
-            throw new IllegalStateException("Source code not set, cannot validate anything");
-        }
-
-        try {
-            LintScanner parser = new LintScanner(new StreamReader(yamlSourceCode.getContent()));
-            if (!yamlSourceCode.hasCorrectSyntax()) {
-                LOGGER.warn("Syntax error found, cannot continue checking keys: " + yamlSourceCode.getSyntaxError().getMessage());
-                return;
+    protected void checkNextToken(LintScanner parser) {
+        Token t1 = parser.getToken();
+        if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
+            // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
+            Token t2 = parser.peekToken();
+            if (t2 instanceof ScalarToken && ((ScalarToken)t2).getValue().matches(keyName)) {
+                // Report new error
+                addViolation("Forbidden key found", t2);
             }
-            while (parser.hasMoreTokens()) {
-                Token t1 = parser.getToken();
-                if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
-                    // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
-                    Token t2 = parser.peekToken();
-                    if (t2 instanceof ScalarToken && ((ScalarToken)t2).getValue().matches(keyName)) {
-                        // Report new error
-                        getYamlSourceCode().addViolation(new YamlIssue(
-                                getRuleKey(),
-                                "Forbidden key found",
-                                t2.getStartMark().getLine() + 1,
-                                t2.getStartMark().getColumn() + 1));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // Should not happen: a first call to getYamlSourceCode().getContent() was done in the constructor of
-            // the YamlSourceCode instance of this check, but in case...
-            LOGGER.warn("Cannot read source code", e);
         }
     }
 }
