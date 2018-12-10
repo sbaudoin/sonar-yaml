@@ -16,17 +16,12 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.yamllint.LintScanner;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.yaml.snakeyaml.reader.StreamReader;
-import org.yaml.snakeyaml.tokens.KeyToken;
 import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 import org.yaml.snakeyaml.tokens.ValueToken;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +30,6 @@ import java.util.regex.Pattern;
  */
 @Rule(key = "ForbiddenValueCheck")
 public class ForbiddenValueCheck extends ForbiddenCheck {
-    @RuleProperty(key = "key-name", description = "Regexp that matches the name of the key whose value is forbidden")
-    String keyName;
-
     @RuleProperty(key = "value", description = "Regexp that matches the forbidden value")
     String value;
 
@@ -49,22 +41,16 @@ public class ForbiddenValueCheck extends ForbiddenCheck {
      * @param parser the scanner that holds the tokens
      */
     protected void checkNextToken(LintScanner parser) {
-        Token t1 = parser.getToken();
-        if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
-            Token t2 = parser.peekToken();
-            if (t2 instanceof ScalarToken && ((ScalarToken)t2).getValue().matches(keyName)) {
-                // Accepted token type: remove it from stack
-                parser.getToken();
-                if (parser.peekToken() instanceof ValueToken) {
-                    parser.getToken();
-                    Token t3 = parser.peekToken();
-                    if (t3 instanceof ScalarToken) {
-                        Matcher m = Pattern.compile("(?m)" + value).matcher(((ScalarToken)t3).getValue());
-                        if (m.find()) {
-                            // Report new error
-                            addViolation("Forbidden value found", t2);
-                        }
-                    }
+        // Accepted token type: remove it from stack
+        Token t = parser.getToken();
+        if (parser.peekToken() instanceof ValueToken) {
+            parser.getToken();
+            Token t3 = parser.peekToken();
+            if (t3 instanceof ScalarToken) {
+                Matcher m = Pattern.compile("(?m)" + value).matcher(((ScalarToken)t3).getValue());
+                if (m.find()) {
+                    // Report new error
+                    addViolation("Forbidden value found", t);
                 }
             }
         }

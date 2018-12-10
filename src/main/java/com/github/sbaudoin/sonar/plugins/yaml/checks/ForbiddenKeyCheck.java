@@ -15,39 +15,17 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
-import org.yaml.snakeyaml.reader.StreamReader;
-import org.yaml.snakeyaml.tokens.KeyToken;
-import org.yaml.snakeyaml.tokens.ScalarToken;
-import org.yaml.snakeyaml.tokens.Token;
 import com.github.sbaudoin.yamllint.LintScanner;
 
-import java.io.IOException;
 
 /**
  * Check to be used that the YAML file does not contain forbidden keys
  */
 @Rule(key = "ForbiddenKeyCheck")
 public class ForbiddenKeyCheck extends ForbiddenCheck {
-    private static final Logger LOGGER = Loggers.get(ForbiddenKeyCheck.class);
-
-
-    @RuleProperty(key = "key-name", description = "Regexp that matches the forbidden name")
-    String keyName;
-
-
     protected void checkNextToken(LintScanner parser) {
-        Token t1 = parser.getToken();
-        if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
-            // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
-            Token t2 = parser.peekToken();
-            if (t2 instanceof ScalarToken && ((ScalarToken)t2).getValue().matches(keyName)) {
-                // Report new error
-                addViolation("Forbidden key found", t2);
-            }
-        }
+        // Just report new error
+        addViolation("Forbidden key found", parser.getToken());
     }
 }
