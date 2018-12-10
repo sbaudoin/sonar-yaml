@@ -3,13 +3,23 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import com.github.sbaudoin.yamllint.LintScanner;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
+import org.yaml.snakeyaml.tokens.KeyToken;
+import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 
 import java.io.IOException;
 
+/**
+ * Abstract class used to implement to forbidden key/scalar value checks
+ */
 public abstract class ForbiddenCheck extends YamlCheck {
     private static final Logger LOGGER = Loggers.get(ForbiddenCheck.class);
+
+
+    @RuleProperty(key = "key-name", description = "Regexp that matches the forbidden name")
+    String keyName;
 
 
     @Override
@@ -25,7 +35,14 @@ public abstract class ForbiddenCheck extends YamlCheck {
                 return;
             }
             while (parser.hasMoreTokens()) {
-                checkNextToken(parser);
+                Token t1 = parser.getToken();
+                if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
+                    // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
+                    Token t2 = parser.peekToken();
+                    if (t2 instanceof ScalarToken && ((ScalarToken) t2).getValue().matches(keyName)) {
+                        checkNextToken(parser);
+                    }
+                }
             }
         } catch (IOException e) {
             // Should not happen: a first call to getYamlSourceCode().getContent() was done in the constructor of
@@ -35,8 +52,22 @@ public abstract class ForbiddenCheck extends YamlCheck {
     }
 
 
+    /**
+     * Callback method used to implement a specific behavior when a key matching the {@code key-name} regex is found.
+     * Implementations should carefully use the {@code peekToken()} and {@code getToken()} methods to make sure relevant,
+     * unmatched tokens still remain in the stack of the scanner.
+     *
+     * @param parser the scanner/parser currently used to parse the YAML source file. The parser currently points to a
+     *               key token that matches the {@code key-name} regex.
+     */
     protected abstract void checkNextToken(LintScanner parser);
 
+    /**
+     * Adds a violation to the analyzed Yaml source for the passed token
+     *
+     * @param message the message that describes the violation
+     * @param t the token for which a violation is to be added
+     */
     protected void addViolation(String message, Token t) {
         getYamlSourceCode().addViolation(new YamlIssue(
                 getRuleKey(),
