@@ -65,9 +65,9 @@ public final class LineCountParser {
     }
 
     /**
-     * Returns the {@code LineCountData} describing the pased YAML document
+     * Returns the {@code LineCountData} describing the passed YAML document
      *
-     * @return the {@code LineCountData} describing the pased YAML document
+     * @return the {@code LineCountData} describing the passed YAML document
      */
     public LineCountData getLineCountData() {
         return data;
