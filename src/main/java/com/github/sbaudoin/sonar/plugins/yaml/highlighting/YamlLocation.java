@@ -51,7 +51,7 @@ public class YamlLocation {
     }
 
     /**
-     * Xonstrctor
+     * Constructor
      *
      * @param content the YAML content to highlight
      * @param line a line to point to (by convention, lines start at 1)
@@ -102,7 +102,7 @@ public class YamlLocation {
 
     /**
      * Returns a {@code YamlLocation} that corresponds to this instance + line, column and offset parameters moved
-     * froward of the passed number of characters
+     * forward of the passed number of characters
      *
      * @param nbChar a number of character to move forward
      * @return a {@code YamlLocation} updated with the passed additional offset

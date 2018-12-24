@@ -49,7 +49,7 @@ public class YamlHighlighting {
      *
      * @param sourceCode the YAML source code to be highlighted
      * @throws IOException if an error occurred reading the file
-     * @throws IllegalArgumentException if {@code yamlFile} is {@code null}
+     * @throws IllegalArgumentException if {@code sourceCode} is {@code null}
      */
     public YamlHighlighting(YamlSourceCode sourceCode) throws IOException {
         if (sourceCode == null) {
