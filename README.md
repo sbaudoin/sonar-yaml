@@ -55,12 +55,13 @@ Some additional rules are provided but not enabled by default:
 * Forbidden key check
 * Forbidden value check (new in 1.3.0)
 * Key ordering check
+* Quoted strings check (new in 1.4.0)
 
 Once installed, you may go to the profile management screens to create your own profile and add or remove rules, change levels, and parameters, etc.
 
 ## Installation
 
-Plugin for SonarQube 6.6+
+Plugin for SonarQube 6.6+, 7.0+ (tested on 6.7 LTS, 7.4 and 7.5).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
 

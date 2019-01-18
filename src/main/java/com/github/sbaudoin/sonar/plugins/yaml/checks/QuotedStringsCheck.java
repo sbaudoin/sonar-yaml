@@ -15,20 +15,11 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
-import junit.framework.TestCase;
+import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 
-public class CheckRepositoryTest extends TestCase {
-    public void testGetParsingErrorCheckClass() {
-        assertEquals(ParsingErrorCheck.class, CheckRepository.getParsingErrorCheckClass());
-    }
-
-    public void testGetCheckClasses() {
-        assertEquals(24, CheckRepository.getCheckClasses().size());
-        assertTrue(CheckRepository.getCheckClasses().contains(ParsingErrorCheck.class));
-    }
-
-    public void testGetTemplateRuleKeys() {
-        assertEquals(1, CheckRepository.getTemplateRuleKeys().size());
-        assertTrue(CheckRepository.getTemplateRuleKeys().contains("ForbiddenKeyCheck"));
-    }
+@Rule(key = "QuotedStringsCheck")
+public class QuotedStringsCheck extends YamlLintCheck {
+    @RuleProperty(key = "quote-type", description = "Indicates the expected quote type: single ('), double (\") or any (default)", defaultValue = "any")
+    String quoteType;
 }

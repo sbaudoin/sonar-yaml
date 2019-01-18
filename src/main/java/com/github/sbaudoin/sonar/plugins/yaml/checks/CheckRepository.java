@@ -48,7 +48,8 @@ public class CheckRepository {
             OctalValuesCheck.class,
             ParsingErrorCheck.class,
             TrailingSpacesCheck.class,
-            TruthyCheck.class
+            TruthyCheck.class,
+            QuotedStringsCheck.class
         );
 
     private static final List<String> TEMPLATE_RULE_KEYS = Arrays.asList(

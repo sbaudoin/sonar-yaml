@@ -1,0 +1,17 @@
+<p>Use this rule to forbid any string values that are not quoted. You can also enforce the type of the quote used using
+    the <code>quote-type</code> option (<code>single</code>}, <code>double</code> or <code>any</code>).</p>
+
+<p><strong>Note</strong>: Multi-line strings (with {@code |} or {@code >}) will not be checked.</p>
+
+<p>Examples</p>
+<p>With <code>quoted-strings: {quote-type: any}</code> the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    foo: "bar"
+    bar: 'foo'
+    number: 123
+    boolean: true
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    foo: bar
+</pre>
