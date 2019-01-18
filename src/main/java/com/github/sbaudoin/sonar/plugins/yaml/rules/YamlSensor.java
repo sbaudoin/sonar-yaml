@@ -144,7 +144,7 @@ public class YamlSensor implements Sensor {
         }
         saveIssues(context, sourceCode);
         try {
-            saveSyntaxHighlighting(context, new YamlHighlighting(sourceCode).getHighlightingData(), sourceCode.getYamlFile());
+            saveSyntaxHighlighting(context, sourceCode);
         } catch (IOException e) {
             throw new IllegalStateException("Could not analyze file " + sourceCode.getYamlFile().filename(), e);
         }
@@ -172,11 +172,11 @@ public class YamlSensor implements Sensor {
      * Saves the syntax highlighting for the analyzed code
      *
      * @param context the sensor context
-     * @param highlightingDataList the highlighting data to be saved
-     * @param inputFile the source file
+     * @param sourceCode the YAML source code
      */
-    private static void saveSyntaxHighlighting(SensorContext context, List<HighlightingData> highlightingDataList, InputFile inputFile) {
-        NewHighlighting highlighting = context.newHighlighting().onFile(inputFile);
+    private static void saveSyntaxHighlighting(SensorContext context, YamlSourceCode sourceCode) throws IOException {
+        List<HighlightingData> highlightingDataList = new YamlHighlighting(sourceCode).getHighlightingData();
+        NewHighlighting highlighting = context.newHighlighting().onFile(sourceCode.getYamlFile());
 
         for (HighlightingData highlightingData : highlightingDataList) {
             highlightingData.highlight(highlighting);
