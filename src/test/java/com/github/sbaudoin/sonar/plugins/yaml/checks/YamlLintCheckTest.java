@@ -5,11 +5,14 @@ import com.github.sbaudoin.yamllint.LintProblem;
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import org.junit.Rule;
 import org.junit.Test;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.utils.log.LogTester;
 import org.sonar.api.utils.log.LoggerLevel;
 import org.sonar.check.RuleProperty;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -144,6 +147,21 @@ public class YamlLintCheckTest {
     }
 
 
+    @Test
+    public void testAnsibleVault() throws IOException {
+        final InputFile file = Utils.getInputFile("ansible-inventory-vault.yaml");
+        
+        // Direct 'snakeyaml' call
+        new Yaml().loadAll(new StringReader(file.contents())).forEach(o -> { /* Do nothing, just parse */ });
+        
+        YamlSourceCode code = new YamlSourceCode(file, Optional.of(false));
+        ParsingErrorCheck check = new ParsingErrorCheck();
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(check.getYamlSourceCode().hasCorrectSyntax());
+        assertEquals(0, check.getYamlSourceCode().getYamlIssues().size());
+    }    
+    
     private DummyYamlCheck getDummyCheck() throws IOException {
         DummyYamlCheck check = new DummyYamlCheck();
         check.setYamlSourceCode(
