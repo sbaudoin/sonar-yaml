@@ -24,7 +24,7 @@ public class IndentationCheck extends YamlLintCheck {
     String spaces;
 
     @RuleProperty(key = "indent-sequences", description = "Tells whether block sequences should be indented or not", defaultValue = "true")
-    boolean indentSequences;
+    String indentSequences;
 
     @RuleProperty(key = "check-multi-line-strings", description = "Tells whether to lint indentation in multi-line strings", defaultValue = "false")
     boolean checkMultiLineStrings;
