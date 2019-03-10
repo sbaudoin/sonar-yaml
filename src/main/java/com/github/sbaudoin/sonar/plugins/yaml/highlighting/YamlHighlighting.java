@@ -40,7 +40,7 @@ public class YamlHighlighting {
 
 
     private List<HighlightingData> highlighting = new ArrayList<>();
-    private TypeOfText currentCode = null;
+    private TypeOfText currentCode = TypeOfText.KEYWORD;
     private String content;
 
 
