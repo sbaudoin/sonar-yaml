@@ -37,10 +37,10 @@ if 'component' not in data or 'measures' not in data['component']:
 
 lines = ncloc = files = directories = comment_lines = False
 for measure in data['component']['measures']:
-    if measure['metric'] == 'lines' and measure['value'] == '9':
+    if measure['metric'] == 'lines' and measure['value'] == '16':
         print 'lines metrics OK'
         lines = True
-    if measure['metric'] == 'ncloc' and measure['value'] == '6':
+    if measure['metric'] == 'ncloc' and measure['value'] == '13':
         print 'ncloc metrics OK'
         ncloc = True
     if measure['metric'] == 'files' and measure['value'] == '2':
@@ -63,7 +63,7 @@ if data['total'] != 1:
     sys.exit(1)
 issues = False
 if data['issues'][0]['message'] == 'too many spaces inside braces (braces)' and data['issues'][0]['line'] == 2:
-    print 'issues metric OK'
+    print 'issues metrics OK'
     issues = True
 
 sys.exit(0 if lines and ncloc and files and directories and comment_lines and issues else 1)
