@@ -46,10 +46,14 @@ public class YamlHighlightingTest {
     @Test
     public void testBrokenYaml() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("not: a: valid: yaml\n# Even with a comment"));
-
         // Only the first token is expected to be highlighted
         assertEquals(1, yh.getHighlightingData().size());
         assertHighlightingData(yh.getHighlightingData().get(0), 1, 1, 1, 4, TypeOfText.KEYWORD);
+
+        yh = new YamlHighlighting(getSourceCode("{{- if .Values.hpa.enabled -}}\n"));
+        // Only the first token is expected to be highlighted with default type
+        assertEquals(1, yh.getHighlightingData().size());
+        assertHighlightingData(yh.getHighlightingData().get(0), 1, 5, 1, 29, TypeOfText.KEYWORD);
     }
 
     @Test
