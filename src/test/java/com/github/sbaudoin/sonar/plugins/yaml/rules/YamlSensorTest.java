@@ -17,10 +17,14 @@ package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
+import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -33,14 +37,20 @@ import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LoggerLevel;
 
+import java.io.IOException;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(YamlSensor.class)
 public class YamlSensorTest {
     private final RuleKey ruleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, "BracesCheck");
     private final String parsingErrorCheckKey = "ParsingErrorCheck";
@@ -74,6 +84,21 @@ public class YamlSensorTest {
             assertEquals(ruleKey, issue.ruleKey());
             assertEquals(2, issue.primaryLocation().textRange().start().line());
         });
+    }
+
+    @Test
+    public void testSensorIOException() throws Exception {
+        init(false);
+
+        InputFile inputFile = Utils.getInputFile("braces/min-spaces-02.yaml");
+        fs.add(inputFile);
+        Optional<Boolean> optional = Optional.empty();
+        whenNew(YamlSourceCode.class).withArguments(inputFile, optional).thenThrow(new IOException("Boom!"));
+
+        sensor.execute(context);
+        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
+        assertEquals("Error reading source file min-spaces-02.yaml", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals(0, context.allIssues().size());
     }
 
     @Test
