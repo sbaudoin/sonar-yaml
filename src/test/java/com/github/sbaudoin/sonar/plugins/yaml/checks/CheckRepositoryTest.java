@@ -28,7 +28,7 @@ public class CheckRepositoryTest extends TestCase {
     }
 
     public void testGetTemplateRuleKeys() {
-        assertEquals(1, CheckRepository.getTemplateRuleKeys().size());
+        assertEquals(2, CheckRepository.getTemplateRuleKeys().size());
         assertTrue(CheckRepository.getTemplateRuleKeys().contains("ForbiddenKeyCheck"));
     }
 }

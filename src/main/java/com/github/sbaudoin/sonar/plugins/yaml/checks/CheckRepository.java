@@ -53,7 +53,8 @@ public class CheckRepository {
         );
 
     private static final List<String> TEMPLATE_RULE_KEYS = Arrays.asList(
-            "ForbiddenKeyCheck"
+            "ForbiddenKeyCheck",
+            "ForbiddenValueCheck"
     );
 
 
