@@ -82,6 +82,12 @@ public class YamlSensor implements Sensor {
         LOGGER.debug("YAML sensor executed with context: " + context);
         Optional<RuleKey> parsingErrorKey = getParsingErrorRuleKey();
 
+        // Skip analysis if no rules enabled from this plugin
+        if (context.activeRules().findByRepository(CheckRepository.REPOSITORY_KEY).isEmpty()) {
+            LOGGER.info("No active rules found for this plugin, skipping.");
+            return;
+        }
+
         for (InputFile inputFile : fileSystem.inputFiles(mainFilesPredicate)) {
             LOGGER.debug("Analyzing file: " + inputFile.filename());
             try {

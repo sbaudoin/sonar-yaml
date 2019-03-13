@@ -113,6 +113,7 @@ public class YamlSensorTest {
                     .activate()
                     .build();
         }
+        context.setActiveRules(activeRules);
         CheckFactory checkFactory = new CheckFactory(activeRules);
 
         FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);
