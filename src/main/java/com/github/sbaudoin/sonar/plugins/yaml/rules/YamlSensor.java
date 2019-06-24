@@ -169,7 +169,7 @@ public class YamlSensor implements Sensor {
             NewIssueLocation location = newIssue.newLocation()
                     .on(sourceCode.getYamlFile())
                     .message(yamlIssue.getMessage())
-                    .at(sourceCode.getYamlFile().selectLine(yamlIssue.getLine()));
+                    .at(sourceCode.getYamlFile().selectLine(yamlIssue.getLine()==0?1:yamlIssue.getLine()));
             newIssue.at(location).save();
         }
     }
