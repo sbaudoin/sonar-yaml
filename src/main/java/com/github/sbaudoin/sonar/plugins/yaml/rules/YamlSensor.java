@@ -83,24 +83,27 @@ public class YamlSensor implements Sensor {
         Optional<RuleKey> parsingErrorKey = getParsingErrorRuleKey();
 
         // Skip analysis if no rules enabled from this plugin
+        boolean skipChecks = false;
         if (context.activeRules().findByRepository(CheckRepository.REPOSITORY_KEY).isEmpty()) {
             LOGGER.info("No active rules found for this plugin, skipping.");
-            return;
+            skipChecks = true;
         }
 
         for (InputFile inputFile : fileSystem.inputFiles(mainFilesPredicate)) {
             LOGGER.debug("Analyzing file: " + inputFile.filename());
             try {
                 YamlSourceCode sourceCode = new YamlSourceCode(inputFile, context.config().getBoolean(YamlSettings.FILTER_UTF8_LB_KEY));
-
-                // First check for syntax errors
-                if (!sourceCode.hasCorrectSyntax()) {
-                    LOGGER.debug("File has syntax errors");
-                    processAnalysisError(context, sourceCode, inputFile, parsingErrorKey);
-                }
-
                 computeLinesMeasures(context, sourceCode);
-                runChecks(context, sourceCode);
+                saveSyntaxHighlighting(context, sourceCode);
+
+                if (!skipChecks) {
+                    // First check for syntax errors
+                    if (!sourceCode.hasCorrectSyntax()) {
+                        LOGGER.debug("File has syntax errors");
+                        processAnalysisError(context, sourceCode, inputFile, parsingErrorKey);
+                    }
+                    runChecks(context, sourceCode);
+                }
             } catch (IOException e) {
                 LOGGER.warn("Error reading source file " + inputFile.filename(), e);
             }
@@ -149,11 +152,6 @@ public class YamlSensor implements Sensor {
             ((YamlCheck) check).validate();
         }
         saveIssues(context, sourceCode);
-        try {
-            saveSyntaxHighlighting(context, sourceCode);
-        } catch (IOException e) {
-            throw new IllegalStateException("Could not analyze file " + sourceCode.getYamlFile().filename(), e);
-        }
     }
 
     /**
@@ -180,8 +178,13 @@ public class YamlSensor implements Sensor {
      * @param context the sensor context
      * @param sourceCode the YAML source code
      */
-    private static void saveSyntaxHighlighting(SensorContext context, YamlSourceCode sourceCode) throws IOException {
-        List<HighlightingData> highlightingDataList = new YamlHighlighting(sourceCode).getHighlightingData();
+    private static void saveSyntaxHighlighting(SensorContext context, YamlSourceCode sourceCode) {
+        List<HighlightingData> highlightingDataList;
+        try {
+            highlightingDataList = new YamlHighlighting(sourceCode).getHighlightingData();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not analyze file " + sourceCode.getYamlFile().filename(), e);
+        }
         NewHighlighting highlighting = context.newHighlighting().onFile(sourceCode.getYamlFile());
 
         for (HighlightingData highlightingData : highlightingDataList) {
