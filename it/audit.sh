@@ -66,5 +66,5 @@ if data['issues'][0]['message'] == 'too many spaces inside braces (braces)' and 
     print 'issues metrics OK'
     issues = True
 
-sys.exit(0 if lines and ncloc and files and directories and comment_lines and issues else 1)
+sys.exit(0 if lines and ncloc and files and comment_lines and issues else 1)
 EOF
