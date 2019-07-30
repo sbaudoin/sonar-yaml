@@ -20,7 +20,7 @@ fi
 
 # Check audit result
 apt-get -qq update
-apt-get -qq install -y python-pip
+apt-get install -y python-pip &>/dev/null
 pip install -q requests
 python << EOF
 import requests
