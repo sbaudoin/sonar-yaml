@@ -3,12 +3,12 @@ set -o pipefail
 
 # Install sonar-runner
 cd /tmp
-wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SCANNER_VERSION-linux.zip
-unzip -q sonar-scanner-cli-$SCANNER_VERSION-linux.zip
-export PATH=/tmp/sonar-scanner-$SCANNER_VERSION-linux/bin:$PATH
+wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SCANNER_VERSION.zip
+unzip -q sonar-scanner-cli-$SCANNER_VERSION.zip
+export PATH=/tmp/sonar-scanner-$SCANNER_VERSION/bin:$PATH
 
 # Configure sonar-runner
-echo "sonar.host.url=http://sonarqube:9000" > /tmp/sonar-scanner-$SCANNER_VERSION-linux/conf/sonar-scanner.properties
+echo "sonar.host.url=http://sonarqube:9000" > /tmp/sonar-scanner-$SCANNER_VERSION/conf/sonar-scanner.properties
 
 # Audit code
 cd /usr/src/myapp/it

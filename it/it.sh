@@ -2,6 +2,7 @@
 
 export SONARQUBE_VERSION="$1"
 export SCANNER_VERSION="$2"
+export JAVA_VERSION="$3"
 if [ -z "$SCANNER_VERSION" ]
 then
     echo "Missing parameters: <SonarQube version> <scanner version>" >&2
