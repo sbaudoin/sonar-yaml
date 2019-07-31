@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 # Install sonar-runner
 cd /tmp
@@ -11,10 +12,17 @@ echo "sonar.host.url=http://sonarqube:9000" > /tmp/sonar-scanner-$SCANNER_VERSIO
 
 # Audit code
 cd /usr/src/myapp/it
-sonar-scanner
+sonar-scanner 2>&1 | tee /tmp/scanner.log
 if [ $? -ne 0 ]
 then
     echo "Error scanning YAML files" >&2
+    exit 1
+fi
+
+# Check for warnings
+if grep -q "^WARN: " /tmp/scanner.log
+then
+    echo "Warnings found" >&2
     exit 1
 fi
 
