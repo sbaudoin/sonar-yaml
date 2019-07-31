@@ -22,6 +22,7 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.measures.Metric;
+import org.sonar.api.utils.Version;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
@@ -73,7 +74,9 @@ public class LineCounter {
     private static void saveMeasures(InputFile yamlFile, LineCountData data, FileLinesContext fileLinesContext, SensorContext context) {
         for (int line = 1; line <= data.linesNumber(); line++) {
             fileLinesContext.setIntValue(CoreMetrics.NCLOC_DATA_KEY, line, data.linesOfCodeLines().contains(line) ? 1 : 0);
-            fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, line, data.effectiveCommentLines().contains(line) ? 1 : 0);
+            if (Version.create(7, 3).isGreaterThanOrEqual(context.getSonarQubeVersion())) {
+                fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, line, data.effectiveCommentLines().contains(line) ? 1 : 0);
+            }
         }
         fileLinesContext.save();
 
