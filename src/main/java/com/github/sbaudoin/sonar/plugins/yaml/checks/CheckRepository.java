@@ -25,7 +25,7 @@ public class CheckRepository {
     public static final String REPOSITORY_KEY = "yaml";
     public static final String REPOSITORY_NAME = "YAML Analyzer";
 
-    private static final List<Class> CHECK_CLASSES = Arrays.asList(
+    private static final List<Class<? extends YamlCheck>> CHECK_CLASSES = Arrays.asList(
             BracesCheck.class,
             BracketsCheck.class,
             ColonsCheck.class,
@@ -70,7 +70,7 @@ public class CheckRepository {
      *
      * @return the rule key of the check {@link ParsingErrorCheck}
      */
-    public static Class getParsingErrorCheckClass() {
+    public static Class<? extends YamlCheck> getParsingErrorCheckClass() {
         return ParsingErrorCheck.class;
     }
 
@@ -79,7 +79,7 @@ public class CheckRepository {
      *
      * @return all check classes
      */
-    public static List<Class> getCheckClasses() {
+    public static List<Class<? extends YamlCheck>> getCheckClasses() {
         return CHECK_CLASSES;
     }
 

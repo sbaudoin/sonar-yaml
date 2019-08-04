@@ -15,23 +15,23 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
-import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.batch.sensor.highlighting.TypeOfText;
-import org.sonar.api.utils.log.LogTester;
-import org.sonar.api.utils.log.LoggerLevel;
-
-import java.io.IOException;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import com.github.sbaudoin.sonar.plugins.yaml.Utils;
+import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.sonar.api.batch.sensor.highlighting.TypeOfText;
+import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LoggerLevel;
 
 public class YamlHighlightingTest {
     @Rule
