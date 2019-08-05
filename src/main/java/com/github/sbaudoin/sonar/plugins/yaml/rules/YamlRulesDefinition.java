@@ -32,6 +32,7 @@ public class YamlRulesDefinition implements RulesDefinition {
      */
     public static final String RULES_DEFINITION_FOLDER = "org/sonar/l10n/yaml/rules/yaml";
 
+
     @Override
     public void define(Context context) {
         NewRepository repository = context.createRepository(CheckRepository.REPOSITORY_KEY, YamlLanguage.KEY).setName(CheckRepository.REPOSITORY_NAME);
