@@ -15,10 +15,10 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.linecounter;
 
+import junit.framework.TestCase;
+
 import java.util.Arrays;
 import java.util.HashSet;
-
-import junit.framework.TestCase;
 
 public class LineCountDataTest extends TestCase {
     public void testAll() {
