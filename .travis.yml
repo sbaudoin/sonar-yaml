@@ -21,7 +21,7 @@ before_install:
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 script:
-  - mvn clean package sonar:sonar -P audit
+  - 'if [ -z "$SONAR_TOKEN" ]; then mvn clean package -P audit; else mvn clean package sonar:sonar -P audit; fi'
   - bash it/it.sh 6.7-community 3.4.0.1729
   - bash it/it.sh 7.7-community 3.4.0.1729
   - bash it/it.sh 7.8-community 3.4.0.1729 11
