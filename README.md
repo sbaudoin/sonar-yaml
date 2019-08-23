@@ -14,8 +14,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# YAML SonarQube Plugin
+YAML SonarQube Plugin
+=====================
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.sbaudoin/sonar-yaml-plugin.svg?label=Maven%20Central)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.sbaudoin%22%20AND%20a%3A%22sonar-yaml-plugin%22)
