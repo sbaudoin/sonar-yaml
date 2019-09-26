@@ -47,6 +47,7 @@ public class CheckRepository {
             NewLinesCheck.class,
             OctalValuesCheck.class,
             ParsingErrorCheck.class,
+            RequiredKeyCheck.class,
             TrailingSpacesCheck.class,
             TruthyCheck.class,
             QuotedStringsCheck.class
@@ -54,7 +55,8 @@ public class CheckRepository {
 
     private static final List<String> TEMPLATE_RULE_KEYS = Arrays.asList(
             "ForbiddenKeyCheck",
-            "ForbiddenValueCheck"
+            "ForbiddenValueCheck",
+            "RequiredKeyCheck"
     );
 
 
