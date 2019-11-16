@@ -10,12 +10,16 @@
     <dd>Regular expression that matches the value for the prerequisite key name</dd>
 </dl>
 <dl>
+  <dt>parent-key-name-root</dt>
+  <dd>Filter only root keys for the parent-key-name | yes | not | anywhere</dd>
+</dl>
+<dl>
     <dt>required-key-name</dt>
     <dd>Regular expression that matches the required key name for the key-name</dd>
 </dl>
 
 <h2>Examples</h2>
-<p>With <code>parent-key-name = kind</code> and <code>parent-key-value = Pod</code> and <code>required-key-name = readinessProbe</code> 
+<p>With <code>parent-key-name = kind</code> and <code>parent-key-value = Pod</code> and  <code>parent-key-name-root = yes</code> and  <code>required-key-name = readinessProbe</code> 
     the following code snippet would <strong>PASS</strong>:</p>
 <pre>
     apiVersion: v1

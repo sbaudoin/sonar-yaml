@@ -45,6 +45,9 @@ public class RequiredKeyCheck extends YamlCheck {
     @RuleProperty(key = "parent-key-value", description = "Regexp that matches the value for the prerequisite parent-key-name")
     String keyValue;
 
+    @RuleProperty(key = "parent-key-name-root", description = "Filter only root keys for the parent-key-name | yes | not | anywhere", defaultValue = "anywhere")
+    String isKeyNameAtRoot;
+
     @RuleProperty(key = "required-key-name", description = "Regexp that matches the required key name for the required-key-name")
     String requiredKeyName;
 
@@ -64,23 +67,32 @@ public class RequiredKeyCheck extends YamlCheck {
             boolean isRequiredKeyPresent = false;
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
-                if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
-                    // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
-                    Token t2 = parser.peekToken();
-                    if (t2 instanceof ScalarToken) {
-                        if( ((ScalarToken) t2).getValue().matches(keyName) ) {
-                            boolean isNewMatch = checkValue(parser, t2);
-                            if(isKeyPresent && isNewMatch && !isRequiredKeyPresent) {
-                                checkNextToken();
-                            }
-                            isKeyPresent = isNewMatch;
-                            isRequiredKeyPresent = (isNewMatch) ? false : isRequiredKeyPresent ;
-                            ISSUE_LINE = (isNewMatch) ? t2.getStartMark().getLine() : ISSUE_LINE;
+                if( t1 instanceof KeyToken && parser.hasMoreTokens() ) {
+                  // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
+                  Token t2 = parser.peekToken();
+                  if (t2 instanceof ScalarToken) {
+                      if( ((ScalarToken) t2).getValue().matches(keyName) ) {
 
-                        } else if( ((ScalarToken) t2).getValue().matches(requiredKeyName) && isKeyPresent ) {
-                            isRequiredKeyPresent = true;
-                        }     
-                    }
+                          boolean isNewMatch = checkValue(parser, t2);
+
+                          int column = ((KeyToken) t1).getStartMark().getColumn();
+                          if(isKeyNameAtRoot.equalsIgnoreCase("yes") && column != 0) {
+                            continue;
+                          } else if(isKeyNameAtRoot.equalsIgnoreCase("not") && column == 0) {
+                            continue;
+                          }
+                          
+                          if(isKeyPresent && isNewMatch && !isRequiredKeyPresent) {
+                              checkNextToken();
+                          }
+                          isKeyPresent = isNewMatch;
+                          isRequiredKeyPresent = (isNewMatch) ? false : isRequiredKeyPresent ;
+                          ISSUE_LINE = (isNewMatch) ? t2.getStartMark().getLine() : ISSUE_LINE;
+
+                      } else if( ((ScalarToken) t2).getValue().matches(requiredKeyName) && isKeyPresent ) {
+                          isRequiredKeyPresent = true;
+                      }     
+                  }
                 }
             }
             if (!isRequiredKeyPresent && isKeyPresent) {

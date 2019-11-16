@@ -57,6 +57,7 @@ public class RequiredKeyCheckTest {
 
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.keyName = "required";
+        check.isKeyNameAtRoot = "yes";
 
         check.setYamlSourceCode(spy);
         check.validate();
@@ -69,6 +70,7 @@ public class RequiredKeyCheckTest {
     public void testValidateSyntaxError() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.keyName = "required";
+        check.isKeyNameAtRoot = "yes";
 
         // Syntax error
         YamlSourceCode code = getSourceCode("required-key-01.yaml", false);
@@ -86,10 +88,7 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testValidateNoIssue() throws IOException {
-        RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "kind";
-        check.keyValue = "Deployment";
-        check.requiredKeyName = "readinessProbe";
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         // Syntax 1
         YamlSourceCode code = getSourceCode("required-key-02.yaml", false);
@@ -106,10 +105,7 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testValidateWithRequiredKey1() throws IOException {
-        RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "kind";
-        check.keyValue = "Deployment";
-        check.requiredKeyName = "readinessProbe";
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-04.yaml", false);
         check.setYamlSourceCode(code);
@@ -123,10 +119,7 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testValidateWithRequiredKey2() throws IOException {
-        RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "kind";
-        check.keyValue = "Deployment";
-        check.requiredKeyName = "readinessProbe";
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-05.yaml", false);
         check.setYamlSourceCode(code);
@@ -140,10 +133,7 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testValidateWithRequiredKey3() throws IOException {
-        RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "kind";
-        check.keyValue = "Deployment";
-        check.requiredKeyName = "readinessProbe";
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-06.yaml", false);
         check.setYamlSourceCode(code);
@@ -162,10 +152,7 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testValidateWithRequiredKey4() throws IOException {
-        RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "kind";
-        check.keyValue = "Deployment";
-        check.requiredKeyName = "readinessProbe";
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-07.yaml", false);
         check.setYamlSourceCode(code);
@@ -180,6 +167,40 @@ public class RequiredKeyCheckTest {
         assertEquals("Required readinessProbe key not found", code.getYamlIssues().get(0).getMessage());
         assertEquals(60, code.getYamlIssues().get(1).getLine());
         assertEquals(1, code.getYamlIssues().get(1).getColumn());
+    }
+
+    @Test
+    public void testValidateWithRequiredKey5() throws IOException {
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
+
+        YamlSourceCode code = getSourceCode("required-key-08.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(0, code.getYamlIssues().size());
+    }
+
+    @Test
+    public void testValidateWithRequiredKey6() throws IOException {
+        RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "not", "readinessProbe");
+
+        YamlSourceCode code = getSourceCode("required-key-08.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Required readinessProbe key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(9, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+    }
+
+    private RequiredKeyCheck getRequiredCheck(String keyName, String keyValue, String isKeyNameAtRoot, String requiredKeyName) {
+      RequiredKeyCheck check = new RequiredKeyCheck();
+      check.keyName = keyName;
+      check.keyValue = keyValue;
+      check.isKeyNameAtRoot = isKeyNameAtRoot;
+      check.requiredKeyName = requiredKeyName;
+      return check;
     }
 
     private YamlSourceCode getSourceCode(String filename, boolean filter) throws IOException {
