@@ -17,9 +17,8 @@ docker-compose -f $SCRIPT_DIR/docker-compose.yml down
 
 # Start containers
 echo "Starting SonarQube..."
-#CONTAINER_NAME=`docker-compose -f $SCRIPT_DIR/docker-compose.yml up -d sonarqube 2>&1 | grep -o '[^ ]*sonarqube[^ ]*' | head -1`
 docker-compose -f $SCRIPT_DIR/docker-compose.yml up -d sonarqube
-CONTAINER_NAME=it_sonarqube_1
+CONTAINER_NAME=$(docker ps --format "{{.Names}}" | grep 'it_sonarqube_1.*' | head -1)
 # Wait for SonarQube to be up
 grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME)
 # Copy the plugin
