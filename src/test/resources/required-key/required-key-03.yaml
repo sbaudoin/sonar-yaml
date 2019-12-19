@@ -1,0 +1,4 @@
+---
+- key:
+  - subkey: value
+  - allowed: value

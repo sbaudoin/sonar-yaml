@@ -1,0 +1,4 @@
+---
+key:
+  kind: Deployment
+  readinessProbe: forbidden
