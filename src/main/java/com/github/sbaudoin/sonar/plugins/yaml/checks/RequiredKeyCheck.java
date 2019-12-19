@@ -36,8 +36,9 @@ import java.io.IOException;
 @Rule(key = "RequiredKeyCheck")
 public class RequiredKeyCheck extends YamlCheck {
     private static final Logger LOGGER = Loggers.get(RequiredKeyCheck.class);
-    private int ISSUE_LINE = 0;
-    private final int FIRST_COLUMN = 0; 
+    private static final int FIRST_COLUMN = 0;
+
+    private int issueLine = 0;
 
     @RuleProperty(key = "parent-key-name", description = "Regexp that matches the prerequisite parent-key-name")
     String keyName;
@@ -67,29 +68,28 @@ public class RequiredKeyCheck extends YamlCheck {
             boolean isRequiredKeyPresent = false;
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
-                if( t1 instanceof KeyToken && parser.hasMoreTokens() ) {
+                if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
                   // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
                   Token t2 = parser.peekToken();
                   if (t2 instanceof ScalarToken) {
-                      if( ((ScalarToken) t2).getValue().matches(keyName) ) {
+                      if (((ScalarToken)t2).getValue().matches(keyName)) {
 
-                          boolean isNewMatch = checkValue(parser, t2);
+                          boolean isNewMatch = checkValue(parser);
 
-                          int column = ((KeyToken) t1).getStartMark().getColumn();
-                          if(isKeyNameAtRoot.equalsIgnoreCase("yes") && column != 0) {
-                            continue;
-                          } else if(isKeyNameAtRoot.equalsIgnoreCase("not") && column == 0) {
+                          int column = t1.getStartMark().getColumn();
+                          if ((isKeyNameAtRoot.equalsIgnoreCase("yes") && column != 0) ||
+                                  (isKeyNameAtRoot.equalsIgnoreCase("not") && column == 0)) {
                             continue;
                           }
                           
-                          if(isKeyPresent && isNewMatch && !isRequiredKeyPresent) {
+                          if (isKeyPresent && isNewMatch && !isRequiredKeyPresent) {
                               checkNextToken();
                           }
                           isKeyPresent = isNewMatch;
-                          isRequiredKeyPresent = (isNewMatch) ? false : isRequiredKeyPresent ;
-                          ISSUE_LINE = (isNewMatch) ? t2.getStartMark().getLine() : ISSUE_LINE;
+                          isRequiredKeyPresent = (!isNewMatch) && isRequiredKeyPresent;
+                          issueLine = (isNewMatch) ? t2.getStartMark().getLine() : issueLine;
 
-                      } else if( ((ScalarToken) t2).getValue().matches(requiredKeyName) && isKeyPresent ) {
+                      } else if (((ScalarToken) t2).getValue().matches(requiredKeyName) && isKeyPresent) {
                           isRequiredKeyPresent = true;
                       }     
                   }
@@ -106,7 +106,7 @@ public class RequiredKeyCheck extends YamlCheck {
     }
 
 
-    private boolean checkValue(LintScanner parser, Token t2) {
+    private boolean checkValue(LintScanner parser) {
         boolean isKeyPresent = false;
         parser.getToken();
         if (parser.peekToken() instanceof ValueToken) {
@@ -143,7 +143,7 @@ public class RequiredKeyCheck extends YamlCheck {
             .addViolation(new YamlIssue(
                 getRuleKey(),
                 message,
-                ISSUE_LINE + 1,
+                issueLine + 1,
                 FIRST_COLUMN + 1
             )
         );
