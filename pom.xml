@@ -20,7 +20,7 @@
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <powermock.version>1.7.1</powermock.version>
-        <jacoco.version>0.8.1</jacoco.version>
+        <jacoco.version>0.8.4</jacoco.version>
     </properties>
 
     <issueManagement>
@@ -186,7 +186,6 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <argLine>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=excludes=*,destfile=target/jacoco.exec</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -294,19 +293,14 @@
                         <version>${jacoco.version}</version>
                         <executions>
                             <execution>
-                                <id>default-instrument</id>
+                                <id>prepare-agent</id>
                                 <goals>
-                                    <goal>instrument</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>default-restore-instrumented-classes</id>
-                                <goals>
-                                    <goal>restore-instrumented-classes</goal>
+                                    <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
                             <execution>
                                 <id>default-report</id>
+                                <phase>test</phase>
                                 <goals>
                                     <goal>report</goal>
                                 </goals>
