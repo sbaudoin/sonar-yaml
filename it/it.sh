@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 export SONARQUBE_VERSION="$1"
 export SCANNER_VERSION="$2"
@@ -28,7 +29,11 @@ docker cp $SCRIPT_DIR/../target/sonar-yaml-plugin-$MAVEN_VERSION.jar $CONTAINER_
 docker-compose -f $SCRIPT_DIR/docker-compose.yml restart sonarqube
 # Wait for SonarQube to be up
 grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME)
+echo "SonarQube started!"
+
 # Check plug-in installation
+echo "Checking plugin installation..."
+docker exec -u root $CONTAINER_NAME bash -c "if grep -q Alpine /etc/issue; then apk update && apk add -q curl; fi"
 if ! docker exec $CONTAINER_NAME curl -su admin:admin http://localhost:9000/api/plugins/installed | python -c '
 import sys
 import json
@@ -44,6 +49,7 @@ then
     echo "Plugin not installed" >&2
     exit 1
 fi
+echo "Plugin successfully installed!"
 
 # Audit code
 echo "Audit YAML test code..."

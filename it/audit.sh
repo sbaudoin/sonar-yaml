@@ -27,10 +27,16 @@ then
 fi
 
 # Check audit result
-apt-get -qq update
-apt-get install -y python-pip &>/dev/null
-pip install -q requests
-python << EOF
+if grep -q Debian /etc/issue
+then
+    apt-get -qq update
+    apt-get install -y python3-pip &>/dev/null
+else
+    apk update
+    apk add -q curl gcc musl-dev libffi-dev openssl-dev py3 py3-dev
+fi
+pip3 install -q requests
+python3 << EOF
 import requests
 import sys
 
@@ -46,20 +52,20 @@ if 'component' not in data or 'measures' not in data['component']:
 lines = ncloc = files = directories = comment_lines = False
 for measure in data['component']['measures']:
     if measure['metric'] == 'lines' and measure['value'] == '16':
-        print 'lines metrics OK'
+        print('lines metrics OK')
         lines = True
 #    if measure['metric'] == 'ncloc' and measure['value'] == '13':
-#        print 'ncloc metrics OK'
+#        print('ncloc metrics OK')
 #        ncloc = True
     ncloc = True
     if measure['metric'] == 'files' and measure['value'] == '2':
-        print 'files metrics OK'
+        print('files metrics OK')
         files = True
     if measure['metric'] == 'directories' and measure['value'] == '2':
-        print 'directories metrics OK'
+        print('directories metrics OK')
         directories = True
 #    if measure['metric'] == 'comment_lines' and measure['value'] == '1':
-#        print 'comment_lines metrics OK'
+#        print('comment_lines metrics OK')
 #        comment_lines = True
     comment_lines = True
 
@@ -73,7 +79,7 @@ if data['total'] != 1:
     sys.exit(1)
 issues = False
 if data['issues'][0]['message'] == 'too many spaces inside braces (braces)' and data['issues'][0]['line'] == 2:
-    print 'issues metrics OK'
+    print('issues metrics OK')
     issues = True
 
 sys.exit(0 if lines and ncloc and files and comment_lines and issues else 1)
