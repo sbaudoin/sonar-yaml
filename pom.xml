@@ -20,7 +20,7 @@
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <powermock.version>1.7.1</powermock.version>
-        <jacoco.version>0.8.4</jacoco.version>
+        <jacoco.version>0.8.6</jacoco.version>
     </properties>
 
     <issueManagement>
