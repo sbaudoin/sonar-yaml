@@ -20,6 +20,9 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "CommentsCheck")
 public class CommentsCheck extends YamlLintCheck {
+    @RuleProperty(key = "ignore-shebangs", description = "Ignore a shebang at the beginning of the file when 'require-starting-space' is set", defaultValue = "false")
+    boolean ignoreShebangs;
+
     @RuleProperty(key = "require-starting-space", description = "Tells if a space character is required right after the # or not", defaultValue = "true")
     boolean requireStartingSpace;
 
