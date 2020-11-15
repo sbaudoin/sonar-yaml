@@ -20,6 +20,9 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "BracesCheck")
 public class BracesCheck extends YamlLintCheck {
+    @RuleProperty(key = "forbid", description = "Forbid the use of flow mappings which are denoted by surrounding braces ('{' and '}')", defaultValue = "false")
+    boolean forbid;
+
     @RuleProperty(key = "min-spaces-inside", description = "Minimal number of spaces required inside braces", defaultValue = "0")
     int minSpacesInside;
 

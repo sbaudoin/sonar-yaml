@@ -15,10 +15,41 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
+import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import junit.framework.TestCase;
 
+import java.util.List;
+import java.util.Map;
+
 public class QuotedStringsCheckTest extends TestCase {
-    public void testCheck() {
-        assertNotNull(new QuotedStringsCheck());
+    @SuppressWarnings("unchecked")
+    public void testCheck() throws YamlLintConfigException {
+        QuotedStringsCheck check = new QuotedStringsCheck();
+
+        // Default values
+        Map<String, Object> conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("quoted-strings");
+        assertEquals(true, conf.get("required"));
+        assertTrue(conf.get("extra-required") instanceof List);
+        assertEquals(0, ((List<?>) conf.get("extra-required")).size());
+        assertTrue(conf.get("extra-allowed") instanceof List);
+        assertEquals(0, ((List<?>) conf.get("extra-allowed")).size());
+
+        // List of regexp
+        check.required = "false";
+        check.extraRequired = "^expr'ession[sS]?\nanother\\.exp";
+        conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("quoted-strings");
+        assertTrue(conf.get("extra-required") instanceof List);
+        assertEquals(2, ((List<?>) conf.get("extra-required")).size());
+        assertEquals("^expr'ession[sS]?", ((List<?>) conf.get("extra-required")).get(0));
+        assertEquals("another\\.exp", ((List<?>) conf.get("extra-required")).get(1));
+
+        // List of regexp
+        check.required = "only-when-needed";
+        check.extraAllowed = "^expr'ession[sS]?\nanother\\.exp";
+        conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("quoted-strings");
+        assertTrue(conf.get("extra-allowed") instanceof List);
+        assertEquals(2, ((List<?>) conf.get("extra-allowed")).size());
+        assertEquals("^expr'ession[sS]?", ((List<?>) conf.get("extra-allowed")).get(0));
+        assertEquals("another\\.exp", ((List<?>) conf.get("extra-allowed")).get(1));
     }
 }

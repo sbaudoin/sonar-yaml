@@ -15,8 +15,53 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
+import com.github.sbaudoin.yamllint.YamlLintConfig;
+import com.github.sbaudoin.yamllint.YamlLintConfigException;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
+import org.yaml.snakeyaml.Yaml;
+
+import java.lang.reflect.Field;
 
 @Rule(key = "TruthyCheck")
 public class TruthyCheck extends YamlLintCheck {
+    private static final Logger LOGGER = Loggers.get(TruthyCheck.class);
+
+
+    @RuleProperty(key = "allowed-values", description = "Comma-separated list of truthy values which will be ignored during linting", defaultValue = "true, false")
+    String allowedValues = "true, false";
+
+    @RuleProperty(key = "check-keys", description = "Disable verification for keys in mappings. By default, truthy rule applies to both keys and values. Set this option to false to prevent this.", defaultValue = "true")
+    boolean checkKeys = true;
+
+
+    @Override
+    protected YamlLintConfig getYamlLintconfig() throws YamlLintConfigException {
+        Yaml yaml = new Yaml();
+        StringBuilder propsSB = new StringBuilder();
+        for (Field f : getClass().getDeclaredFields()) {
+            RuleProperty rp = f.getAnnotation(RuleProperty.class);
+            LOGGER.debug("Got RuleProperty " + rp);
+            if (rp != null) {
+                try {
+                    if ("allowed-values".equals(rp.key())) {
+                        if (f.get(this) != null && !"".equals(f.get(this))) {
+                            propsSB.append("    ").append(rp.key()).append(": ").append(yaml.dump(((String) f.get(this)).split(" ?, ?")));
+                        } else {
+                            propsSB.append("    ").append(rp.key()).append(": []\n");
+                        }
+                    } else {
+                        propsSB.append("    ").append(rp.key()).append(": ").append(f.get(this)).append("\n");
+                    }
+                } catch (IllegalAccessException e) {
+                    LOGGER.warn("Cannot get field value for '" + f.getName() + "'", e);
+                    return null;
+                }
+            }
+        }
+
+        return getYamlLintconfig(propsSB);
+    }
 }

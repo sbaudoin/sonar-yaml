@@ -135,11 +135,29 @@ public abstract class YamlLintCheck extends YamlCheck {
             }
         }
 
+        return getYamlLintconfig(propsSB);
+    }
+
+    /**
+     * Returns an instance of {@code YamlLintConfig} that corresponds to the passed YAML configuration for the current rule
+     *
+     * @param conf the rule configuration in the YAML syntax. The passed configuration must be indented (starting with 4
+     *             spaces) and without the rule name. Example:
+     *             <pre>
+     *                 a_key: value1
+     *                 another_key: value2
+     *             </pre>
+     *             Pass an empty string ({@code ""}) to simply enable the rule with the default configuration.
+     * @return an instance of {@code YamlLintConfig}
+     * @throws YamlLintConfigException if an error occurred building the instance of {@code YamlLintConfig}
+     * @see YamlLintConfig
+     */
+    protected YamlLintConfig getYamlLintconfig(CharSequence conf) throws YamlLintConfigException {
         StringBuilder confSB = new StringBuilder("---\n").append("rules:\n").append("  ").append(getLintRuleId()).append(":");
-        if (propsSB.length() == 0) {
+        if (conf.length() == 0) {
             confSB.append(" enable");
         } else {
-            confSB.append("\n").append(propsSB);
+            confSB.append("\n").append(conf);
         }
 
         LOGGER.debug("YAMLLint config for rule " + getRuleKey() + "/" + getLintRuleId() + ": '" + confSB.toString() + "'");

@@ -15,10 +15,31 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
+import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import junit.framework.TestCase;
 
+import java.util.List;
+import java.util.Map;
+
 public class TruthyCheckTest extends TestCase {
-    public void testCheck() {
-        assertNotNull(new TruthyCheck());
+    @SuppressWarnings("unchecked")
+    public void testCheck() throws YamlLintConfigException {
+        TruthyCheck check = new TruthyCheck();
+
+        // Default values
+        Map<String, Object> conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("truthy");
+        assertTrue((boolean) conf.get("check-keys"));
+        assertTrue(conf.get("allowed-values") instanceof List);
+        assertEquals(2, ((List<?>) conf.get("allowed-values")).size());
+
+        // List of regexp
+        check.allowedValues = "a, b , c,false";
+        conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("truthy");
+        assertTrue(conf.get("allowed-values") instanceof List);
+        assertEquals(4, ((List<?>) conf.get("allowed-values")).size());
+        assertEquals("a", ((List<?>) conf.get("allowed-values")).get(0));
+        assertEquals("b", ((List<?>) conf.get("allowed-values")).get(1));
+        assertEquals("c", ((List<?>) conf.get("allowed-values")).get(2));
+        assertEquals("false", ((List<?>) conf.get("allowed-values")).get(3));
     }
 }

@@ -20,6 +20,9 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "BracketsCheck")
 public class BracketsCheck extends YamlLintCheck {
+    @RuleProperty(key = "forbid", description = "Forbid the use of flow sequences which are denoted by surrounding brackets ('[' and ']')", defaultValue = "false")
+    boolean forbid;
+
     @RuleProperty(key = "min-spaces-inside", description = "Minimal number of spaces required inside brackets", defaultValue = "0")
     int minSpacesInside;
 
