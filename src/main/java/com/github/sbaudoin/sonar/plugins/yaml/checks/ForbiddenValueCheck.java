@@ -40,6 +40,7 @@ public class ForbiddenValueCheck extends ForbiddenCheck {
      *
      * @param parser the scanner that holds the tokens
      */
+    @Override
     protected void checkNextToken(LintScanner parser) {
         // Accepted token type: remove it from stack
         Token t = parser.getToken();
