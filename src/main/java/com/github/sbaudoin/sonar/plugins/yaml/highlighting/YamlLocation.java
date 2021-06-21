@@ -89,6 +89,7 @@ public class YamlLocation {
      *
      * @return a string representation of this class
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("{ ");
         sb.append("content: \"").append(content).append("\"; ");

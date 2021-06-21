@@ -24,6 +24,7 @@ import com.github.sbaudoin.yamllint.LintScanner;
  */
 @Rule(key = "ForbiddenKeyCheck")
 public class ForbiddenKeyCheck extends ForbiddenCheck {
+    @Override
     protected void checkNextToken(LintScanner parser) {
         // Just report new error
         addViolation("Forbidden key found", parser.getToken());
