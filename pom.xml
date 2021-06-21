@@ -208,6 +208,7 @@
                     <links>
                         <link>http://java.sun.com/javase/8/docs/api/</link>
                     </links>
+                    <source>${jdk.min.version}</source>
                 </configuration>
                 <executions>
                     <execution>
