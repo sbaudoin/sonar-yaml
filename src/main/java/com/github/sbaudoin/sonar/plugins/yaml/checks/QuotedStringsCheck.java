@@ -24,7 +24,6 @@ import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 
 @Rule(key = "QuotedStringsCheck")
 public class QuotedStringsCheck extends YamlLintCheck {
