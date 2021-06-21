@@ -48,9 +48,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(YamlSensor.class)
+@PowerMockIgnore("jdk.internal.reflect.*")
 public class YamlSensorTest {
     private final RuleKey ruleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, "BracesCheck");
     private final String parsingErrorCheckKey = "ParsingErrorCheck";
