@@ -110,7 +110,7 @@ public abstract class YamlLintCheck extends YamlCheck {
      * @return a string that is a YAML Lint rule ID
      */
     protected String getLintRuleId() {
-        return this.getClass().getName().replaceAll(".*\\.", "").replaceAll("Check$", "").replaceAll("([A-Z])", "-$1").substring(1).toLowerCase();
+        return this.getClass().getName().replaceAll("^.*\\.([^.])", "$1").replaceAll("Check$", "").replaceAll("([A-Z])", "-$1").substring(1).toLowerCase();
     }
 
     /**
