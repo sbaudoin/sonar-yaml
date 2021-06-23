@@ -51,7 +51,7 @@ public class YamlSourceCode {
      */
     public YamlSourceCode(InputFile yamlFile, Optional<Boolean> filter) throws IOException {
         this.yamlFile = yamlFile;
-        this.filter = filter.isPresent()?filter.get():false;
+        this.filter = filter.orElse(false);
 
         LintProblem problem = Linter.getSyntaxError(getContent());
         LOGGER.debug("File {} has syntax error? {}", yamlFile.uri(), problem != null);
@@ -86,7 +86,7 @@ public class YamlSourceCode {
     public String getContent() throws IOException {
         if (content == null) {
             if (filter) {
-                this.content = yamlFile.contents().replaceAll("\u0085", "").replaceAll("\u2028", "").replaceAll("\u2029", "");
+                this.content = yamlFile.contents().replace("\u0085", "").replace("\u2028", "").replace("\u2029", "");
             } else {
                 this.content = yamlFile.contents();
             }

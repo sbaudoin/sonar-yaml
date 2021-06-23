@@ -21,6 +21,8 @@ import org.sonar.api.server.rule.RulesDefinition.Rule;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 
+import static org.junit.Assert.assertNotEquals;
+
 public class YamlRulesDefinitionTest extends TestCase {
     public void testDefine() {
         YamlRulesDefinition rulesDefinition = new YamlRulesDefinition();
@@ -40,7 +42,7 @@ public class YamlRulesDefinitionTest extends TestCase {
 
         for (Rule rule : repository.rules()) {
             for (RulesDefinition.Param param : rule.params()) {
-                assertFalse("Description for " + param.key() + " should not be empty", "".equals(param.description()));
+                assertNotEquals("Description for " + param.key() + " should not be empty", param.description(), "");
             }
         }
     }
