@@ -30,6 +30,8 @@ public class YamlSettings {
     public static final String FILE_SUFFIXES_KEY = "sonar.yaml.file.suffixes";
     public static final String FILTER_UTF8_LB_KEY = "sonar.yaml.filter.utf8_lb";
     public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".yaml,.yml";
+    public static final String YAML_LINT_CONF_PATH_KEY = "sonar.yaml.yamllint.conf.path";
+    public static final String YAML_LINT_CONF_PATH_DEFAULT_VALUE = "";
 
 
     /**
@@ -59,6 +61,13 @@ public class YamlSettings {
                         .description("Tells if UTF-8 line breaks (U+2028, U+2029 and U+0085) that may not be correctly supported by SonarQube are filtered out from the YAML code.")
                         .type(PropertyType.BOOLEAN)
                         .defaultValue("false")
+                        .category("YAML")
+                        .onQualifiers(Qualifiers.PROJECT)
+                        .build(),
+                PropertyDefinition.builder(YAML_LINT_CONF_PATH_KEY)
+                        .name("Path to a yamllint configuration file")
+                        .description("Path (absolute or relative to project root) to a yamllint configuration file. Leave it empty to use the default .yamllint file.")
+                        .defaultValue(YAML_LINT_CONF_PATH_DEFAULT_VALUE)
                         .category("YAML")
                         .onQualifiers(Qualifiers.PROJECT)
                         .build());

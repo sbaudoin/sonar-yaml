@@ -16,6 +16,8 @@
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
+import com.github.sbaudoin.yamllint.YamlLintConfig;
+import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -38,9 +40,14 @@ import com.github.sbaudoin.sonar.plugins.yaml.highlighting.HighlightingData;
 import com.github.sbaudoin.sonar.plugins.yaml.highlighting.YamlHighlighting;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+
+import static com.github.sbaudoin.yamllint.Cli.*;
 
 /**
  * Main sensor
@@ -52,6 +59,14 @@ public class YamlSensor implements Sensor {
     private final FileSystem fileSystem;
     private final FilePredicate mainFilesPredicate;
     private final FileLinesContextFactory fileLinesContextFactory;
+
+    protected final YamlLintConfig localConfig;
+
+    /**
+     * Name of a local rule configuration file: if this file is present in the work directory, it is used as an extension
+     * configuration file
+     */
+    public static final String USER_CONF_FILENAME = ".yamllint";
 
 
     /**
@@ -68,6 +83,7 @@ public class YamlSensor implements Sensor {
         this.mainFilesPredicate = fileSystem.predicates().and(
                 fileSystem.predicates().hasType(InputFile.Type.MAIN),
                 fileSystem.predicates().hasLanguage(YamlLanguage.KEY));
+        this.localConfig = getLocalConfig();
     }
 
 
@@ -149,9 +165,93 @@ public class YamlSensor implements Sensor {
             ((YamlCheck) check).setRuleKey(checks.ruleKey(check));
             ((YamlCheck) check).setYamlSourceCode(sourceCode);
             LOGGER.debug("Checking rule: " + ((YamlCheck) check).getRuleKey());
+            setConfig(((YamlCheck) check));
             ((YamlCheck) check).validate();
         }
         saveIssues(context, sourceCode);
+    }
+
+    /**
+     * Checks if there is a custom, local yamllint configuration file and returns the corresponding {@code YamlLintConfig}
+     *
+     * @return the {@code YamlLintConfig} that corresponds to the local yamllint configuration file or {@code null} if the
+     * file does not exist or is invalid
+     */
+    private YamlLintConfig getLocalConfig() {
+        Path userGlobalConfig = getUserGlobalConfigPath();
+
+        try {
+            if (fileExists(fileSystem.resolvePath(USER_CONF_FILENAME))) {
+                return new YamlLintConfig(fileSystem.resolvePath(USER_CONF_FILENAME).toURI().toURL());
+            } else if (fileExists(fileSystem.resolvePath(USER_CONF_FILENAME + ".yaml"))) {
+                return new YamlLintConfig(fileSystem.resolvePath(USER_CONF_FILENAME + ".yaml").toURI().toURL());
+            } else if (fileExists(fileSystem.resolvePath(USER_CONF_FILENAME + ".yml"))) {
+                return new YamlLintConfig(fileSystem.resolvePath(USER_CONF_FILENAME + ".yml").toURI().toURL());
+            } else if (fileExists(userGlobalConfig.toString())) {
+                return new YamlLintConfig(userGlobalConfig.toUri().toURL());
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Cannot read yamllint user configuration file: " + e.getMessage());
+            LOGGER.warn("Enable debug mode to get the complete stacktrace.");
+            LOGGER.debug("Complete error trace:", e);
+        } catch (YamlLintConfigException e) {
+            LOGGER.warn("Configuration error: " + e.getMessage());
+            LOGGER.warn("Enable debug mode to get the complete stacktrace.");
+            LOGGER.debug("Complete error trace:", e);
+        }
+        return null;
+    }
+
+    /**
+     * Checks if there is a configuration for the passed rule in the yamllint configuration file so that the rule will
+     * use it instead of its SonarQube configuration
+     *
+     * @param check the rule to be configured with the local configuration
+     */
+    private void setConfig(YamlCheck check) {
+        if (localConfig != null) {
+            check.setConfig(localConfig);
+        }
+    }
+
+    /**
+     * Returns the path to the user's yamllint global configuration file, as per the environment setting
+     *
+     * @return the path to the user's global configuration file for yamllint
+     */
+    private Path getUserGlobalConfigPath() {
+        Path userGlobalConfig;
+
+        if (System.getenv(YAMLLINT_CONFIG_FILE_ENV_VAR) != null) {
+            userGlobalConfig = Paths.get(System.getenv(YAMLLINT_CONFIG_FILE_ENV_VAR));
+        } else if (System.getenv(XDG_CONFIG_HOME_ENV_VAR) != null) {
+            userGlobalConfig = Paths.get(System.getenv(XDG_CONFIG_HOME_ENV_VAR), APP_NAME, "config");
+        } else {
+            userGlobalConfig = Paths.get(System.getProperty("user.home"), ".config", APP_NAME, "config");
+        }
+
+        return userGlobalConfig;
+    }
+
+    /**
+     * Tells if the passed path is a file that exists
+     *
+     * @param path a path
+     * @return <code>true</code> if the path exists and is a file, <code>false</code> otherwise
+     */
+    private boolean fileExists(String path) {
+        File file = new File(path);
+        return file.exists() && file.isFile();
+    }
+
+    /**
+     * Tells if the passed path is a file that exists
+     *
+     * @param path a path
+     * @return <code>true</code> if the path exists and is a file, <code>false</code> otherwise
+     */
+    private boolean fileExists(File path) {
+        return path.exists() && path.isFile();
     }
 
     /**

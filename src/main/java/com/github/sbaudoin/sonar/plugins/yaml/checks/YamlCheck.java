@@ -15,12 +15,16 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
+import com.github.sbaudoin.yamllint.YamlLintConfig;
 import org.sonar.api.rule.RuleKey;
 
 /**
  * Abstract class that all YAML checks should extend
  */
 public abstract class YamlCheck {
+    protected YamlLintConfig config = null;
+
+
     /**
      * The {@code RuleKey} of this check
      */
@@ -67,6 +71,31 @@ public abstract class YamlCheck {
      */
     public YamlSourceCode getYamlSourceCode() {
         return yamlSourceCode;
+    }
+
+    /**
+     * Sets the configuration to use to validate this rule. If not set, the lint configuration is guessed from the rule
+     * properties.
+     *
+     * @param config the lint configuration to use to validate this rule
+     */
+    public void setConfig(YamlLintConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * Returns a (unique) ID for this check. By default, the rule ID is calculated from the class name as follows:
+     * <ul>
+     *     <li>The suffix "Check" is removed from the class name</li>
+     *     <li>An hyphen ("-") is inserted before every capital letter of the class name (except for the first letter)</li>
+     *     <li>All lowercase</li>
+     * </ul>
+     * <p>Example: if the class name is {@code FooBarCheck} then the YAML Lint ID returned by this method will be {@code "foo-bar"}</p>
+     *
+     * @return a string that uniquely identifies this rule
+     */
+    public String getId() {
+        return this.getClass().getName().replaceAll("^.*\\.([^.])", "$1").replaceAll("Check$", "").replaceAll("([A-Z])", "-$1").substring(1).toLowerCase();
     }
 
     /**

@@ -17,6 +17,7 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import junit.framework.TestCase;
+import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.rule.RuleKey;
 
@@ -38,6 +39,11 @@ public class YamlCheckTest extends TestCase {
         check.setYamlSourceCode(sc);
 
         assertEquals(sc, check.getYamlSourceCode());
+    }
+
+    @Test
+    public void testGetId() {
+        assertEquals("yaml-check-test$-dummy-yaml", new DummyYamlCheck().getId());
     }
 
 

@@ -99,18 +99,13 @@ public abstract class YamlLintCheck extends YamlCheck {
     }
 
     /**
-     * Returns the YAML Lint ID of the rule corresponding to this check. The rule ID is calculated from the class name as follows:
-     * <ul>
-     *     <li>The suffix "Check" is removed from the class name</li>
-     *     <li>An hyphen ("-") is inserted before every capital letter of the class name (except for the first letter)</li>
-     *     <li>All lowercase</li>
-     * </ul>
-     * <p>Example: if the class name is {@code FooBarCheck} then the YAML Lint ID returned by this method will be {@code "foo-bar"}</p>
+     * Returns the YAML Lint ID of the rule corresponding to this check. This is the same as {@link YamlCheck#getId()} }.
      *
      * @return a string that is a YAML Lint rule ID
+     * @see YamlCheck#getId()
      */
     protected String getLintRuleId() {
-        return this.getClass().getName().replaceAll("^.*\\.([^.])", "$1").replaceAll("Check$", "").replaceAll("([A-Z])", "-$1").substring(1).toLowerCase();
+        return getId();
     }
 
     /**
@@ -121,6 +116,10 @@ public abstract class YamlLintCheck extends YamlCheck {
      * @see YamlLintConfig
      */
     protected YamlLintConfig getYamlLintconfig() throws YamlLintConfigException {
+        if (config != null) {
+            return config;
+        }
+
         StringBuilder propsSB = new StringBuilder();
         for (Field f : getClass().getDeclaredFields()) {
             RuleProperty rp = f.getAnnotation(RuleProperty.class);

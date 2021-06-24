@@ -2,3 +2,6 @@
 target/
 *.iml
 it/.scannerwork/
+src/test/resources/.yamllint
+src/test/resources/.yamllint.yaml
+src/test/resources/.yamllint.yml
