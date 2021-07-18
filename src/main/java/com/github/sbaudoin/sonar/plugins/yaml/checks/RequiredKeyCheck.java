@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import java.io.IOException;
 
 /**
- * Class used to implement to required key/scalar value checks
+ * Class used to implement the required key/scalar value checks
  */
 @Rule(key = "RequiredKeyCheck")
 public class RequiredKeyCheck extends YamlCheck {
@@ -46,7 +46,7 @@ public class RequiredKeyCheck extends YamlCheck {
     @RuleProperty(key = "parent-key-value", description = "Regexp that matches the value for the prerequisite parent-key-name")
     String keyValue;
 
-    @RuleProperty(key = "parent-key-name-root", description = "Filter only root keys for the parent-key-name | yes | not | anywhere", defaultValue = "anywhere")
+    @RuleProperty(key = "parent-key-name-root", description = "Filter only root keys for the parent-key-name (allowed values: 'yes', 'not' or 'anywhere')", defaultValue = "anywhere")
     String isKeyNameAtRoot;
 
     @RuleProperty(key = "required-key-name", description = "Regexp that matches the required key name for the required-key-name")
