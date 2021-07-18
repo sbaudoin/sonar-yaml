@@ -194,6 +194,22 @@ public class RequiredKeyCheckTest {
         assertEquals(1, code.getYamlIssues().get(0).getColumn());
     }
 
+    @Test
+    public void testValidateWithRequiredKey7() throws IOException {
+        RequiredKeyCheck check = getRequiredCheck("kind", "Pod", "yes", "readinessProbe");
+
+        YamlSourceCode code = getSourceCode("required-key-09.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+
+        assertEquals("Required readinessProbe key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(25, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+    }
+
+
     private RequiredKeyCheck getRequiredCheck(String keyName, String keyValue, String isKeyNameAtRoot, String requiredKeyName) {
       RequiredKeyCheck check = new RequiredKeyCheck();
       check.keyName = keyName;
