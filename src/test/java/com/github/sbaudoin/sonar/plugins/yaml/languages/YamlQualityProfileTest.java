@@ -19,13 +19,23 @@ import junit.framework.TestCase;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 
 public class YamlQualityProfileTest extends TestCase {
-    public void testDefine() {
+    public void testDefineWithoutYamlBuiltinSupport() {
         BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
-        YamlQualityProfile qp = new YamlQualityProfile();
+        YamlQualityProfile qp = new YamlQualityProfile(false);
         qp.define(context);
-        BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile("yaml", "Sonar way");
+        BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile("yaml", "YAML Analyzer");
         assertNotNull(profile);
         assertTrue(profile.isDefault());
+        assertEquals(19, profile.rules().size());
+    }
+
+    public void testDefineWithYamlBuiltinSupport() {
+        BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
+        YamlQualityProfile qp = new YamlQualityProfile(true);
+        qp.define(context);
+        BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile("yaml", "YAML Analyzer");
+        assertNotNull(profile);
+        assertFalse(profile.isDefault());
         assertEquals(19, profile.rules().size());
     }
 }

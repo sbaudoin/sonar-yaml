@@ -62,8 +62,7 @@ Once installed, you may go to the profile management screens to create your own 
 
 ## Installation
 
-Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS), 9.0 and 9.1
-(see [PR #58](https://github.com/sbaudoin/sonar-yaml/pull/58): this plugin is already known not to be compatible with SonarQube 9.2).
+Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
 
@@ -77,3 +76,8 @@ may just strip them, causing the character and lines references being different 
 If such an error is met, go to the main or project general settings of the YAML plugin and enable the option "Filter UTF-8 Line Breaks".
 This will make the plugin to ignore some valid UTF-8 line break characters (U+2028, U+2029 and U+0085) so that SonarQube and the plugin
 both use the same character and line indices and, the scan should complete.
+
+### SonarQube 9.2 no longer start after installing the plugin
+
+This is due to the fact that SonarQube 9.2 has brought native support to the YAML language. See #58 and #63.
+To fix the issue, please install the plugin version 1.7+.

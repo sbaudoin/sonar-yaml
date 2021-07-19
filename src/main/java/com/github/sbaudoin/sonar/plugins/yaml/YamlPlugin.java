@@ -24,11 +24,14 @@ import com.github.sbaudoin.sonar.plugins.yaml.rules.YamlSensor;
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.Plugin;
+import org.sonar.api.utils.Version;
 
 /**
  * Main plugin class
  */
 public class YamlPlugin implements Plugin {
+    static final Version SONARQUBE_WITH_YAML_SUPPORT_VERSION = Version.create(9, 2);
+
     public YamlPlugin() {
         // Disable INFO logs for Reflections (see )
         LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory();
@@ -37,12 +40,19 @@ public class YamlPlugin implements Plugin {
 
     @Override
     public void define(Context context) {
-        context.addExtension(YamlLanguage.class);
-        context.addExtension(YamlQualityProfile.class);
+        boolean hasBuiltinYamlSupport = hasBuiltinYamlLanguageSupport(context);
+        if (!hasBuiltinYamlSupport) {
+            context.addExtension(YamlLanguage.class);
+        }
+        context.addExtension(new YamlQualityProfile(hasBuiltinYamlSupport));
 
         // Add plugin settings (file extensions, etc.)
-        context.addExtensions(YamlSettings.getProperties());
+        context.addExtensions(YamlSettings.getProperties(hasBuiltinYamlSupport));
 
         context.addExtensions(YamlRulesDefinition.class, YamlSensor.class);
+    }
+
+    public static boolean hasBuiltinYamlLanguageSupport(Context context) {
+        return context.getSonarQubeVersion().isGreaterThanOrEqual(SONARQUBE_WITH_YAML_SUPPORT_VERSION);
     }
 }
