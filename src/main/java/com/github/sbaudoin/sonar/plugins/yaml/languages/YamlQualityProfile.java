@@ -22,10 +22,16 @@ import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
  * Default, built-in quality profile for the projects having YAML files
  */
 public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
+    private final boolean hasBuiltinYamlSupport;
+
+    public YamlQualityProfile(boolean hasBuiltinYamlSupport) {
+        this.hasBuiltinYamlSupport = hasBuiltinYamlSupport;
+    }
+
     @Override
     public void define(Context context) {
-        NewBuiltInQualityProfile profile = context.createBuiltInQualityProfile("Sonar way", YamlLanguage.KEY);
-        profile.setDefault(true);
+        NewBuiltInQualityProfile profile = context.createBuiltInQualityProfile("YAML Analyzer", YamlLanguage.KEY);
+        profile.setDefault(!hasBuiltinYamlSupport);
 
         // Syntax error check
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "ParsingErrorCheck");

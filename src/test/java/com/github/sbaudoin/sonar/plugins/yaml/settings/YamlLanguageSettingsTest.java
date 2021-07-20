@@ -21,8 +21,8 @@ import org.sonar.api.config.PropertyDefinition;
 import java.util.List;
 
 public class YamlLanguageSettingsTest extends TestCase {
-    public void testGetProperties() {
-        List<PropertyDefinition> defs = YamlSettings.getProperties();
+    public void testGetPropertiesWithoutYamlBuiltinSupport() {
+        List<PropertyDefinition> defs = YamlSettings.getProperties(false);
 
         assertEquals(3, defs.size());
         assertEquals(YamlSettings.FILE_SUFFIXES_KEY, defs.get(0).key());
@@ -31,5 +31,15 @@ public class YamlLanguageSettingsTest extends TestCase {
         assertEquals("false", defs.get(1).defaultValue());
         assertEquals(YamlSettings.YAML_LINT_CONF_PATH_KEY, defs.get(2).key());
         assertEquals("", defs.get(2).defaultValue());
+    }
+
+    public void testGetPropertiesWithYamlBuiltinSupport() {
+        List<PropertyDefinition> defs = YamlSettings.getProperties(true);
+
+        assertEquals(2, defs.size());
+        assertEquals(YamlSettings.FILTER_UTF8_LB_KEY, defs.get(0).key());
+        assertEquals("false", defs.get(0).defaultValue());
+        assertEquals(YamlSettings.YAML_LINT_CONF_PATH_KEY, defs.get(1).key());
+        assertEquals("", defs.get(1).defaultValue());
     }
 }
