@@ -75,4 +75,4 @@ may just strip them, causing the character and lines references being different 
 
 If such an error is met, go to the main or project general settings of the YAML plugin and enable the option "Filter UTF-8 Line Breaks".
 This will make the plugin to ignore some valid UTF-8 line break characters (U+2028, U+2029 and U+0085) so that SonarQube and the plugin
-both use the same character and line indices and the scan should complete.
+both use the same character and line indices and, the scan should complete.
