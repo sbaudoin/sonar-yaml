@@ -24,7 +24,7 @@ script:
   - 'if [ -z "$SONAR_TOKEN" ]; then mvn clean package -P audit; else mvn clean package sonar:sonar -P audit; fi'
   - bash it/it.sh 6.7-community 3.4.0.1729
   - bash it/it.sh 7.9-community 3.4.0.1729 11
-  - bash it/it.sh 8.5-community 4.5.0.2216 11
+  - bash it/it.sh 8.9-community 4.5.0.2216 11
 deploy:
   - provider: script
     script: bash .travis/deploy.sh
