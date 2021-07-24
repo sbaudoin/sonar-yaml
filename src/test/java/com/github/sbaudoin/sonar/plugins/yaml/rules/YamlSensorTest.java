@@ -240,7 +240,7 @@ public class YamlSensorTest {
         fs = Utils.getFileSystem();
         fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
 
-        ActiveRules activeRules = null;
+        ActiveRules activeRules;
         if (activateParsingErrorCheck) {
             activeRules = new ActiveRulesBuilder()
                     .create(ruleKey)
@@ -265,7 +265,7 @@ public class YamlSensorTest {
     }
 
 
-    private class DummySensorDescriptor implements SensorDescriptor {
+    private static class DummySensorDescriptor implements SensorDescriptor {
         private String sensorName;
         private String languageKey;
 

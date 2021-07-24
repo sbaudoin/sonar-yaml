@@ -39,7 +39,7 @@ public class HighlightingDataTest extends TestCase {
         assertEquals(TypeOfText.COMMENT, highlighting.getTypeOfText());
     }
 
-    private class NewHighlightingTester implements NewHighlighting {
+    private static class NewHighlightingTester implements NewHighlighting {
         private int startLine;
         private int startLineOffset;
         private int endLine;

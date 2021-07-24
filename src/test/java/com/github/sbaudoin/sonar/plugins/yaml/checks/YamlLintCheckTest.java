@@ -27,7 +27,6 @@ import org.sonar.check.RuleProperty;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -124,7 +123,7 @@ public class YamlLintCheckTest {
         for (String message : logTester.logs(LoggerLevel.DEBUG)) {
             if (!message.startsWith("Got RuleProperty ")) {
                 found = true;
-                assertThat(message, containsString("'---\n" +
+                assertTrue(message.contains("'---\n" +
                         "rules:\n" +
                         "  comments-indentation: enable'"));
             }
@@ -142,7 +141,7 @@ public class YamlLintCheckTest {
         for (String message : logTester.logs(LoggerLevel.DEBUG)) {
             if (!message.startsWith("Got RuleProperty ")) {
                 found = true;
-                assertThat(message, containsString("'---\n" +
+                assertTrue(message.contains("'---\n" +
                         "rules:\n" +
                         "  hyphens:\n" +
                         "    max-spaces-after: 0\n'"));
@@ -168,10 +167,10 @@ public class YamlLintCheckTest {
         return check;
     }
 
-    private class DummyYamlCheck extends YamlLintCheck {
+    private static class DummyYamlCheck extends YamlLintCheck {
     }
 
-    private class BrokenYamlCheck extends YamlLintCheck {
+    private static class BrokenYamlCheck extends YamlLintCheck {
         @RuleProperty(key = "max-spaces-before", description = "Maximal number of spaces allowed before colons (use -1 to disable)", defaultValue = "0")
         private int maxSpacesBefore;
     }

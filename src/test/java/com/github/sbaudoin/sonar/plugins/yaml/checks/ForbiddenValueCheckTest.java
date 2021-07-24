@@ -24,7 +24,6 @@ import org.sonar.api.utils.log.LoggerLevel;
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -62,7 +61,7 @@ public class ForbiddenValueCheckTest {
         check.setYamlSourceCode(spy);
         check.validate();
         assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertThat(logTester.logs(LoggerLevel.WARN).get(0), containsString("Cannot read source code"));
+        assertTrue(logTester.logs(LoggerLevel.WARN).get(0).contains("Cannot read source code"));
         assertEquals(0, spy.getYamlIssues().size());
     }
 
@@ -77,7 +76,7 @@ public class ForbiddenValueCheckTest {
         check.setYamlSourceCode(code);
         check.validate();
         assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertThat(logTester.logs(LoggerLevel.WARN).get(0), containsString("Syntax error found, cannot continue checking keys: syntax error: expected <block end>, but found '-'"));
+        assertTrue(logTester.logs(LoggerLevel.WARN).get(0).contains("Syntax error found, cannot continue checking keys: syntax error: expected <block end>, but found '-'"));
         assertFalse(code.hasCorrectSyntax());
         assertNull(code.getSyntaxError().getRuleKey());
         assertEquals("syntax error: expected <block end>, but found '-'", code.getSyntaxError().getMessage());

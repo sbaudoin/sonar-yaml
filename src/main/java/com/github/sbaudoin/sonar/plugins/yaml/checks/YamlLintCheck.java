@@ -159,7 +159,7 @@ public abstract class YamlLintCheck extends YamlCheck {
             confSB.append("\n").append(conf);
         }
 
-        LOGGER.debug("YAMLLint config for rule " + getRuleKey() + "/" + getLintRuleId() + ": '" + confSB.toString() + "'");
+        LOGGER.debug("YAMLLint config for rule " + getRuleKey() + "/" + getLintRuleId() + ": '" + confSB + "'");
         return new YamlLintConfig(confSB.toString());
     }
 }

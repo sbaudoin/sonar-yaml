@@ -93,8 +93,7 @@ public class YamlHighlighting {
      * Parses the YAML code to create highlightings
      */
     private void highlightYAML() {
-        Iterator<Parser.Lined> items = Parser.getTokensOrComments(content).iterator();
-        while (items.hasNext()) {
+        for (Iterator<Parser.Lined> items = Parser.getTokensOrComments(content).iterator(); items.hasNext(); ) {
             Parser.Lined item = items.next();
             if (item instanceof Parser.Comment) {
                 highlightComment((Parser.Comment)item);
@@ -114,7 +113,7 @@ public class YamlHighlighting {
         // We stop the highlighting right before the next token, not at the very end of the comment
         YamlLocation endLocation = new YamlLocation(content, comment.getTokenAfter().getStartMark());
 
-        LOGGER.trace("Highlighting comment: " + comment.toString());
+        LOGGER.trace("Highlighting comment: " + comment);
         addHighlighting(startLocation, endLocation, TypeOfText.COMMENT);
     }
 

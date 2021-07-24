@@ -59,7 +59,7 @@ public class YamlLanguageTest {
     }
 
 
-    private class FakeLanguage extends AbstractLanguage {
+    private static class FakeLanguage extends AbstractLanguage {
         public FakeLanguage() {
             super("yaml");
         }

@@ -25,7 +25,7 @@ public class ParsingErrorCheckTest extends TestCase {
             check.validate();
             assertTrue(true);
         } catch (Exception e) {
-            assertTrue(false);
+            fail();
         }
     }
 }

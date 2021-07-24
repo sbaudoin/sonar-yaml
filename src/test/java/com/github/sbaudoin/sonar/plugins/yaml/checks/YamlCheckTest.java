@@ -47,10 +47,9 @@ public class YamlCheckTest extends TestCase {
     }
 
 
-    private class DummyYamlCheck extends YamlCheck {
+    private static class DummyYamlCheck extends YamlCheck {
         @Override
         public void validate() {
-            return;
         }
     }
 }

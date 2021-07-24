@@ -106,7 +106,7 @@ public class LineCounterTest {
     }
 
 
-    private class MyFileLinesContext implements FileLinesContext {
+    private static class MyFileLinesContext implements FileLinesContext {
         Map<String, Map<Integer, Integer>> intValues = new HashMap<>();
 
 
