@@ -23,7 +23,7 @@ echo "---- Compose started..."
 CONTAINER_NAME=$(docker ps --format "{{.Names}}" | grep 'it_sonarqube_1.*' | head -1)
 echo "---- Container ID: $CONTAINER_NAME"
 # Wait for SonarQube to be up
-grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME)
+grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME) || (docker logs $CONTAINER_NAME && exit 1)
 # Copy the plugin
 MAVEN_VERSION=$(grep '<version>' $SCRIPT_DIR/../pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
 echo "---- Copying plugin JAR file..."
