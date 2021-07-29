@@ -62,7 +62,8 @@ Once installed, you may go to the profile management screens to create your own 
 
 ## Installation
 
-Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS).
+Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS) and 9.0 only
+(see [PR #58](https://github.com/sbaudoin/sonar-yaml/pull/58): this plugin is already known not to be compatible with SonarQube 9.1).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
 
