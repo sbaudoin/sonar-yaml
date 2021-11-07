@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class for all YAML checks representing a YAML lint rule
@@ -43,7 +44,10 @@ public abstract class YamlLintCheck extends YamlCheck {
         }
 
         try {
-            List<LintProblem> problems = Linter.getCosmeticProblems(getYamlSourceCode().getContent(), getYamlLintconfig(), null);
+            List<LintProblem> allProblems = Linter.getCosmeticProblems(getYamlSourceCode().getContent(), getYamlLintconfig(), null);
+            // Filter out problems other than those coming from the current rule
+            List<LintProblem> problems = allProblems.stream().filter(p -> p.getRuleId().equals(getLintRuleId())).collect(Collectors.toList());
+//            List<LintProblem> problems = allProblems;
             LOGGER.debug("Problems found: " + problems);
             for (LintProblem problem : problems) {
                 LOGGER.debug("Creating violation for " + problem);

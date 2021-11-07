@@ -17,6 +17,7 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.yamllint.LintProblem;
+import com.github.sbaudoin.yamllint.YamlLintConfig;
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,6 +66,23 @@ public class YamlLintCheckTest {
         assertTrue(check2.getYamlSourceCode().hasCorrectSyntax());
         assertEquals(1, check2.getYamlSourceCode().getYamlIssues().size());
         assertEquals("too many spaces after hyphen (hyphens)", check2.getYamlSourceCode().getYamlIssues().get(0).getMessage());
+    }
+
+    @Test
+    public void validateMultipleRules() throws IOException, YamlLintConfigException {
+        YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false));
+        YamlLintConfig config = new YamlLintConfig("rules:\n" +
+                "  hyphens:\n" +
+                "    max-spaces-after: 0\n" +
+                "  comments-indentation: enable");
+
+        HyphensCheck check = new HyphensCheck();
+        check.setYamlSourceCode(code);
+        check.setConfig(config);
+        check.validate();
+
+        assertEquals(1, check.getYamlSourceCode().getYamlIssues().size());
+        assertEquals("too many spaces after hyphen (hyphens)", check.getYamlSourceCode().getYamlIssues().get(0).getMessage());
     }
 
     @Test
