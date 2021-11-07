@@ -1,4 +1,4 @@
 ---
 # This is a comment
 - key1: value1 # An inline comment
-# An another comment
+ # An invalid comment
