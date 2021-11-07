@@ -47,7 +47,6 @@ public abstract class YamlLintCheck extends YamlCheck {
             List<LintProblem> allProblems = Linter.getCosmeticProblems(getYamlSourceCode().getContent(), getYamlLintconfig(), null);
             // Filter out problems other than those coming from the current rule
             List<LintProblem> problems = allProblems.stream().filter(p -> p.getRuleId().equals(getLintRuleId())).collect(Collectors.toList());
-//            List<LintProblem> problems = allProblems;
             LOGGER.debug("Problems found: " + problems);
             for (LintProblem problem : problems) {
                 LOGGER.debug("Creating violation for " + problem);
