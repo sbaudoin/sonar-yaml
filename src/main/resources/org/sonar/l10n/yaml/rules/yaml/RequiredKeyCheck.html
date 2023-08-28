@@ -26,6 +26,19 @@
     <dd>Regular expression that matches the required key name</dd>
 </dl>
 
+<dt>included-ancestors</dt>
+<dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+    The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+    So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:spring:datasource:hikari</code>.
+    If the includedAncestors regex matches the ancestor string of the key, the key is checked.
+    The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+    Leave empty for no included ancestor matching.</dd>
+<dt>excluded-ancestors</dt>
+<dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+    However, if this regex matches, the key is *not* checked.
+    The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+    Leave empty for no excluded ancestor matching.</dd>
+
 <h2>Examples</h2>
 <p>With <code>parent-key-name = kind</code> and <code>parent-key-value = Pod</code> and <code>parent-key-name-root = yes</code> and <code>required-key-name = readinessProbe</code>
     the following code snippet would <strong>PASS</strong>:</p>

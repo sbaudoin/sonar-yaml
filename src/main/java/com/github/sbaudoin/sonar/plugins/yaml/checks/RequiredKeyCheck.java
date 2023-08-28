@@ -21,11 +21,14 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
+import org.yaml.snakeyaml.tokens.BlockEndToken;
+import org.yaml.snakeyaml.tokens.BlockMappingStartToken;
 import org.yaml.snakeyaml.tokens.KeyToken;
 import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 import org.yaml.snakeyaml.tokens.ValueToken;
 
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
@@ -40,63 +43,118 @@ public class RequiredKeyCheck extends YamlCheck {
 
     private int issueLine = 0;
 
-    @RuleProperty(key = "parent-key-name", description = "Regexp that matches the prerequisite parent-key-name")
-    String keyName;
+    @RuleProperty(key = "parent-key-name", description = "Regexp that matches the required parent-key-name")
+    String parentKeyName;
 
-    @RuleProperty(key = "parent-key-value", description = "Regexp that matches the value for the prerequisite parent-key-name")
-    String keyValue;
+    @RuleProperty(key = "parent-key-value", description = "Regexp that matches the value for the required parent-key")
+    String parentKeyValue;
 
-    @RuleProperty(key = "parent-key-name-root", description = "Filter only root keys for the parent-key-name (allowed values: 'yes', 'not' or 'anywhere')", defaultValue = "anywhere")
-    String isKeyNameAtRoot;
+    @RuleProperty(key = "parent-key-at-root", description = "Require the parent-key to be at root level (allowed values: 'yes', 'not' or 'anywhere')", defaultValue = "anywhere")
+    String isParentKeyAtRoot;
 
-    @RuleProperty(key = "required-key-name", description = "Regexp that matches the required key name for the required-key-name")
+    @RuleProperty(key = "included-ancestors", description = "Regexp that matches the key's ancestors to include, for example '<root>:nesting1.*'")
+    String includedAncestors;
+
+    @RuleProperty(key = "excluded-ancestors", description = "Regexp that matches the key's ancestors to exclude, for example '.*:nesting2:nesting3'")
+    String excludedAncestors;
+
+    @RuleProperty(key = "required-key-name", description = "Regexp that matches the name of the required key")
     String requiredKeyName;
+    private Pattern reqKeyNamePattern;
+
+    protected void initializePatterns() {
+        reqKeyNamePattern = Pattern.compile(requiredKeyName);
+    }
 
     @Override
     public void validate() {
         if (yamlSourceCode == null) {
             throw new IllegalStateException("Source code not set, cannot validate anything");
         }
-
         try {
             LintScanner parser = new LintScanner(new StreamReader(yamlSourceCode.getContent()));
             if (!yamlSourceCode.hasCorrectSyntax()) {
                 LOGGER.warn("Syntax error found, cannot continue checking keys: " + yamlSourceCode.getSyntaxError().getMessage());
                 return;
             }
-            boolean isKeyPresent = false;
+            initializePatterns();
+            final boolean parentCheck = parentKeyName != null && !parentKeyName.isEmpty();
+            final boolean ancestorsCheck = (includedAncestors != null && !includedAncestors.isEmpty()) || (excludedAncestors != null && !excludedAncestors.isEmpty());
+            final Pattern parentKeyNamePattern = parentCheck ? Pattern.compile(parentKeyName) : null;
+            final Pattern parentValuePattern = parentCheck ? Pattern.compile("(?m)" + parentKeyValue) : null;
+            final Pattern inclAncestorsPattern = includedAncestors != null && !includedAncestors.isEmpty() ? Pattern.compile(includedAncestors) : null;
+            final Pattern exclAncestorsPattern = excludedAncestors != null && !excludedAncestors.isEmpty() ? Pattern.compile(excludedAncestors) : null;
+
+            final Stack<String> ancestors = new Stack<>();
+            String prevKeyScalarValue = "<root>";
+            boolean prevAncestorsMatch = false;
+            int ancestorLine = 0;
+
+            boolean parentMatch = false;
             boolean isRequiredKeyPresent = false;
+
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
+                if (ancestorsCheck) {
+                    if (t1 instanceof BlockMappingStartToken) {
+                        ancestors.push(prevKeyScalarValue);
+                        ancestorLine = t1.getStartMark().getLine() - 1; // one line up
+                    } else if (t1 instanceof BlockEndToken) {
+                        if (!ancestors.isEmpty()) ancestors.pop();
+                    }
+                }
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
                   // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
                   Token t2 = parser.peekToken();
                   if (t2 instanceof ScalarToken) {
-                      if (((ScalarToken)t2).getValue().matches(keyName)) {
+                      String keyScalarValue = ((ScalarToken) t2).getValue();
+                      boolean ancestorsMatch = ancestorsCheck && ancestorsMatch(ancestors, inclAncestorsPattern, exclAncestorsPattern);
+                      boolean newAncestorsMatch = !prevAncestorsMatch && ancestorsMatch;
+                      boolean justLostAncestorsMatch = prevAncestorsMatch && !ancestorsMatch;
+                      if (parentCheck && parentKeyMatches(keyScalarValue, parentKeyNamePattern)) {
+                              boolean newParentMatch = parentValueMatches(parser, parentValuePattern);
+                              int column = t1.getStartMark().getColumn();
+                              if ((isParentKeyAtRoot.equalsIgnoreCase("yes") && column != 0) ||
+                                      (isParentKeyAtRoot.equalsIgnoreCase("not") && column == 0)) {
+                                  continue;
+                              }
 
-                          boolean isNewMatch = checkValue(parser);
-
-                          int column = t1.getStartMark().getColumn();
-                          if ((isKeyNameAtRoot.equalsIgnoreCase("yes") && column != 0) ||
-                                  (isKeyNameAtRoot.equalsIgnoreCase("not") && column == 0)) {
-                            continue;
+                              if (parentMatch && newParentMatch && !isRequiredKeyPresent) {
+                                  checkNextToken();// violation
+                              }
+                              parentMatch = newParentMatch;
+                              isRequiredKeyPresent = (!newParentMatch) && isRequiredKeyPresent;
+                              issueLine = (newParentMatch) ? t2.getStartMark().getLine() : issueLine;
+                      } else {
+                          boolean reqKeyMatches = reqKeyNamePattern.matcher(keyScalarValue).matches();
+                          if (reqKeyMatches) {
+                              if (parentCheck && ancestorsCheck) {
+                                  isRequiredKeyPresent = parentMatch && ancestorsMatch;
+                              }
+                              else if (parentCheck) {
+                                  isRequiredKeyPresent = parentMatch;
+                              }
+                              else if (ancestorsCheck) {
+                                  isRequiredKeyPresent = ancestorsMatch;
+                              }
                           }
-                          
-                          if (isKeyPresent && isNewMatch && !isRequiredKeyPresent) {
-                              checkNextToken();
+                          issueLine = newAncestorsMatch ? ancestorLine : issueLine;
+                          if (justLostAncestorsMatch && (!parentCheck || parentMatch)) {
+                              if (!isRequiredKeyPresent) {
+                                  checkNextToken(); // violation
+                              }
+                              else {
+                                  isRequiredKeyPresent = false; // start over
+                              }
                           }
-                          isKeyPresent = isNewMatch;
-                          isRequiredKeyPresent = (!isNewMatch) && isRequiredKeyPresent;
-                          issueLine = (isNewMatch) ? t2.getStartMark().getLine() : issueLine;
-
-                      } else if (((ScalarToken) t2).getValue().matches(requiredKeyName) && isKeyPresent) {
-                          isRequiredKeyPresent = true;
-                      }     
+                      }
+                      prevKeyScalarValue = keyScalarValue;
+                      prevAncestorsMatch = ancestorsMatch;
                   }
                 }
             }
-            if (!isRequiredKeyPresent && isKeyPresent) {
-                checkNextToken();
+            if (!isRequiredKeyPresent && ((!parentCheck || parentMatch) && (!ancestorsCheck || prevAncestorsMatch))) {
+                checkNextToken();// violation
             }
         } catch (IOException e) {
             // Should not happen: a first call to getYamlSourceCode().getContent() was done in the constructor of
@@ -105,21 +163,31 @@ public class RequiredKeyCheck extends YamlCheck {
         }
     }
 
+    private boolean parentKeyMatches(String keyScalarValue, Pattern parentKeyNamePattern) {
+        return parentKeyNamePattern != null ? parentKeyNamePattern.matcher(keyScalarValue).matches() : true;
+    }
 
-    private boolean checkValue(LintScanner parser) {
-        boolean isKeyPresent = false;
+    private boolean ancestorsMatch(Stack<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
+        String ancestorsString = String.join(":", ancestors);
+        boolean match = inclAncestorsPattern != null ? inclAncestorsPattern.matcher(ancestorsString).matches() : true;
+        match = match && (exclAncestorsPattern != null ? !exclAncestorsPattern.matcher(ancestorsString).matches() : true);
+        return match;
+    }
+
+    private boolean parentValueMatches(LintScanner parser, Pattern parentValuePattern) {
+        boolean isMatchingValue = false;
         parser.getToken();
         if (parser.peekToken() instanceof ValueToken) {
             parser.getToken();
             Token t3 = parser.peekToken();
             if (t3 instanceof ScalarToken) {
-                Matcher m = Pattern.compile("(?m)" + keyValue).matcher(((ScalarToken)t3).getValue());
+                Matcher m = parentValuePattern.matcher(((ScalarToken)t3).getValue());
                 if (m.find()) {
-                    isKeyPresent = true;
+                    isMatchingValue = true;
                 }
             }
         }
-        return isKeyPresent;
+        return isMatchingValue;
     }
 
 

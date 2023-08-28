@@ -22,24 +22,16 @@ import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 import org.yaml.snakeyaml.tokens.ValueToken;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
- * Check to be used that the YAML file does not contain forbidden values
+ * Check to be used that the YAML file does not contain values out of the specified range
  */
-@Rule(key = "ForbiddenValueCheck")
-public class ForbiddenValueCheck extends ForbiddenCheck {
-    @RuleProperty(key = "value", description = "Regexp that matches the forbidden value")
-    String value;
+@Rule(key = "IntValueInRangeCheck")
+public class IntValueInRangeCheck extends ForbiddenCheck {
+    @RuleProperty(key = "minValue", description = "Minimum value")
+    int minValue;
 
-    Pattern forbiddenValuePattern = null;
-
-    @Override
-    protected void initializePatterns() {
-        super.initializePatterns();
-        forbiddenValuePattern = Pattern.compile("(?m)" + value);
-    }
+    @RuleProperty(key = "maxValue", description = "Maximum value")
+    int maxValue;
 
     /**
      * Takes the next token and, if it is a key that matches the {@code key-name} regex, analyzes its value against the
@@ -55,10 +47,16 @@ public class ForbiddenValueCheck extends ForbiddenCheck {
             parser.getToken();
             Token t3 = parser.peekToken();
             if (t3 instanceof ScalarToken) {
-                Matcher m = forbiddenValuePattern.matcher(((ScalarToken)t3).getValue());
-                if (m.find()) {
-                    // Report new error
-                    addViolation("Forbidden value found", t);
+                String strVal = ((ScalarToken)t3).getValue();
+                try {
+                    int val = Integer.parseInt(strVal);
+                    if (val < minValue || val > maxValue) {
+                        // Report new error
+                        addViolation("Value out of range found. Range: min=" + minValue + " max=" + maxValue, t);
+                    }
+                }
+                catch(NumberFormatException e) {
+                    addViolation("Parse error: Non-integer value found for int-value-range-check", t);
                 }
             }
         }

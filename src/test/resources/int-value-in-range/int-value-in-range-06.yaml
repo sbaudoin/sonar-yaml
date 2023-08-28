@@ -1,0 +1,13 @@
+---
+key1:
+  subkey: value
+  other: 5
+  inRange: 7
+  map1: {key1: 4, key2: forbidden}
+  map2: {key1: 4, Range: 0}
+key2:
+  subkey: value
+  other: 5
+  inRange: 7
+  map1: { key1: 4, key2: forbidden }
+  map2: { key1: 4, Range: 0 }

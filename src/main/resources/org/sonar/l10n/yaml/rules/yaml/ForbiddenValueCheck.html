@@ -8,6 +8,18 @@
     <dd>Regular expression that matches keys for which the value is forbidden. In order to match any key, set it to
     <code>.*</code>. The start and end line markers <code>^</code> and <code>$</code> are implicit: this means that
     setting <code>foo</code> is equivalent to <code>^foo$</code>.</dd>
+    <dt>included-ancestors</dt>
+    <dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+        The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+        So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:spring:datasource:hikari</code>.
+        If the includedAncestors regex matches the ancestor string of the key, the value is checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no included ancestor matching.</dd>
+    <dt>excluded-ancestors</dt>
+    <dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+        However, if this regex matches, the value is *not* checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no excluded ancestor matching.</dd>
     <dt>value</dt>
     <dd>Regular expression that matches forbidden values. This regex will be checked against all lines of multiline
         values. As a consequence and contrary to the <code>key-name</code> parameter, if you want to match a single word

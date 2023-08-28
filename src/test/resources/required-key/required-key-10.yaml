@@ -1,0 +1,19 @@
+---
+parent1: value1
+nesting1: # has no required.* key, violation
+  first2: valueF2
+  #required1: value1
+  nesting2:
+    #requiredYes: valueYes
+    nesting3:
+      required3Not: valueNot3
+other1:
+    notRequired1: valueNot1
+
+parent2: value2
+nesting8: # has required key
+  required8: value
+
+nesting9: # has no required.* key, violation
+  key: value
+  #requiredYes: valueYes

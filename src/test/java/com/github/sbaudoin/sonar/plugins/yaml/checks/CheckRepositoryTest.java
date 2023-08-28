@@ -23,12 +23,13 @@ public class CheckRepositoryTest extends TestCase {
     }
 
     public void testGetCheckClasses() {
-        assertEquals(25, CheckRepository.getCheckClasses().size());
+        assertEquals(26, CheckRepository.getCheckClasses().size());
         assertTrue(CheckRepository.getCheckClasses().contains(ParsingErrorCheck.class));
     }
 
     public void testGetTemplateRuleKeys() {
-        assertEquals(3, CheckRepository.getTemplateRuleKeys().size());
+        assertEquals(4, CheckRepository.getTemplateRuleKeys().size());
         assertTrue(CheckRepository.getTemplateRuleKeys().contains("ForbiddenKeyCheck"));
+        assertTrue(CheckRepository.getTemplateRuleKeys().contains("IntValueInRangeCheck"));
     }
 }

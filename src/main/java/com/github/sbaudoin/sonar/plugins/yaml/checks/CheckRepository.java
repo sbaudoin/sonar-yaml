@@ -50,13 +50,15 @@ public class CheckRepository {
             RequiredKeyCheck.class,
             TrailingSpacesCheck.class,
             TruthyCheck.class,
-            QuotedStringsCheck.class
+            QuotedStringsCheck.class,
+            IntValueInRangeCheck.class
         );
 
     private static final List<String> TEMPLATE_RULE_KEYS = Arrays.asList(
             "ForbiddenKeyCheck",
             "ForbiddenValueCheck",
-            "RequiredKeyCheck"
+            "RequiredKeyCheck",
+            "IntValueInRangeCheck"
     );
 
 

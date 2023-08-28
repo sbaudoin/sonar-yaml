@@ -1,0 +1,65 @@
+<p>Use this rule to control that the YAML documents for a specified key, only contain <strong>int</strong> values within a specified range.
+    The range can be defined with a minimum and a maximum value. The specific key can be defined with a regular expression
+    and the location of the key can be defined with two ancestor regular expressions.
+</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>key-name</dt>
+    <dd>Regular expression that matches keys for which the value must be in range. In order to match any key, set it to
+    <code>.*</code>. The start and end line markers <code>^</code> and <code>$</code> are implicit: this means that
+    setting <code>foo</code> is equivalent to <code>^foo$</code>.</dd>
+    <dt>included-ancestors</dt>
+    <dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+        The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+        So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:spring:datasource:hikari</code>.
+        If the includedAncestors regex matches the ancestor string of the key, the value is range checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no ancestor matching.</dd>
+    <dt>excluded-ancestors</dt>
+    <dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+        However, if this regex matches, the value is *not* range checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no ancestor matching.</dd>
+    <dt>minValue</dt>
+    <dd>Integer defining the minimum allowed value.</dd>
+    <dt>maxValue</dt>
+    <dd>Integer defining the maximum allowed value.</dd>
+</dl>
+
+<h2>Examples</h2>
+
+
+<p>With:
+    <pre>
+    key-name = connect(ion)?-?[tT]imeout.*
+    included-ancestors = &lt;root&gt;:[a-z\\-]+service[a-z0-9\\-]+:[a-z\\-]+endpoint[a-z0-9\\-]+
+    excluded-ancestors = .*datasource:hikari
+    minValue = 50
+    maxValue = 699
+    </pre>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+my-service-2:
+    my-endpoint-2:
+        connectionTimeout: 600 # no violation
+
+spring:
+    datasource:
+        hikari:
+            connectionTimeout: 5000 # no violation
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+my-service-1:
+    my-endpoint-1:
+        connectionTimeout: 700 # violation, > 699 ms
+</pre>
+
+<ul>
+    <li>Note that defining only one of includedAncestors end excludedAncestors above will yield the same results in this example.</li>
+    <li>Current limitation: yaml list notation is not supported by ancestor matching.</li>
+</ul>
+
+
+
