@@ -1,0 +1,15 @@
+---
+iov:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    #wait-duration-in-open-state-millis: 1500
+    sliding-window-size: 10
+    sliding-window-minimum-calls: 10
+
+resilience4j:
+  circuitbreaker:
+    minimumNumberOfCalls: 10
+    failureRateThreshold: 50
+    permittedNumberOfCallsInHalfOpenState: 2
+    waitDurationInOpenStateInSeconds: 60
+    slidingWindowSize: 20

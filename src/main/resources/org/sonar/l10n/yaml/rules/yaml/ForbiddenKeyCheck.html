@@ -34,3 +34,19 @@
     tesT: {Test: 4, key2: 8}
 </pre>
 
+<p>With <code>key-name = waitInterval.*|wait-interval.*</code> and <code>includedAncestors = .*:circuitbreaker</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+uisa:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-duration-in-open-state-millis: 1500
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+uisa:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-interval: 1500
+</pre>
+

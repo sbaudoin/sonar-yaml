@@ -293,6 +293,26 @@ public class RequiredKeyCheckTest {
         assertEquals(1, code.getYamlIssues().get(0).getColumn());
     }
 
+    @Test
+    public void testValidateWithRequiredKeyAncestors5() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "";
+        check.parentKeyValue = "";
+        check.isParentKeyAtRoot = "";
+        check.requiredKeyName = "waitDurationInOpenState.*|wait-duration-in-open-state.*";
+        check.includedAncestors = ".*:circuitbreaker";
+        check.excludedAncestors = "";
+
+        YamlSourceCode code = getSourceCode("required-key-14.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Required waitDurationInOpenState.*|wait-duration-in-open-state.* key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(3, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+    }
+
     private RequiredKeyCheck getRequiredCheck(String parentKeyName, String parentKeyValue, String isParentKeyAtRoot, String requiredKeyName) {
       RequiredKeyCheck check = new RequiredKeyCheck();
       check.parentKeyName = parentKeyName;

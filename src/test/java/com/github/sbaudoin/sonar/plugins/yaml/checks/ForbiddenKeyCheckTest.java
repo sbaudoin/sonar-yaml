@@ -159,6 +159,22 @@ public class ForbiddenKeyCheckTest {
         assertEquals(5, code.getYamlIssues().get(1).getColumn());
     }
 
+    @Test
+    public void testValidateWithForbiddenKey4() throws IOException {
+        ForbiddenKeyCheck check = new ForbiddenKeyCheck();
+        check.keyName = "waitInterval.*|wait-interval.*";
+        check.includedAncestors = ".*:circuitbreaker";
+        check.excludedAncestors = "";
+
+        YamlSourceCode code = getSourceCode("forbidden-key-08.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Forbidden key found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(5, code.getYamlIssues().get(0).getLine());
+        assertEquals(5, code.getYamlIssues().get(0).getColumn());
+    }
     private YamlSourceCode getSourceCode(String filename, boolean filter) throws IOException {
         return new YamlSourceCode(Utils.getInputFile("forbidden-key/" + filename), Optional.of(filter));
     }

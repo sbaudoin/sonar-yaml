@@ -9,11 +9,11 @@
 <h2>Parameters</h2>
 <dl>
     <dt>parent-key-name</dt>
-    <dd>Regular expression that matches prerequisite key name. Leave empty for no parent checking.</dd>
+    <dd>Regular expression that matches the required parent-key-name. Leave empty for no parent checking.</dd>
 </dl>
 <dl>
     <dt>parent-key-value</dt>
-    <dd>Regular expression that matches the value for the prerequisite key name</dd>
+    <dd>Regular expression that matches the value for the required parent-key</dd>
 </dl>
 <dl>
   <dt>parent-key-name-root</dt>
@@ -83,7 +83,7 @@
               periodSeconds: 3
 </pre>
 
-p>With:
+<p>With:
 <pre>
     required-key-name = required.*
     parentKeyName =
@@ -111,7 +111,39 @@ nesting1: # has no required.* key, violation
       required3Not: valueNot3
 </pre>
 
+<p>With:
+<pre>
+    required-key-name = waitDurationInOpenState.*|wait-duration-in-open-state.*
+    parentKeyName =
+    parentKeyValue =
+    isParentKeyAtRoot =
+    included-ancestors = .*:circuitbreaker
+    excluded-ancestors =
+    </pre>
+the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+iov:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-duration-in-open-state-millis: 1500
+
+resilience4j:
+  circuitbreaker:
+    failureRateThreshold: 50
+    waitDurationInOpenStateInSeconds: 60
+</pre>
+<p>the following code snippet would <strong>FAIL</strong> for two places:</p>
+<pre>
+iov:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    #wait-duration-in-open-state-millis: 1500
+
+resilience4j:
+  circuitbreaker:
+    failureRateThreshold: 50
+</pre>
+
 <ul>
-    <li>Note that defining only one of includedAncestors end excludedAncestors above will yield the same results in this example.</li>
     <li>Current limitation: yaml list notation is not supported by ancestor matching.</li>
 </ul>

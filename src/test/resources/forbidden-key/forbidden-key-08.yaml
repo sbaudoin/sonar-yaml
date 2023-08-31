@@ -1,0 +1,6 @@
+---
+uisa:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-interval: 1500
+    #wait-duration-in-open-state-millis: 1500
