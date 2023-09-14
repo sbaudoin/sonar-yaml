@@ -185,6 +185,22 @@ public class ForbiddenValueCheckTest {
         assertEquals(5, code.getYamlIssues().get(3).getColumn());
     }
 
+    @Test
+    public void testValidateWithForbiddenValue4() throws IOException {
+        ForbiddenValueCheck check = new ForbiddenValueCheck();
+        check.keyName = "connect(ion)?-?[tT]imeout.*";
+        check.value = "^(\\d\\d\\d\\d|[7-9]\\d\\d)$"; // >= 700 ms
+        check.excludedAncestors = ".*datasource:hikari";
+
+        YamlSourceCode code = getSourceCode("forbidden-value-07.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Forbidden value found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(4, code.getYamlIssues().get(0).getLine());
+        assertEquals(5, code.getYamlIssues().get(0).getColumn());
+    }
     private YamlSourceCode getSourceCode(String filename, boolean filter) throws IOException {
         return new YamlSourceCode(Utils.getInputFile("forbidden-value/" + filename), Optional.of(filter));
     }

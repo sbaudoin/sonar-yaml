@@ -52,11 +52,12 @@ The plugin comes with a default "Sonar way" profile with most common rules enabl
 Some additional rules are provided but not enabled by default:
 
 * Document end check
-* Forbidden key check
-* Forbidden value check (new in 1.3.0)
+* Forbidden key check (template)
+* Forbidden value check (template, new in 1.3.0)
 * Key ordering check
 * Quoted strings check (new in 1.4.0)
-* Required key check (new in 1.5.0)
+* Required key check (template, new in 1.5.0)
+* Int value in range check (template, planned/new in 1.8.0)
 
 Once installed, you may go to the profile management screens to create your own profile and add or remove rules, change levels, and parameters, etc.
 
@@ -65,6 +66,16 @@ Once installed, you may go to the profile management screens to create your own 
 Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
+
+## Ancestors rule properties
+
+(Planned) version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule properties, for the following template checks: 
+1. forbidden key
+2. forbidden value
+3. required key and 
+4. int value in range (new).
+
+This provides the possibility to apply the checks _only_ in a certain scope 1 and/or _only not_ in a certain scope 2. Current limitation: yaml list notation is not supported by ancestor matching.
 
 ## Troubleshooting/known issues
 

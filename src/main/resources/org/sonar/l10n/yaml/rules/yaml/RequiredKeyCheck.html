@@ -4,27 +4,40 @@
 <p>Because not all documents are certainly expected to contain the indicated key, an initial "filter" key/value (the parameters
     <var>parent-key-name</var> and <var>parent-key-value</var>) is used to identify the documents that must be checked.
     Use the parameter <var>parent-key-name-root</var> to tell where this so-called parent key must be located in the
-    document.</p>
+    document. The location of the key can also be defined with two ancestor regular expressions.</p>
 
 <h2>Parameters</h2>
 <dl>
     <dt>parent-key-name</dt>
-    <dd>Regular expression that matches prerequisite key name</dd>
+    <dd>Regular expression that matches the required parent-key-name. Leave empty for no parent checking.</dd>
 </dl>
 <dl>
     <dt>parent-key-value</dt>
-    <dd>Regular expression that matches the value for the prerequisite key name</dd>
+    <dd>Regular expression that matches the value for the required parent-key</dd>
 </dl>
 <dl>
   <dt>parent-key-name-root</dt>
     <dd>Tells if the filter parent key must be located at the root level of the document (<code>yes</code>code>),
-        if itmust not be located at the root level of the document (<code>not</code>) or if it can be located anywhere
+        if it must not be located at the root level of the document (<code>not</code>) or if it can be located anywhere
         in the document (<code>anywhere</code>)</dd>
 </dl>
 <dl>
     <dt>required-key-name</dt>
     <dd>Regular expression that matches the required key name</dd>
 </dl>
+
+<dt>included-ancestors</dt>
+<dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+    The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+    So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:spring:datasource:hikari</code>.
+    If the includedAncestors regex matches the ancestor string of the key, the key is checked.
+    The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+    Leave empty for no included ancestor matching.</dd>
+<dt>excluded-ancestors</dt>
+<dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+    However, if this regex matches, the key is *not* checked.
+    The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+    Leave empty for no excluded ancestor matching.</dd>
 
 <h2>Examples</h2>
 <p>With <code>parent-key-name = kind</code> and <code>parent-key-value = Pod</code> and <code>parent-key-name-root = yes</code> and <code>required-key-name = readinessProbe</code>
@@ -69,3 +82,68 @@
               initialDelaySeconds: 3
               periodSeconds: 3
 </pre>
+
+<p>With:
+<pre>
+    required-key-name = required.*
+    parentKeyName =
+    parentKeyValue =
+    isParentKeyAtRoot =
+    included-ancestors = .*:nesting\d
+    excluded-ancestors = .*:nesting2:nesting3
+    </pre>
+the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+other1:
+    notRequired1: valueNot1
+
+nesting8: # has required key
+  required8: value
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+nesting1: # has no required.* key, violation
+  first2: valueF2
+  #required1: value1
+  nesting2:
+    #requiredYes: valueYes
+    nesting3:
+      required3Not: valueNot3
+</pre>
+
+<p>With:
+<pre>
+    required-key-name = waitDurationInOpenState.*|wait-duration-in-open-state.*
+    parentKeyName =
+    parentKeyValue =
+    isParentKeyAtRoot =
+    included-ancestors = .*:circuitbreaker
+    excluded-ancestors =
+    </pre>
+the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+iov:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-duration-in-open-state-millis: 1500
+
+resilience4j:
+  circuitbreaker:
+    failureRateThreshold: 50
+    waitDurationInOpenStateInSeconds: 60
+</pre>
+<p>the following code snippet would <strong>FAIL</strong> for two places:</p>
+<pre>
+iov:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    #wait-duration-in-open-state-millis: 1500
+
+resilience4j:
+  circuitbreaker:
+    failureRateThreshold: 50
+</pre>
+
+<ul>
+    <li>Current limitation: yaml list notation is not supported by ancestor matching.</li>
+</ul>

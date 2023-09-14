@@ -20,11 +20,15 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
+import org.yaml.snakeyaml.tokens.BlockEndToken;
+import org.yaml.snakeyaml.tokens.BlockMappingStartToken;
 import org.yaml.snakeyaml.tokens.KeyToken;
 import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 
 import java.io.IOException;
+import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
  * Abstract class used to implement to forbidden key/scalar value checks
@@ -33,29 +37,66 @@ public abstract class ForbiddenCheck extends YamlCheck {
     private static final Logger LOGGER = Loggers.get(ForbiddenCheck.class);
 
 
-    @RuleProperty(key = "key-name", description = "Regexp that matches the forbidden name")
+    @RuleProperty(key = "key-name", description = "Regexp that matches the forbidden key name")
     String keyName;
 
+    @RuleProperty(key = "included-ancestors", description = "Regexp that matches the key's ancestors to include, for example '<root>:nesting1:nesting2.*'")
+    String includedAncestors;
+
+    @RuleProperty(key = "excluded-ancestors", description = "Regexp that matches the key's ancestors to exclude, for example '.*:nesting2:nesting3'")
+    String excludedAncestors;
+
+    /* future enhancement:
+    @RuleProperty(key = "description", description = "Short description of this specific check")
+    String description;
+
+    @RuleProperty(key = "doc-url", description = "URL to documentation of this specific check")
+    String docUrl;
+    */
+    private Pattern keyNamePattern;
+    private Pattern inclAncestorsPattern;
+    private Pattern exclAncestorsPattern;
+
+    protected void initializePatterns() {
+        keyNamePattern = Pattern.compile(keyName);
+        inclAncestorsPattern = includedAncestors != null && !includedAncestors.isEmpty() ? Pattern.compile(includedAncestors) : null;
+        exclAncestorsPattern = excludedAncestors != null && !excludedAncestors.isEmpty() ? Pattern.compile(excludedAncestors) : null;
+    }
 
     @Override
     public void validate() {
         if (yamlSourceCode == null) {
             throw new IllegalStateException("Source code not set, cannot validate anything");
         }
-
         try {
             LintScanner parser = new LintScanner(new StreamReader(yamlSourceCode.getContent()));
             if (!yamlSourceCode.hasCorrectSyntax()) {
                 LOGGER.warn("Syntax error found, cannot continue checking keys: " + yamlSourceCode.getSyntaxError().getMessage());
                 return;
             }
+            initializePatterns();
+            Stack<String> ancestors = new Stack<>();
+            String lastKeyScalarValue = "<root>";
+            boolean ancestorsCheck = (includedAncestors != null && !includedAncestors.isEmpty()) || (excludedAncestors != null && !excludedAncestors.isEmpty());
+
             while (parser.hasMoreTokens()) {
                 Token t1 = parser.getToken();
+                if (ancestorsCheck) {
+                    if (t1 instanceof BlockMappingStartToken) {
+                        ancestors.push(lastKeyScalarValue);
+                    } else if (t1 instanceof BlockEndToken) {
+                        if (!ancestors.isEmpty()) ancestors.pop();
+                    }
+                }
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
                     // Peek token (instead of get) in order to leave it in the stack so that it processed again when looping
                     Token t2 = parser.peekToken();
-                    if (t2 instanceof ScalarToken && ((ScalarToken) t2).getValue().matches(keyName)) {
-                        checkNextToken(parser);
+                    if (t2 instanceof ScalarToken) {
+                        String keyScalarValue = ((ScalarToken) t2).getValue();
+                        if (keyNamePattern.matcher(keyScalarValue).matches() && ancestorsMatch(ancestors, inclAncestorsPattern, exclAncestorsPattern)) {
+                            checkNextToken(parser);
+                        }
+                        lastKeyScalarValue = keyScalarValue;
                     }
                 }
             }
@@ -66,6 +107,13 @@ public abstract class ForbiddenCheck extends YamlCheck {
         }
     }
 
+
+    private boolean ancestorsMatch(Stack<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
+        String ancestorsString = String.join(":", ancestors);
+        boolean match = inclAncestorsPattern != null ? inclAncestorsPattern.matcher(ancestorsString).matches() : true;
+        match = match && (exclAncestorsPattern != null ? !exclAncestorsPattern.matcher(ancestorsString).matches() : true);
+        return match;
+    }
 
     /**
      * Callback method used to implement a specific behavior when a key matching the {@code key-name} regex is found.

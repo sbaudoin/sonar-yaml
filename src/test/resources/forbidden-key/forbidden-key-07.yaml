@@ -1,0 +1,10 @@
+---
+nesting1:
+  first2: valueF2
+  nesting2:
+    forbiddenYes: valueYes # violation
+    forbiddenToo: valueToo # violation
+    nesting3:
+      forbidden3Not: valueNot3
+  other2:
+    forbidden2Not: valueNot2

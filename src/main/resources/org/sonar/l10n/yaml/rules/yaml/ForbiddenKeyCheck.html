@@ -1,9 +1,22 @@
 <p>Use this rule to control that the YAML documents do not contain a key. Key names can be defined as a regular expression.
+    The location of the key can be defined with two ancestor regular expressions.
 
 <h2>Parameters</h2>
 <dl>
     <dt>key-name</dt>
     <dd>Regular expression that matches forbidden key names</dd>
+    <dt>included-ancestors</dt>
+    <dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+        The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+        So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:spring:datasource:hikari</code>.
+        If the includedAncestors regex matches the ancestor string of the key, the key is checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no included ancestor matching.</dd>
+    <dt>excluded-ancestors</dt>
+    <dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+        However, if this regex matches, the key is *not* checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no excluded ancestor matching.</dd>
 </dl>
 
 <h2>Examples</h2>
@@ -19,5 +32,21 @@
 </pre>
 <pre>
     tesT: {Test: 4, key2: 8}
+</pre>
+
+<p>With <code>key-name = waitInterval.*|wait-interval.*</code> and <code>includedAncestors = .*:circuitbreaker</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+uisa:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-duration-in-open-state-millis: 1500
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+uisa:
+  circuitbreaker:
+    failure-rate-threshold-percentage: 70
+    wait-interval: 1500
 </pre>
 

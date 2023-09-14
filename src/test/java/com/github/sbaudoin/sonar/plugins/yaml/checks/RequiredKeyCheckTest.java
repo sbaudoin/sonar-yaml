@@ -55,8 +55,8 @@ public class RequiredKeyCheckTest {
         when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
 
         RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "required";
-        check.isKeyNameAtRoot = "yes";
+        check.parentKeyName = "required";
+        check.isParentKeyAtRoot = "yes";
 
         check.setYamlSourceCode(spy);
         check.validate();
@@ -68,8 +68,8 @@ public class RequiredKeyCheckTest {
     @Test
     public void testValidateSyntaxError() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
-        check.keyName = "required";
-        check.isKeyNameAtRoot = "yes";
+        check.parentKeyName = "required";
+        check.isParentKeyAtRoot = "yes";
 
         // Syntax error
         YamlSourceCode code = getSourceCode("required-key-01.yaml", false);
@@ -208,12 +208,116 @@ public class RequiredKeyCheckTest {
         assertEquals(1, code.getYamlIssues().get(0).getColumn());
     }
 
+    @Test
+    public void testValidateWithRequiredKeyAncestors1() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "";//"parent1";
+        check.parentKeyValue = "";//"value1";
+        check.isParentKeyAtRoot = "";//"yes";
+        check.requiredKeyName = "required.*";
+        check.includedAncestors = ".*:nesting\\d";
+        check.excludedAncestors = ".*:nesting2:nesting3";
 
-    private RequiredKeyCheck getRequiredCheck(String keyName, String keyValue, String isKeyNameAtRoot, String requiredKeyName) {
+        YamlSourceCode code = getSourceCode("required-key-10.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(2, code.getYamlIssues().size());
+
+        assertEquals("Required required.* key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(3, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+        assertEquals("Required required.* key not found", code.getYamlIssues().get(1).getMessage());
+        assertEquals(17, code.getYamlIssues().get(1).getLine());
+        assertEquals(1, code.getYamlIssues().get(1).getColumn());
+    }
+
+    @Test
+    public void testValidateWithRequiredKeyAncestors2() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "parent1";
+        check.parentKeyValue = "value1";
+        check.isParentKeyAtRoot = "yes";
+        check.requiredKeyName = "required.*";
+        check.includedAncestors = ".*:nesting\\d";
+        check.excludedAncestors = ".*:nesting2:nesting3";
+
+        YamlSourceCode code = getSourceCode("required-key-11.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(2, code.getYamlIssues().size());
+
+        assertEquals("Required required.* key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(3, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+        assertEquals("Required required.* key not found", code.getYamlIssues().get(1).getMessage());
+        assertEquals(17, code.getYamlIssues().get(1).getLine());
+        assertEquals(1, code.getYamlIssues().get(1).getColumn());
+    }
+
+    @Test
+    public void testValidateWithRequiredKeyAncestors3() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "parent1";
+        check.parentKeyValue = "value2";
+        check.isParentKeyAtRoot = "yes";
+        check.requiredKeyName = "required.*";
+        check.includedAncestors = "<root>:nesting\\d";
+        check.excludedAncestors = ".*:nesting2:nesting3";
+
+        YamlSourceCode code = getSourceCode("required-key-12.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(0, code.getYamlIssues().size());
+
+    }
+    @Test
+    public void testValidateWithRequiredKeyAncestors4() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "parent2";
+        check.parentKeyValue = "value2";
+        check.isParentKeyAtRoot = "yes";
+        check.requiredKeyName = "required.*";
+        check.includedAncestors = ".*:nesting\\d";
+        check.excludedAncestors = ".*:nesting2:nesting3";
+
+        YamlSourceCode code = getSourceCode("required-key-13.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Required required.* key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(17, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+    }
+
+    @Test
+    public void testValidateWithRequiredKeyAncestors5() throws IOException {
+        RequiredKeyCheck check = new RequiredKeyCheck();
+        check.parentKeyName = "";
+        check.parentKeyValue = "";
+        check.isParentKeyAtRoot = "";
+        check.requiredKeyName = "waitDurationInOpenState.*|wait-duration-in-open-state.*";
+        check.includedAncestors = ".*:circuitbreaker";
+        check.excludedAncestors = "";
+
+        YamlSourceCode code = getSourceCode("required-key-14.yaml", false);
+        check.setYamlSourceCode(code);
+        check.validate();
+        assertTrue(code.hasCorrectSyntax());
+        assertEquals(1, code.getYamlIssues().size());
+        assertEquals("Required waitDurationInOpenState.*|wait-duration-in-open-state.* key not found", code.getYamlIssues().get(0).getMessage());
+        assertEquals(3, code.getYamlIssues().get(0).getLine());
+        assertEquals(1, code.getYamlIssues().get(0).getColumn());
+    }
+
+    private RequiredKeyCheck getRequiredCheck(String parentKeyName, String parentKeyValue, String isParentKeyAtRoot, String requiredKeyName) {
       RequiredKeyCheck check = new RequiredKeyCheck();
-      check.keyName = keyName;
-      check.keyValue = keyValue;
-      check.isKeyNameAtRoot = isKeyNameAtRoot;
+      check.parentKeyName = parentKeyName;
+      check.parentKeyValue = parentKeyValue;
+      check.isParentKeyAtRoot = isParentKeyAtRoot;
       check.requiredKeyName = requiredKeyName;
       return check;
     }
