@@ -23,6 +23,6 @@ public class OctalValuesCheck extends YamlLintCheck {
     @RuleProperty(key = "forbid-implicit-octal", description = "Tells if implicit octal values are forbidden or not", defaultValue = "false")
     boolean forbidImplicitOctal;
 
-    @RuleProperty(key = "forbid-explicit-octal", description = "Tells if implicit octal values are forbidden or not", defaultValue = "false")
+    @RuleProperty(key = "forbid-explicit-octal", description = "Tells if explicit octal values are forbidden or not", defaultValue = "false")
     boolean forbidExplicitOctal;
 }
