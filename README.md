@@ -69,10 +69,10 @@ Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/relea
 
 ## Ancestors rule properties
 
-(Planned) version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule properties, for the following template checks: 
+(Planned) version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule properties, for the following template checks:
 1. forbidden key
 2. forbidden value
-3. required key and 
+3. required key and
 4. int value in range (new).
 
 This provides the possibility to apply the checks _only_ in a certain scope 1 and/or _only not_ in a certain scope 2. Current limitation: yaml list notation is not supported by ancestor matching.
