@@ -15,14 +15,11 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlQualityProfile;
 import com.github.sbaudoin.sonar.plugins.yaml.rules.YamlRulesDefinition;
 import com.github.sbaudoin.sonar.plugins.yaml.rules.YamlSensor;
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.Plugin;
 import org.sonar.api.utils.Version;
 
@@ -33,9 +30,6 @@ public class YamlPlugin implements Plugin {
     static final Version SONARQUBE_WITH_YAML_SUPPORT_VERSION = Version.create(9, 2);
 
     public YamlPlugin() {
-        // Disable INFO logs for Reflections (see )
-        LoggerContext context = (LoggerContext)LoggerFactory.getILoggerFactory();
-        context.getLogger(org.reflections.Reflections.class).setLevel(Level.ERROR);
     }
 
     @Override
