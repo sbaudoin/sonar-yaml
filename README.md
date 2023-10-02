@@ -63,7 +63,8 @@ Once installed, you may go to the profile management screens to create your own 
 
 ## Installation
 
-Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7).
+Plugin for SonarQube 6.6+ (tested on 6.7 LTS), 7.0+ (tested on 7.7, 7.8 and 7.9 LTS), 8.0+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7
+and 9.9 LTS), 10.0+ (tested on 10.2 only).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
 
@@ -79,7 +80,7 @@ This provides the possibility to apply the checks _only_ in a certain scope 1 an
 
 ## Troubleshooting/known issues
 
-### Scan fail with "ERROR: Caused by: _x_ is not a valid line offset for pointer. File _xyz.yml_ has _y_ character(s) at line _z_"
+### Scan fails with "ERROR: Caused by: _x_ is not a valid line offset for pointer. File _xyz.yml_ has _y_ character(s) at line _z_"
 
 This may be due to [issue #6](https://github.com/sbaudoin/sonar-yaml/issues/6): if your YAML file contains YAML-valid UTF-8 line break characters such as U+2028, SonarQube
 may just strip them, causing the character and lines references being different between the YAML parser and SonarQube.
@@ -88,7 +89,7 @@ If such an error is met, go to the main or project general settings of the YAML 
 This will make the plugin to ignore some valid UTF-8 line break characters (U+2028, U+2029 and U+0085) so that SonarQube and the plugin
 both use the same character and line indices and, the scan should complete.
 
-### SonarQube 9.2 no longer start after installing the plugin
+### SonarQube 9.2 no longer starts after installing the plugin
 
-This is due to the fact that SonarQube 9.2 has brought native support to the YAML language. See [#58](https://github.com/sbaudoin/sonar-yaml/pull/58)
-and [#63](https://github.com/sbaudoin/sonar-yaml/issues/63). To fix the issue, please install the plugin version 1.7+
+This is due to the fact that SonarQube 9.2 has brought native support to the YAML language. See [PR #58](https://github.com/sbaudoin/sonar-yaml/pull/58)
+and [issue #63](https://github.com/sbaudoin/sonar-yaml/issues/63). To fix the issue, please install the plugin version 1.7+
