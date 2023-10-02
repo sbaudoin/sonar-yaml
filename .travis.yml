@@ -7,7 +7,7 @@ addons:
   sonarcloud:
     organization: "sbaudoin-github"
     token:
-      secure: "m88KirUCH0/d7o2u19b1vBOyQOcMLXQmlAx3GdoYNQgOdjzLVqHUV70+FmIeVM/DqgzyUG31BZkwWR5mpl0S7ZKQ3IlES6xPp7xvf4QbVsmVoWTBce69/Nfn2YsecmEFGwhRJ4+0ehxaE3/3NL0WDCCCkVbnpsVaiCaru+b1jdmX5VvX0yIOM8lmKStr1Tbdvb05tCl0dN6Q4bZUU/hMw/RXHLG9+kiDFB94Wuo7QUiZA+lAA9//tnPCaYHtAOF9HVByBZTQdYJghwX0RnR3y7irtsLaW48r1EHO+2I/dHzJKXX131ZR2f9M2UuSk5fOTQ59emcLWKA6ILeeVdYyNr/V7ZmcS70j3YzhQE6Q05KzEqG090onRltq3r8J+OmlzjNUE0Zw6EU4wrCA2zBCQUvUHyyMiXsCe892GiBSU55BVTa7RBOSo2zrYhR9GOXKIv6uVIqavlOOKOXKF3+8AZZcc0uABEnR9YD9QfU9zXsTzZhYTuvIQ1a0XUsueSVRYpzr6hS+o8l4FFOC0PSskeelWFFlbM2CpDUCc5netRi9M44y9yCxC0S+DemUuKxRd8TpRAI4EWADkQUuYg4YagDQzirZZTORmYjURwDxYRUebi/VMh6vPam6e7oTr3EqlBsEQSeHa7Cl/9lsCMzFRFNfMO6+BmPmzzf0W2vYRh4="
+      secure: "iyDH2uGEKU53Bma09YYljBBYjGhqxWbLXbkiADMA8nBc73754bO/9uQLq1NGhVWi3stFGfxQ2LKBoCL1lqmLU54zN11WMZBW43ychiQsMx9M4XUSHyuEM9JPpseaL56kl99Vg8bJgvmsM/X/jo6GYWR72PhPnhOR70i5JZAv+2av9F7ST43m8MB2n6g0ToE5hjk/2KUpLgHKvdu94Oanvd5LcpIklPlMbJLCNUx4PrAyBuHxubXX0/IsIuRmEPdUPkZbeSuBxAEcxHBBj8mawIdDE1e70fWASb0xHsbnMe0ChcpUZrAE9qIchZQN5OtfTg3z73pxjvuLvTrpWX6f30pIAXgteDk1lQBksKlk0DHxE1/4m/vobZL+DjvGJjGrwV1iD2FiO3iBxO+DTaSHGqHbTdczf/BslqtdI5R+Hd3kuSk0g2swsVs9IhBtJo22BnY5CPub59nhHNrfEmEfMOo7TTf81GJPXyEtUazcz4PRqIHyn8U5WXq4+oPs0Cv5vimIaorK1BFVzfwDqa4n1CXF3bpnqntcpX5R79kDOqwTJevoiBc6EO65iPeLaTZltfvVch+sohthdTSW2tYM91lNxICWInWh5jrYho7eWEyL8b+MIGIIBchSVa/AqNW/QdHIOBc8SCrdMWLhDTbmkYvEtcoSXQb4is87pByQi44="
 sudo: required
 services:
   - docker
@@ -21,7 +21,7 @@ before_install:
 install:
   - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 script:
-  - 'if [ -z "$SONAR_TOKEN" ]; then mvn clean package -P audit; else mvn clean package sonar:sonar -P audit; fi'
+  - 'if [ -z "$SONAR_TOKEN" ]; then mvn clean package -P audit; else mvn clean package sonar:sonar -Dsonar.projectKey=sbaudoin_sonar-yaml -P audit; fi'
   - bash it/it.sh 6.7-community 3.4.0.1729 || travis_terminate 1
   - bash it/it.sh 7.9-community 3.4.0.1729 11 || travis_terminate 1
   - bash it/it.sh 8.9-community 4.5.0.2216 11 || travis_terminate 1
