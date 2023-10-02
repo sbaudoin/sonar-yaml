@@ -25,8 +25,8 @@ script:
   - bash it/it.sh 6.7-community 3.4.0.1729 || travis_terminate 1
   - bash it/it.sh 7.9-community 3.4.0.1729 11 || travis_terminate 1
   - bash it/it.sh 8.9-community 4.5.0.2216 11 || travis_terminate 1
-  - bash it/it.sh 9.1-community 4.6.2.2472 11 || travis_terminate 1
-  - bash it/it.sh 9.2-community 4.6.2.2472 11
+  - bash it/it.sh 9.9-community 4.8.1.3023 11 || travis_terminate 1
+  - bash it/it.sh 10.2-community 5.0.1.3006 17
 deploy:
   - provider: script
     script: bash .travis/deploy.sh

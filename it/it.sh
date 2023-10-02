@@ -21,19 +21,20 @@ echo "Starting SonarQube..."
 docker-compose -f $SCRIPT_DIR/docker-compose.yml up -d sonarqube
 CONTAINER_NAME=$(docker ps --format "{{.Names}}" | grep 'it_sonarqube_1.*' | head -1)
 # Wait for SonarQube to be up
-grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME)
+grep -q -e "SonarQube is up" -e "SonarQube is operational" <(docker logs --follow --tail 0 $CONTAINER_NAME)
 # Copy the plugin
 MAVEN_VERSION=$(grep '<version>' $SCRIPT_DIR/../pom.xml | head -1 | sed 's/<\/\?version>//g'| awk '{print $1}')
 docker cp $SCRIPT_DIR/../target/sonar-yaml-plugin-$MAVEN_VERSION.jar $CONTAINER_NAME:/opt/sonarqube/extensions/plugins
 # Restart SonarQube
 docker-compose -f $SCRIPT_DIR/docker-compose.yml restart sonarqube
 # Wait for SonarQube to be up
-grep -q "SonarQube is up" <(docker logs --follow --tail 0 $CONTAINER_NAME)
+grep -q -e "SonarQube is up" -e "SonarQube is operational" <(docker logs --follow --tail 0 $CONTAINER_NAME)
 echo "SonarQube started!"
 
 # Check plug-in installation
 echo "Checking plugin installation..."
 docker exec -u root $CONTAINER_NAME bash -c "if grep -q Alpine /etc/issue; then apk update && apk add -q curl; fi"
+docker exec -u root $CONTAINER_NAME bash -c "if grep -q Ubuntu /etc/issue; then apt update && apt install curl; fi"
 if ! docker exec $CONTAINER_NAME curl -su admin:admin http://localhost:9000/api/plugins/installed | python -c '
 import sys
 import json
