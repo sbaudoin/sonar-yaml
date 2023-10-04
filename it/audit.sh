@@ -20,7 +20,8 @@ then
 fi
 
 # Check for warnings
-if grep -q "^WARN: " /tmp/scanner.log
+# Ugly fix for SQ 9.8+ that has deprecated login/password authentication but still allows it.
+if grep -v "Property 'sonar.password' is deprecated" /tmp/scanner.log | grep -q "^WARN: "
 then
     echo "Warnings found" >&2
     exit 1
