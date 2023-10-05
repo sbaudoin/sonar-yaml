@@ -3,7 +3,7 @@ set -o pipefail
 
 # Install sonar-runner
 cd /tmp
-if [ -f /bin/microdnf ]; then microdnf install wget unzip; fi
+if [ -f /bin/microdnf ]; then microdnf install wget unzip &>/dev/null; fi
 wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SCANNER_VERSION.zip
 unzip -q sonar-scanner-cli-$SCANNER_VERSION.zip
 export PATH=/tmp/sonar-scanner-$SCANNER_VERSION/bin:$PATH
@@ -35,7 +35,7 @@ then
     apt-get install -y python3-pip &>/dev/null
 elif grep -q Kernel /etc/issue
 then
-    microdnf install wget unzip python3-pip
+    microdnf install python3-pip &>/dev/null
 else
     apk update
     apk add -q curl gcc musl-dev libffi-dev openssl-dev py3 py3-dev
@@ -67,11 +67,13 @@ time.sleep(10)
 
 r = requests.get('http://sonarqube:9000/api/measures/component?component=my:project&metricKeys=ncloc,comment_lines,lines,files', auth=('admin', 'admin'))
 if r.status_code != 200:
+    print('ERROR: Cannot get global metrics: {}'.format(r.content), file=sys.stderr)
     sys.exit(1)
 
 data = r.json()
 
 if 'component' not in data or 'measures' not in data['component']:
+    print('ERROR: Invalid or unexpected JSON: {}'.format(str(data)), file=sys.stderr)
     sys.exit(1)
 
 lines = ncloc = files = directories = comment_lines = False
@@ -97,11 +99,13 @@ for measure in data['component']['measures']:
 
 r = requests.get('http://sonarqube:9000/api/issues/search?componentKeys=my:project:src/directory/min-spaces.yaml&statuses=OPEN', auth=('admin', 'admin'))
 if r.status_code != 200:
+    print('ERROR: Cannot get src/directory/min-spaces.yaml metrics: {}'.format(r.content), file=sys.stderr)
     sys.exit(1)
 
 data = r.json()
 
 if data['total'] != 1:
+    print('ERROR: Invalid total: {}'.format(str(data['total'])), file=sys.stderr)
     sys.exit(1)
 issues = False
 if data['issues'][0]['message'] == 'too many spaces inside braces (braces)' and data['issues'][0]['line'] == 2:
