@@ -93,3 +93,8 @@ both use the same character and line indices and, the scan should complete.
 
 This is due to the fact that SonarQube 9.2 has brought native support to the YAML language. See [PR #58](https://github.com/sbaudoin/sonar-yaml/pull/58)
 and [issue #63](https://github.com/sbaudoin/sonar-yaml/issues/63). To fix the issue, please install the plugin version 1.7+
+
+### Scan fails with "java.lang.UnsupportedOperationException: Can not add the same measure twice"
+
+This is due to the fact that some other plugin has already saved measures for the YAML files. See [issue #70](https://github.com/sbaudoin/sonar-yaml/issues/70).
+This issue is fixed with version 1.8.0. If you cannot upgrade, you must disable this plugin or the other plugins that scan YAML files.
