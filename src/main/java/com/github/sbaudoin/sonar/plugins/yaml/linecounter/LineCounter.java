@@ -78,7 +78,14 @@ public class LineCounter {
                 fileLinesContext.setIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, line, data.effectiveCommentLines().contains(line) ? 1 : 0);
             }
         }
-        fileLinesContext.save();
+        try {
+            fileLinesContext.save();
+        } catch (UnsupportedOperationException e) {
+            // If another plugin has already saved measures for the file then we get this exception
+            // As sensors are not supposed to read measures, there is no other way to proceed.
+            LOGGER.warn("Cannot save measures for file " + yamlFile.filename() + ", ignoring them", e);
+            return;
+        }
 
         saveMeasure(context, yamlFile, CoreMetrics.COMMENT_LINES, data.effectiveCommentLines().size());
         saveMeasure(context, yamlFile, CoreMetrics.NCLOC, data.linesOfCodeLines().size());
