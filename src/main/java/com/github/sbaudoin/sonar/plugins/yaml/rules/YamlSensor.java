@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,7 @@ public class YamlSensor implements Sensor {
     private final FileSystem fileSystem;
     private final FilePredicate mainFilesPredicate;
     private final FileLinesContextFactory fileLinesContextFactory;
+    private List<String> expectedSuffixes = null;
 
     protected final YamlLintConfig localConfig;
 
@@ -106,6 +108,11 @@ public class YamlSensor implements Sensor {
         }
 
         for (InputFile inputFile : fileSystem.inputFiles(mainFilesPredicate)) {
+            if (!fileHasExpectedSuffix(inputFile, context)) {
+                LOGGER.debug("File " + inputFile.filename() + " does not have an expected suffix, ignoring it");
+                continue;
+            }
+
             LOGGER.debug("Analyzing file: " + inputFile.filename());
             try {
                 YamlSourceCode sourceCode = new YamlSourceCode(inputFile, context.config().getBoolean(YamlSettings.FILTER_UTF8_LB_KEY));
@@ -126,6 +133,20 @@ public class YamlSensor implements Sensor {
         }
     }
 
+
+    /**
+     * Tells if the passed file has a suffix expected as per the plugin configuration
+     *
+     * @param inputFile the file to check
+     * @param context the runtime context (used to get the plugin configuration)
+     * @return {@code true} if the file's suffix matches one of those configured, {@code false} if not
+     */
+    private boolean fileHasExpectedSuffix(InputFile inputFile, SensorContext context) {
+        if (expectedSuffixes == null) {
+            expectedSuffixes = Arrays.asList(YamlLanguage.getYamlFilesSuffixes(context.config()));
+        }
+        return expectedSuffixes.stream().anyMatch(s -> inputFile.filename().endsWith(s));
+    }
 
     /**
      * Calculates and feeds line measures (comments, actual number of code lines)
