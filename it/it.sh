@@ -34,7 +34,7 @@ echo "SonarQube started!"
 # Check plug-in installation
 echo "Checking plugin installation..."
 docker exec -u root $CONTAINER_NAME bash -c "if grep -q Alpine /etc/issue; then apk update && apk add -q curl; fi"
-docker exec -u root $CONTAINER_NAME bash -c "if grep -q Ubuntu /etc/issue; then apt update && apt install curl; fi"
+docker exec -u root $CONTAINER_NAME bash -c "if grep -q Ubuntu /etc/issue; then apt update && apt install -y curl; fi"
 if ! docker exec $CONTAINER_NAME curl -su admin:admin http://localhost:9000/api/plugins/installed | python -c '
 import sys
 import json
