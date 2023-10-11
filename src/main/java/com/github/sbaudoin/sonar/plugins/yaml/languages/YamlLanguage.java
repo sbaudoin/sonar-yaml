@@ -52,11 +52,7 @@ public class YamlLanguage extends AbstractLanguage {
      */
     @Override
     public String[] getFileSuffixes() {
-        String[] suffixes = filterEmptyStrings(config.getStringArray(YamlSettings.FILE_SUFFIXES_KEY));
-        if (suffixes.length == 0) {
-            suffixes = StringUtils.split(YamlSettings.FILE_SUFFIXES_DEFAULT_VALUE, ",");
-        }
-        return suffixes;
+        return getYamlFilesSuffixes(config);
     }
 
     @Override
@@ -70,13 +66,28 @@ public class YamlLanguage extends AbstractLanguage {
     }
 
     /**
+     * Returns the suffixes of expected YAML files
+     *
+     * @param config the SonarQube configuration for this language
+     * @return the list of expected suffixes (possibly the default ones)
+     */
+    public static String[] getYamlFilesSuffixes(Configuration config) {
+        String[] suffixes = filterEmptyStrings(config.getStringArray(YamlSettings.FILE_SUFFIXES_KEY));
+        if (suffixes.length == 0) {
+            suffixes = StringUtils.split(YamlSettings.FILE_SUFFIXES_DEFAULT_VALUE, ",");
+        }
+        return suffixes;
+    }
+
+
+    /**
      * Cleans up the passed String array to remove empty strings, i.e. strings that are {@code null} or contain only
      * spaces
      *
      * @param stringArray an array of strings to be cleaned up
      * @return the cleaned up version of {@code stringArray}
      */
-    private String[] filterEmptyStrings(String[] stringArray) {
+    private static String[] filterEmptyStrings(String[] stringArray) {
         List<String> nonEmptyStrings = new ArrayList<>();
         for (String string : stringArray) {
             if (StringUtils.isNotBlank(string.trim())) {
