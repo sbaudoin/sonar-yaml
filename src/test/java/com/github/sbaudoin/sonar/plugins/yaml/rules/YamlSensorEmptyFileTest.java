@@ -25,6 +25,7 @@ import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
@@ -53,9 +54,8 @@ public class YamlSensorEmptyFileTest {
         fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
 
         ActiveRules activeRules = new ActiveRulesBuilder()
-                .create(ruleKey)
-                .setParam("present", "true")
-                .activate()
+                .addRule(new NewActiveRule.Builder().setRuleKey(ruleKey)
+                         .setParam("present", "true").build())
                 .build();
         context.setActiveRules(activeRules);
         CheckFactory checkFactory = new CheckFactory(activeRules);

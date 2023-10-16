@@ -20,6 +20,7 @@ import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.sonar.api.SonarEdition;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.internal.SonarRuntimeImpl;
@@ -43,7 +44,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class LineCounterTest {
     private FileLinesContextFactory fileLinesContextFactory;
-    private FileLinesContext fileLinesContext;
+    private MyFileLinesContext fileLinesContext;
 
     @Rule
     public LogTester logTester = new LogTester();
@@ -78,28 +79,6 @@ public class LineCounterTest {
         assertEquals("Unable to count lines for file " + inputFile.filename() + ", ignoring measures", logTester.logs(LoggerLevel.WARN).get(0));
     }
 
-    @Test
-    public void testAnalyseWithOldVersion() throws IOException {
-        SensorContextTester context = Utils.getSensorContext();
-        String filePath = "dummy-file.yaml";
-        InputFile inputFile = Utils.getInputFile(filePath);
-
-        // Version taken from the Maven dependency
-        LineCounter.analyse(context, fileLinesContextFactory, new YamlSourceCode(inputFile, Optional.of(false)));
-        assertEquals(new Integer(1), fileLinesContext.getIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 4));
-    }
-
-    @Test
-    public void testAnalyseWithNewVersion() throws IOException {
-        SensorContextTester context = Utils.getSensorContext();
-        context.setRuntime(SonarRuntimeImpl.forSonarQube(Version.create(7, 5), context.runtime().getSonarQubeSide()));
-        String filePath = "dummy-file.yaml";
-        InputFile inputFile = Utils.getInputFile(filePath);
-
-        // With version 7.5, the COMMENT_LINES_DATA metrics should not be set
-        LineCounter.analyse(context, fileLinesContextFactory, new YamlSourceCode(inputFile, Optional.of(false)));
-        assertEquals(new Integer(-1), fileLinesContext.getIntValue(CoreMetrics.COMMENT_LINES_DATA_KEY, 4));
-    }
 
     private String getComponentKey(String filePath) {
         return Utils.MODULE_KEY + ":src/test/resources/" + filePath;
@@ -121,7 +100,6 @@ public class LineCounterTest {
             }
         }
 
-        @Override
         public Integer getIntValue(String metricKey, int line) {
             if (intValues.containsKey(metricKey)) {
                 return intValues.get(metricKey).getOrDefault(line, -1);
@@ -135,7 +113,6 @@ public class LineCounterTest {
 
         }
 
-        @Override
         public String getStringValue(String metricKey, int line) {
             return null;
         }

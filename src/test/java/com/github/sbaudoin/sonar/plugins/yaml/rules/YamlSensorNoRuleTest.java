@@ -24,6 +24,7 @@ import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
@@ -63,8 +64,7 @@ public class YamlSensorNoRuleTest {
         context.fileSystem().add(playbook1).add(playbook2).add(playbook3);
 
         ActiveRules activeRules = new ActiveRulesBuilder()
-                .create(RuleKey.of("foo", "bar"))
-                .activate()
+                .addRule(new NewActiveRule.Builder().setRuleKey(RuleKey.of("foo", "bar")).build())
                 .build();
         YamlSensor sensor = new YamlSensor(fs, new CheckFactory(activeRules), fileLinesContextFactory);
 

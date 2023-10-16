@@ -33,6 +33,7 @@ import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.Configuration;
@@ -243,16 +244,13 @@ public class YamlSensorTest {
         ActiveRules activeRules;
         if (activateParsingErrorCheck) {
             activeRules = new ActiveRulesBuilder()
-                    .create(ruleKey)
-                    .activate()
-                    .create(parsingErrorCheckRuleKey)
-                    .setInternalKey(parsingErrorCheckKey)
-                    .activate()
+                    .addRule(new NewActiveRule.Builder().setRuleKey(ruleKey).build())
+                    .addRule(new NewActiveRule.Builder().setRuleKey(parsingErrorCheckRuleKey)
+                             .setInternalKey(parsingErrorCheckKey).build())
                     .build();
         } else {
             activeRules = new ActiveRulesBuilder()
-                    .create(ruleKey)
-                    .activate()
+                    .addRule(new NewActiveRule.Builder().setRuleKey(ruleKey).build())
                     .build();
         }
         context.setActiveRules(activeRules);
