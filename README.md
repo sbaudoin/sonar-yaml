@@ -20,8 +20,8 @@ YAML SonarQube Plugin
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.sbaudoin/sonar-yaml-plugin.svg?label=Maven%20Central)](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.sbaudoin%22%20AND%20a%3A%22sonar-yaml-plugin%22)
 [![Build Status](https://travis-ci.org/sbaudoin/sonar-yaml.svg?branch=master)](https://travis-ci.org/sbaudoin/sonar-yaml)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.sbaudoin:sonar-yaml-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.sbaudoin:sonar-yaml-plugin)
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.sbaudoin:sonar-yaml-plugin&metric=coverage)](https://sonarcloud.io/dashboard?id=com.github.sbaudoin:sonar-yaml-plugin)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=sbaudoin_sonar-yaml&metric=alert_status)](https://sonarcloud.io/dashboard?id=sbaudoin_sonar-yaml)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=sbaudoin_sonar-yaml&metric=coverage)](https://sonarcloud.io/dashboard?id=sbaudoin_sonar-yaml)
 
 SonarQube plugin to analyze YAML code based on [yamllint](https://github.com/sbaudoin/yamllint).
 
