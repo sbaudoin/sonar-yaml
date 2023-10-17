@@ -43,17 +43,23 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class LineCounterTest {
-    private FileLinesContextFactory fileLinesContextFactory;
-    private MyFileLinesContext fileLinesContext;
+    private FileLinesContextFactory fileLinesContextFactory, bogusFileLinesContextFactory;
+    private MyFileLinesContext fileLinesContext, bogusFileLinesContext;
 
     @Rule
     public LogTester logTester = new LogTester();
 
     @Before
     public void init() {
+        // Working factory
         fileLinesContextFactory = mock(FileLinesContextFactory.class);
         fileLinesContext = new MyFileLinesContext();
         when(fileLinesContextFactory.createFor(any(InputFile.class))).thenReturn(fileLinesContext);
+
+        // Bogus factory
+        bogusFileLinesContextFactory = mock(FileLinesContextFactory.class);
+        bogusFileLinesContext = new MyBogusFileLinesContext();
+        when(bogusFileLinesContextFactory.createFor(any(InputFile.class))).thenReturn(bogusFileLinesContext);
     }
 
     @Test
@@ -77,6 +83,17 @@ public class LineCounterTest {
         LineCounter.analyse(context, fileLinesContextFactory, spy);
         assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
         assertEquals("Unable to count lines for file " + inputFile.filename() + ", ignoring measures", logTester.logs(LoggerLevel.WARN).get(0));
+    }
+
+    @Test
+    public void testUnsupportedOperationException() throws IOException {
+        SensorContextTester context = Utils.getSensorContext();
+        InputFile inputFile = Utils.getInputFile("dummy-file.yaml");
+        YamlSourceCode sourceCode = new YamlSourceCode(inputFile, Optional.of(false));
+
+        LineCounter.analyse(context, bogusFileLinesContextFactory, sourceCode);
+        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
+        assertEquals("Cannot save measures for file " + inputFile.filename() + ", ignoring them", logTester.logs(LoggerLevel.WARN).get(0));
     }
 
 
@@ -120,6 +137,13 @@ public class LineCounterTest {
         @Override
         public void save() {
 
+        }
+    }
+
+    private static class MyBogusFileLinesContext extends MyFileLinesContext {
+        @Override
+        public void save() {
+            throw new UnsupportedOperationException("Measure already set");
         }
     }
 }
