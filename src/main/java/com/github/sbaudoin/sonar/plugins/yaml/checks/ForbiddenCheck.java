@@ -27,7 +27,8 @@ import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 
 import java.io.IOException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.regex.Pattern;
 
 /**
@@ -75,7 +76,7 @@ public abstract class ForbiddenCheck extends YamlCheck {
                 return;
             }
             initializePatterns();
-            Stack<String> ancestors = new Stack<>();
+            Deque<String> ancestors = new ArrayDeque<>();
             String lastKeyScalarValue = "<root>";
             boolean ancestorsCheck = (includedAncestors != null && !includedAncestors.isEmpty()) || (excludedAncestors != null && !excludedAncestors.isEmpty());
 
@@ -84,8 +85,8 @@ public abstract class ForbiddenCheck extends YamlCheck {
                 if (ancestorsCheck) {
                     if (t1 instanceof BlockMappingStartToken) {
                         ancestors.push(lastKeyScalarValue);
-                    } else if (t1 instanceof BlockEndToken) {
-                        if (!ancestors.isEmpty()) ancestors.pop();
+                    } else if (t1 instanceof BlockEndToken && !ancestors.isEmpty()) {
+                        ancestors.pop();
                     }
                 }
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
@@ -108,10 +109,10 @@ public abstract class ForbiddenCheck extends YamlCheck {
     }
 
 
-    private boolean ancestorsMatch(Stack<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
-        String ancestorsString = String.join(":", ancestors);
-        boolean match = inclAncestorsPattern != null ? inclAncestorsPattern.matcher(ancestorsString).matches() : true;
-        match = match && (exclAncestorsPattern != null ? !exclAncestorsPattern.matcher(ancestorsString).matches() : true);
+    private boolean ancestorsMatch(Deque<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
+        String ancestorsString = String.join(":", (Iterable<String>) ancestors::descendingIterator);
+        boolean match = inclAncestorsPattern == null || inclAncestorsPattern.matcher(ancestorsString).matches();
+        match = match && (exclAncestorsPattern == null || !exclAncestorsPattern.matcher(ancestorsString).matches());
         return match;
     }
 

@@ -29,9 +29,6 @@ import org.sonar.api.utils.Version;
 public class YamlPlugin implements Plugin {
     static final Version SONARQUBE_WITH_YAML_SUPPORT_VERSION = Version.create(9, 2);
 
-    public YamlPlugin() {
-    }
-
     @Override
     public void define(Context context) {
         boolean hasBuiltinYamlSupport = hasBuiltinYamlLanguageSupport(context);

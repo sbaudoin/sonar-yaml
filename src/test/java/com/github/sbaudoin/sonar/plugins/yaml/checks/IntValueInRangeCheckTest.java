@@ -39,8 +39,9 @@ public class IntValueInRangeCheckTest {
 
     @Test
     public void testFailedValidateNoSource() {
+        IntValueInRangeCheck c = new IntValueInRangeCheck();
         try {
-            new IntValueInRangeCheck().validate();
+            c.validate();
             fail("No source code should raise an exception");
         } catch (IllegalStateException e) {
             assertEquals("Source code not set, cannot validate anything", e.getMessage());

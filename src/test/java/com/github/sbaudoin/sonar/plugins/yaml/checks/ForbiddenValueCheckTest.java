@@ -39,8 +39,9 @@ public class ForbiddenValueCheckTest {
 
     @Test
     public void testFailedValidateNoSource() {
+        ForbiddenValueCheck c = new ForbiddenValueCheck();
         try {
-            new ForbiddenValueCheck().validate();
+            c.validate();
             fail("No source code should raise an exception");
         } catch (IllegalStateException e) {
             assertEquals("Source code not set, cannot validate anything", e.getMessage());
