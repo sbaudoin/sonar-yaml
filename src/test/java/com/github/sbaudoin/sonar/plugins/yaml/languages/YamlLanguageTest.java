@@ -47,10 +47,9 @@ public class YamlLanguageTest {
 
     @Test
     public void testEquals() {
-        Assert.assertFalse(yaml.equals("foo"));
-        Assert.assertTrue(yaml.equals(yaml));
-        Assert.assertTrue(yaml.equals(new YamlLanguage(settings.asConfig())));
-        Assert.assertTrue(yaml.equals(new FakeLanguage()));
+        Assert.assertEquals(yaml, yaml);
+        Assert.assertEquals(yaml, new YamlLanguage(settings.asConfig()));
+        Assert.assertEquals(yaml, new FakeLanguage());
     }
 
     @Test

@@ -39,8 +39,9 @@ public class YamlLintCheckTest {
 
     @Test
     public void testValidate() throws IOException {
+        DummyYamlCheck c = new DummyYamlCheck();
         try {
-            new DummyYamlCheck().validate();
+            c.validate();
             fail("validate should fail if no source code");
         } catch (IllegalStateException e) {
             assertEquals("Source code not set, cannot validate anything", e.getMessage());

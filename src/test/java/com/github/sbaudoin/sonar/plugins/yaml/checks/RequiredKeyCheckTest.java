@@ -39,8 +39,9 @@ public class RequiredKeyCheckTest {
 
     @Test
     public void testFailedValidateNoSource() {
+        RequiredKeyCheck c = new RequiredKeyCheck();
         try {
-            new RequiredKeyCheck().validate();
+            c.validate();
             fail("No source code should raise an exception");
         } catch (IllegalStateException e) {
             assertEquals("Source code not set, cannot validate anything", e.getMessage());

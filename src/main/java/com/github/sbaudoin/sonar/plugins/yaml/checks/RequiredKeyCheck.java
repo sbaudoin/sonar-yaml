@@ -28,7 +28,8 @@ import org.yaml.snakeyaml.tokens.ScalarToken;
 import org.yaml.snakeyaml.tokens.Token;
 import org.yaml.snakeyaml.tokens.ValueToken;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class RequiredKeyCheck extends YamlCheck {
             final Pattern inclAncestorsPattern = includedAncestors != null && !includedAncestors.isEmpty() ? Pattern.compile(includedAncestors) : null;
             final Pattern exclAncestorsPattern = excludedAncestors != null && !excludedAncestors.isEmpty() ? Pattern.compile(excludedAncestors) : null;
 
-            final Stack<String> ancestors = new Stack<>();
+            final Deque<String> ancestors = new ArrayDeque<>();
             String prevKeyScalarValue = "<root>";
             boolean prevAncestorsMatch = false;
             int ancestorLine = 0;
@@ -99,8 +100,8 @@ public class RequiredKeyCheck extends YamlCheck {
                     if (t1 instanceof BlockMappingStartToken) {
                         ancestors.push(prevKeyScalarValue);
                         ancestorLine = t1.getStartMark().getLine() - 1; // one line up
-                    } else if (t1 instanceof BlockEndToken) {
-                        if (!ancestors.isEmpty()) ancestors.pop();
+                    } else if (t1 instanceof BlockEndToken && !ancestors.isEmpty()) {
+                        ancestors.pop();
                     }
                 }
                 if (t1 instanceof KeyToken && parser.hasMoreTokens()) {
@@ -164,13 +165,13 @@ public class RequiredKeyCheck extends YamlCheck {
     }
 
     private boolean parentKeyMatches(String keyScalarValue, Pattern parentKeyNamePattern) {
-        return parentKeyNamePattern != null ? parentKeyNamePattern.matcher(keyScalarValue).matches() : true;
+        return parentKeyNamePattern == null || parentKeyNamePattern.matcher(keyScalarValue).matches();
     }
 
-    private boolean ancestorsMatch(Stack<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
-        String ancestorsString = String.join(":", ancestors);
-        boolean match = inclAncestorsPattern != null ? inclAncestorsPattern.matcher(ancestorsString).matches() : true;
-        match = match && (exclAncestorsPattern != null ? !exclAncestorsPattern.matcher(ancestorsString).matches() : true);
+    private boolean ancestorsMatch(Deque<String> ancestors, Pattern inclAncestorsPattern, Pattern exclAncestorsPattern) {
+        String ancestorsString = String.join(":", (Iterable<String>) ancestors::descendingIterator);
+        boolean match = inclAncestorsPattern == null || inclAncestorsPattern.matcher(ancestorsString).matches();
+        match = match && (exclAncestorsPattern == null || !exclAncestorsPattern.matcher(ancestorsString).matches());
         return match;
     }
 
