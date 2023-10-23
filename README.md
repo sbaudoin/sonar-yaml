@@ -57,7 +57,7 @@ Some additional rules are provided but not enabled by default:
 * Key ordering check
 * Quoted strings check (new in 1.4.0)
 * Required key check (template, new in 1.5.0)
-* Int value in range check (template, planned/new in 1.8.0)
+* Int value in range check (template, new in 1.8.0)
 
 Once installed, you may go to the profile management screens to create your own profile and add or remove rules, change levels, and parameters, etc.
 
@@ -70,11 +70,11 @@ Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/relea
 
 ## Ancestors rule properties
 
-(Planned) version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule properties, for the following template checks:
+Version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule properties, for the following template checks:
 1. forbidden key
 2. forbidden value
 3. required key and
-4. int value in range (new).
+4. int value in range (new check in 1.8.0)
 
 This provides the possibility to apply the checks _only_ in a certain scope 1 and/or _only not_ in a certain scope 2. Current limitation: yaml list notation is not supported by ancestor matching.
 
