@@ -22,7 +22,10 @@ fi
 
 # Check for warnings
 # Ugly fix for SQ 9.8+ that has deprecated login/password authentication but still allows it.
-if grep -iv "propert.* 'sonar.password' .* deprecated" /tmp/scanner.log | grep -q "^WARN: "
+# Also ignore expected warnings regarding k8s.yaml
+if grep -iv "propert.* 'sonar.password' .* deprecated" /tmp/scanner.log \
+ | grep -v "Cannot save .* k8s.yml, ignoring" \
+ | grep -q "^WARN: "
 then
     echo "Warnings found" >&2
     exit 1
@@ -78,21 +81,21 @@ if 'component' not in data or 'measures' not in data['component']:
 
 lines = ncloc = files = directories = comment_lines = False
 for measure in data['component']['measures']:
-    if measure['metric'] == 'lines' and measure['value'] == '16':
+    if measure['metric'] == 'lines' and measure['value'] == '31':
         print('lines metrics OK')
         lines = True
-#    if measure['metric'] == 'ncloc' and measure['value'] == '13':
+#    if measure['metric'] == 'ncloc' and measure['value'] == '27':
 #        print('ncloc metrics OK')
 #        ncloc = True
     ncloc = True
-    if measure['metric'] == 'files' and measure['value'] == '2':
+    if measure['metric'] == 'files' and measure['value'] == '3':
         print('files metrics OK')
         files = True
 #    if measure['metric'] == 'directories' and measure['value'] == '2':
 #        print('directories metrics OK')
 #        directories = True
     directories = True
-#    if measure['metric'] == 'comment_lines' and measure['value'] == '1':
+#    if measure['metric'] == 'comment_lines' and measure['value'] == '2':
 #        print('comment_lines metrics OK')
 #        comment_lines = True
     comment_lines = True

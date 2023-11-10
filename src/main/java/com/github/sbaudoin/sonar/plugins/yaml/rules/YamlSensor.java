@@ -311,7 +311,17 @@ public class YamlSensor implements Sensor {
         for (HighlightingData highlightingData : highlightingDataList) {
             highlightingData.highlight(highlighting);
         }
-        highlighting.save();
+        try {
+            highlighting.save();
+        } catch (UnsupportedOperationException e) {
+            String msg = "Cannot save highlighting for file " + sourceCode.getYamlFile().filename() + ", ignoring";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.warn(msg, e);
+            } else {
+                LOGGER.warn(msg);
+            }
+            return;
+        }
     }
 
     /**

@@ -79,7 +79,12 @@ public class LineCounter {
         } catch (UnsupportedOperationException e) {
             // If another plugin has already saved measures for the file then we get this exception
             // As sensors are not supposed to read measures, there is no other way to proceed.
-            LOGGER.warn("Cannot save measures for file " + yamlFile.filename() + ", ignoring them", e);
+            String msg = "Cannot save measures for file " + yamlFile.filename() + ", ignoring them";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.warn(msg, e);
+            } else {
+                LOGGER.warn(msg);
+            }
             return;
         }
 
