@@ -35,8 +35,7 @@ deploy:
       repo: sbaudoin/sonar-yaml
       all_branches: true
   - provider: releases
-    api_key:
-      secure: "0JkXHP+KM9X9ceIILDIffGAosaM8VZwOCBFCK6FCzgFnLKDhFmLnZg3j8C0qtciicLbQOg4rXkpTldUphBk84HMLQvPUbPnL5zq0acJ62KF2VHnhryaTdMVeLAHsqnyGSBTabMCuSz6JvugrNgTLpp2L7H2tIEbkoLQdqTk/xDqewYEC9395MxcURNtGrldhCTZEKJHVPDjIvrHrGv2YdnqwkcDu57Y06GAtHe+bxKiNfWRvSwJMa+lRTIE5azDcChuohnZ6RZsnTBfiGIsALKlUDNB6y3SsyVGoPqYP96n2XlSLNfFwzQ/xoDROpMOqUTKzbJEtDskX0CwiNtDKjXdcR0NCZhUqUYJpimLfpUa50LuuAy1xhMDal/YbR2liQj0HMDFyD9peIVIgMOGgR0aYazzZ1hocsl8s3QJpkKyd3DBlUOebASVS4WzAxsa7Ld2K3vc1FNZ0YZ2EJB1OxYbeXj2RIEBWlfXgPJ//SL8yHoB+SmTJjSPp5z04T7PNgKKbfUm1x4JTyTwyomOElECe+qalTx8uYepZMiV8ePSPwwRC7TcfxvkhW1b+xDq2m7+HHqD0DmW/RSpRyTL6RJYPyYz/X+K31bbikxzGT3f53Pgvuen+h6pOce4p/+8x+WY+H0Bw26/3/deiGHP0vSZBLerUNRG/Ox6tv48AtRQ="
+    api_key: "$GITHUB_OAUTH_TOKEN"
     file_glob: true
     file:
       - target/sonar-yaml-plugin-*.jar
