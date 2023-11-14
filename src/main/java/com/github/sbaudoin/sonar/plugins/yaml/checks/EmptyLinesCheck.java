@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for empty lines
+ */
 @Rule(key = "EmptyLinesCheck")
 public class EmptyLinesCheck extends YamlLintCheck {
     @RuleProperty(key = "max", description = "Maximal number of consecutive empty lines allowed in the document", defaultValue = "2")

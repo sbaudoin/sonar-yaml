@@ -26,10 +26,25 @@ import java.util.List;
  * Wrapper class for the class settings
  */
 public class YamlSettings {
+    /**
+     * Configuration key to give YAML file suffixes ("sonar.yaml.file.suffixes")
+     */
     public static final String FILE_SUFFIXES_KEY = "sonar.yaml.file.suffixes";
+    /**
+     * Configuration key to tell if UTF-8 line break characters shall be filtered out ("sonar.yaml.filter.utf8_lb")
+     */
     public static final String FILTER_UTF8_LB_KEY = "sonar.yaml.filter.utf8_lb";
+    /**
+     * Default YAML file suffixes (".yaml,.yml")
+     */
     public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".yaml,.yml";
+    /**
+     * Configuration key to give the path to the YAMLLint configuration file ("sonar.yaml.yamllint.conf.path")
+     */
     public static final String YAML_LINT_CONF_PATH_KEY = "sonar.yaml.yamllint.conf.path";
+    /**
+     * Default path to the YAMLLint configuration ("": no specific configuration to be used)
+     */
     public static final String YAML_LINT_CONF_PATH_DEFAULT_VALUE = "";
 
 

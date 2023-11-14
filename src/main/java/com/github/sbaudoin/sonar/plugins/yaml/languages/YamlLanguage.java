@@ -27,7 +27,13 @@ import java.util.List;
  * Describes the YAML language and tells when it applies
  */
 public class YamlLanguage extends AbstractLanguage {
+    /**
+     * The name of the YAML language ("YAML")
+     */
     public static final String NAME = "YAML";
+    /**
+     * The internal key for this YAML language ("yaml")
+     */
     public static final String KEY = "yaml";
 
 

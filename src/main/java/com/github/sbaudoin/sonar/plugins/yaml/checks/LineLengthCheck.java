@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for line length
+ */
 @Rule(key = "LineLengthCheck")
 public class LineLengthCheck extends YamlLintCheck {
     @RuleProperty(key = "max", description = "Maximal (inclusive) length of lines", defaultValue = "80")

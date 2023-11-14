@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for brackets
+ */
 @Rule(key = "BracketsCheck")
 public class BracketsCheck extends YamlLintCheck {
     @RuleProperty(key = "forbid", description = "Forbid the use of flow sequences which are denoted by surrounding brackets ('[' and ']')", defaultValue = "false")

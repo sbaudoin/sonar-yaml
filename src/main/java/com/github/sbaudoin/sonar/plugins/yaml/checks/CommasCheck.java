@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for commas
+ */
 @Rule(key = "CommasCheck")
 public class CommasCheck extends YamlLintCheck {
     @RuleProperty(key = "max-spaces-before", description = "Maximal number of spaces allowed before commas (use -1 to disable)", defaultValue = "0")

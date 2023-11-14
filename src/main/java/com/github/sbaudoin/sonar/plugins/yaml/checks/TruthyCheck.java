@@ -25,6 +25,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
 
+/**
+ * Check for truthies
+ */
 @Rule(key = "TruthyCheck")
 public class TruthyCheck extends YamlLintCheck {
     private static final Logger LOGGER = Loggers.get(TruthyCheck.class);

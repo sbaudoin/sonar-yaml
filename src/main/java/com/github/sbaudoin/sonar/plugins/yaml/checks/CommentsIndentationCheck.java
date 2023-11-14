@@ -17,6 +17,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.check.Rule;
 
+/**
+ * Check for comments indentation
+ */
 @Rule(key = "CommentsIndentationCheck")
 public class CommentsIndentationCheck extends YamlLintCheck {
 }

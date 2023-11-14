@@ -19,10 +19,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * Check repository: registry for all checks
  */
 public class CheckRepository {
+    /**
+     * The repository key
+     */
     public static final String REPOSITORY_KEY = "yaml";
+    /**
+     * The repository name
+     */
     public static final String REPOSITORY_NAME = "YAML Analyzer";
 
     private static final List<Class<? extends YamlCheck>> CHECK_CLASSES = Arrays.asList(

@@ -17,6 +17,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.check.Rule;
 
+/**
+ * Check parsing errors
+ */
 @Rule(key = "ParsingErrorCheck")
 public class ParsingErrorCheck extends YamlLintCheck {
     @Override

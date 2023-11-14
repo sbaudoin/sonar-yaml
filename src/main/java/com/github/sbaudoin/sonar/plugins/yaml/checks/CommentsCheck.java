@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for comments
+ */
 @Rule(key = "CommentsCheck")
 public class CommentsCheck extends YamlLintCheck {
     @RuleProperty(key = "ignore-shebangs", description = "Ignore a shebang at the beginning of the file when 'require-starting-space' is set", defaultValue = "false")
