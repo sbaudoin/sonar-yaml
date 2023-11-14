@@ -17,6 +17,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.check.Rule;
 
+/**
+ * Check for new line at end of file
+ */
 @Rule(key = "NewLineAtEndOfFileCheck")
 public class NewLineAtEndOfFileCheck extends YamlLintCheck {
 }

@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for empty values
+ */
 @Rule(key = "EmptyValuesCheck")
 public class EmptyValuesCheck extends YamlLintCheck {
     @RuleProperty(key = "forbid-in-block-mappings", description = "Prevents or not empty values in block mappings", defaultValue = "false")

@@ -43,6 +43,12 @@ public class YamlPlugin implements Plugin {
         context.addExtensions(YamlRulesDefinition.class, YamlSensor.class);
     }
 
+    /**
+     * Tells if SonarQube has a built-in support for YAML
+     *
+     * @param context the runtime context
+     * @return {@code true} if SonarQube has a built-in support for YAML, {@code false} if not
+     */
     public static boolean hasBuiltinYamlLanguageSupport(Context context) {
         return context.getSonarQubeVersion().isGreaterThanOrEqual(SONARQUBE_WITH_YAML_SUPPORT_VERSION);
     }

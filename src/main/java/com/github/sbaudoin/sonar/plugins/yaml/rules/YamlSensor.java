@@ -62,6 +62,9 @@ public class YamlSensor implements Sensor {
     private final FileLinesContextFactory fileLinesContextFactory;
     private List<String> expectedSuffixes = null;
 
+    /**
+     * Pointer to the YAMLLint configuration
+     */
     protected final YamlLintConfig localConfig;
 
     /**

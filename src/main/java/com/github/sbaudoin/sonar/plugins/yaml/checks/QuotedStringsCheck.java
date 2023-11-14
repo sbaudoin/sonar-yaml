@@ -25,6 +25,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Field;
 
+/**
+ * Check for quoted strings
+ */
 @Rule(key = "QuotedStringsCheck")
 public class QuotedStringsCheck extends YamlLintCheck {
     private static final Logger LOGGER = Loggers.get(QuotedStringsCheck.class);

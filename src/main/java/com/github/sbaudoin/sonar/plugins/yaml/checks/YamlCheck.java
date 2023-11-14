@@ -22,6 +22,9 @@ import org.sonar.api.rule.RuleKey;
  * Abstract class that all YAML checks should extend
  */
 public abstract class YamlCheck {
+    /**
+     * Pointer to the YAMLLint configuration
+     */
     protected YamlLintConfig config = null;
 
 

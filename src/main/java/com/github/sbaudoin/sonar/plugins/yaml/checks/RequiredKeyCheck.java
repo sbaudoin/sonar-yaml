@@ -63,6 +63,9 @@ public class RequiredKeyCheck extends YamlCheck {
     String requiredKeyName;
     private Pattern reqKeyNamePattern;
 
+    /**
+     * Compiles the regular expressions for better performance
+     */
     protected void initializePatterns() {
         reqKeyNamePattern = Pattern.compile(requiredKeyName);
     }

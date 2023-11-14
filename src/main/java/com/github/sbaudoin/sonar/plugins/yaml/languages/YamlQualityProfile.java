@@ -24,6 +24,12 @@ import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
     private final boolean hasBuiltinYamlSupport;
 
+    /**
+     * Constructor
+     *
+     * @param hasBuiltinYamlSupport {@code true} if SonarQube has an existing default quality profile
+     *        for the YAML language
+     */
     public YamlQualityProfile(boolean hasBuiltinYamlSupport) {
         this.hasBuiltinYamlSupport = hasBuiltinYamlSupport;
     }

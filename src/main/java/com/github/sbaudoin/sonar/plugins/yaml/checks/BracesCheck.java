@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for braces
+ */
 @Rule(key = "BracesCheck")
 public class BracesCheck extends YamlLintCheck {
     @RuleProperty(key = "forbid", description = "Forbid the use of flow mappings which are denoted by surrounding braces ('{' and '}')", defaultValue = "false")

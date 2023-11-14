@@ -18,6 +18,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
+/**
+ * Check for new line characters
+ */
 @Rule(key = "NewLinesCheck")
 public class NewLinesCheck extends YamlLintCheck {
     @RuleProperty(key = "type", description = "UNIX-typed ('unix') or DOS-typed ('dos') new line characters", defaultValue = "unix")

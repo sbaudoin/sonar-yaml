@@ -17,6 +17,9 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.check.Rule;
 
+/**
+ * Check for key ordering
+ */
 @Rule(key = "KeyOrderingCheck")
 public class KeyOrderingCheck extends YamlLintCheck {
 }

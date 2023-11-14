@@ -58,6 +58,9 @@ public abstract class ForbiddenCheck extends YamlCheck {
     private Pattern inclAncestorsPattern;
     private Pattern exclAncestorsPattern;
 
+    /**
+     * Compiles the regular expressions for better performance
+     */
     protected void initializePatterns() {
         keyNamePattern = Pattern.compile(keyName);
         inclAncestorsPattern = includedAncestors != null && !includedAncestors.isEmpty() ? Pattern.compile(includedAncestors) : null;
