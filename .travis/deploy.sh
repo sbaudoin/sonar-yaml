@@ -10,5 +10,6 @@ echo "Travis tag: $TRAVIS_TAG"
 if [[ -n "$TRAVIS_TAG" || ( "$TRAVIS_BRANCH" = "master" && "$MAVEN_VERSION" =~ -SNAPSHOT$ ) ]]
 then
     echo "Deploying..."
+    export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
     mvn --settings .travis/settings.xml deploy -DskipTests=true -B -V
 fi
