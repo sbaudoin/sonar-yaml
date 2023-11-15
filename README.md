@@ -74,7 +74,7 @@ Version 1.8.0 introduces included-ancestors and excluded-ancestors as regex rule
 1. forbidden key
 2. forbidden value
 3. required key and
-4. int value in range (new check in 1.8.0)
+4. int value in range
 
 This provides the possibility to apply the checks _only_ in a certain scope 1 and/or _only not_ in a certain scope 2. Current limitation: yaml list notation is not supported by ancestor matching.
 
