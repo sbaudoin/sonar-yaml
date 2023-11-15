@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalAnswers;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.sonar.api.batch.fs.InputFile;
@@ -35,7 +36,10 @@ import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
+import org.sonar.api.batch.sensor.highlighting.internal.DefaultHighlighting;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.api.batch.sensor.internal.SensorStorage;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
@@ -53,6 +57,7 @@ import java.util.function.Predicate;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -148,7 +153,26 @@ public class YamlSensorTest {
     }
 
     @Test
+    public void testSensorHighlightingUnsupportedOperationException() throws Exception {
+        init(false);
+
+        SensorContextTester myContext = mock(SensorContextTester.class, AdditionalAnswers.delegatesTo(context));
+        SensorStorage myStorage = mock(SensorStorage.class);
+        NewHighlighting myHighlighting = mock(NewHighlighting.class, AdditionalAnswers.delegatesTo(new RedundantHighlighting(myStorage)));
+        doReturn(myHighlighting).when(myContext).newHighlighting();
+
+        InputFile inputFile = Utils.getInputFile("k8s.yml");
+        fs.add(inputFile);
+
+        sensor.execute(myContext);
+        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
+        assertEquals("Cannot save highlighting for file k8s.yml, ignoring", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals(0, myContext.allIssues().size());
+    }
+
+    @Test
     public void testGlobalConfig0() throws Exception {
+        cleanEnv();
         init(false);
         assertNull(sensor.localConfig);
     }
@@ -228,6 +252,7 @@ public class YamlSensorTest {
 
     @After
     public void cleanEnv() throws IOException {
+        System.clearProperty("user.home");
         environmentVariables.clear(Cli.XDG_CONFIG_HOME_ENV_VAR, Cli.YAMLLINT_CONFIG_FILE_ENV_VAR);
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME));
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yaml"));
@@ -317,6 +342,18 @@ public class YamlSensorTest {
         @Override
         public SensorDescriptor onlyWhenConfiguration(Predicate<Configuration> predicate) {
             return this;
+        }
+    }
+
+    private static class RedundantHighlighting extends DefaultHighlighting {
+        public RedundantHighlighting(SensorStorage storage) {
+            super(storage);
+        }
+
+        @Override
+        public void doSave() {
+            // that's what would happen if some highlighting had already been saved for same file
+            throw new UnsupportedOperationException("Blam!");
         }
     }
 }
