@@ -252,7 +252,7 @@ public class YamlSensorTest {
 
     @After
     public void cleanEnv() throws IOException {
-        System.clearProperty("user.home");
+//        System.clearProperty("user.home");
         environmentVariables.clear(Cli.XDG_CONFIG_HOME_ENV_VAR, Cli.YAMLLINT_CONFIG_FILE_ENV_VAR);
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME));
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yaml"));
