@@ -48,6 +48,29 @@
             <email>sylvain.baudoin@gmail.com</email>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Alix Lourme</name>
+        </contributor>
+        <contributor>
+            <name>Christophe Zürn</name>
+        </contributor>
+        <contributor>
+            <name>André Balbi</name>
+        </contributor>
+        <contributor>
+            <name>Maica Ballangan</name>
+        </contributor>
+        <contributor>
+            <name>Thomas de Grenier de Latour</name>
+        </contributor>
+        <contributor>
+            <name>Jeroen Borgers</name>
+        </contributor>
+        <contributor>
+            <name>Volker Milbrandt</name>
+        </contributor>
+    </contributors>
 
     <dependencyManagement>
         <dependencies>
