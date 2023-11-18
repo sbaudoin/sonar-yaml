@@ -15,13 +15,17 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.linecounter;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class LineCountDataTest extends TestCase {
-    public void testAll() {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class LineCountDataTest {
+    @Test
+    void testAll() {
         LineCountData lcd = new LineCountData(1, null, null);
         assertEquals(new Integer(1), lcd.linesNumber());
         assertNull(lcd.effectiveCommentLines());

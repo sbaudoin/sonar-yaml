@@ -16,23 +16,26 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import junit.framework.TestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.rule.RuleKey;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class YamlCheckTest extends TestCase {
-    public void testSetGetRuleKey() {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class YamlCheckTest {
+    @Test
+    void testSetGetRuleKey() {
         YamlCheck check = new DummyYamlCheck();
         RuleKey rk = RuleKey.of(CheckRepository.REPOSITORY_KEY, "foo");
         check.setRuleKey(rk);
         assertEquals(rk, check.getRuleKey());
     }
 
-    public void testSetGetYamlSourceCode() throws IOException {
+    @Test
+    void testSetGetYamlSourceCode() throws IOException {
         YamlCheck check = new DummyYamlCheck();
         InputFile inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
         YamlSourceCode sc = new YamlSourceCode(inputFile, Optional.of(false));
@@ -42,7 +45,7 @@ public class YamlCheckTest extends TestCase {
     }
 
     @Test
-    public void testGetId() {
+    void testGetId() {
         assertEquals("yaml-check-test$-dummy-yaml", new DummyYamlCheck().getId());
     }
 

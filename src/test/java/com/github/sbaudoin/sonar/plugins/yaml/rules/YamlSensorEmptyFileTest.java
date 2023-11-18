@@ -17,9 +17,8 @@ package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -31,27 +30,28 @@ import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
  * Non-regression test for issue sbaudoin/sonar-yaml#27
  */
-public class YamlSensorEmptyFileTest {
+class YamlSensorEmptyFileTest {
     private final RuleKey ruleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, "DocumentEndCheck");
 
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     @Test
-    public void testSensor() throws Exception {
+    void testSensor(@TempDir Path temporaryFolder) throws Exception {
         SensorContextTester context = Utils.getSensorContext();
 
         DefaultFileSystem fs = Utils.getFileSystem();
-        fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
+        Path newFolder = temporaryFolder.resolveSibling("temp");
+        newFolder.toFile().mkdir();
+        fs.setWorkDir(newFolder);
 
         ActiveRules activeRules = new ActiveRulesBuilder()
                 .addRule(new NewActiveRule.Builder().setRuleKey(ruleKey)
@@ -69,7 +69,7 @@ public class YamlSensorEmptyFileTest {
 
         sensor.execute(context);
 
-        //assertEquals(1, context.allIssues().size());
+        assertEquals(1, context.allIssues().size());
         context.allIssues().stream().forEach(issue -> {
             assertEquals(ruleKey, issue.ruleKey());
             assertEquals(1, issue.primaryLocation().textRange().start().line());

@@ -15,10 +15,13 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class ParsingErrorCheckTest extends TestCase {
-    public void testCheck() {
+import static org.junit.jupiter.api.Assertions.*;
+
+class ParsingErrorCheckTest {
+    @Test
+    void testCheck() {
         ParsingErrorCheck check = new ParsingErrorCheck();
         assertNotNull(check);
         try {

@@ -16,9 +16,9 @@
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -29,30 +29,30 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class YamlSensorNoRuleTest {
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Rule
-    public LogTester logTester = new LogTester();
+class YamlSensorNoRuleTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
 
     @Test
-    public void testNoActiveRule() throws IOException {
+    void testNoActiveRule(@TempDir Path temporaryFolder) throws IOException {
         SensorContextTester context = Utils.getSensorContext();
 
         DefaultFileSystem fs = Utils.getFileSystem();
-        fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
+        Path newFolder = temporaryFolder.resolveSibling("temp");
+        newFolder.toFile().mkdir();
+        fs.setWorkDir(newFolder);
         context.setFileSystem(fs);
 
         FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);

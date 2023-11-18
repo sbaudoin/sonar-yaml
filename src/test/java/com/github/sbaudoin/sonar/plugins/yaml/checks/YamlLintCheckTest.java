@@ -19,26 +19,26 @@ import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.yamllint.LintProblem;
 import com.github.sbaudoin.yamllint.YamlLintConfig;
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.utils.log.LogTester;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 import org.sonar.check.RuleProperty;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class YamlLintCheckTest {
-    @Rule
-    public LogTester logTester = new LogTester();
+class YamlLintCheckTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
 
     @Test
-    public void testValidate() throws IOException {
+    void testValidate() throws IOException {
         DummyYamlCheck c = new DummyYamlCheck();
         try {
             c.validate();
@@ -70,7 +70,7 @@ public class YamlLintCheckTest {
     }
 
     @Test
-    public void validateMultipleRules() throws IOException, YamlLintConfigException {
+    void validateMultipleRules() throws IOException, YamlLintConfigException {
         YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false));
         YamlLintConfig config = new YamlLintConfig("rules:\n" +
                 "  hyphens:\n" +
@@ -87,7 +87,7 @@ public class YamlLintCheckTest {
     }
 
     @Test
-    public void testCreateViolation() throws IOException {
+    void testCreateViolation() throws IOException {
         DummyYamlCheck check = getDummyCheck();
 
         assertEquals(0, check.getYamlSourceCode().getYamlIssues().size());
@@ -113,7 +113,7 @@ public class YamlLintCheckTest {
     }
 
     @Test
-    public void testIsFileIncluded() throws IOException {
+    void testIsFileIncluded() throws IOException {
         DummyYamlCheck check = getDummyCheck();
 
         assertTrue(check.isFileIncluded(null));
@@ -131,12 +131,12 @@ public class YamlLintCheckTest {
     }
 
     @Test
-    public void testGetLintRuleId() {
+    void testGetLintRuleId() {
         assertEquals("new-lines", new NewLinesCheck().getLintRuleId());
     }
 
     @Test
-    public void testGetYamlLintconfig() throws YamlLintConfigException {
+    void testGetYamlLintconfig() throws YamlLintConfigException {
         new CommentsIndentationCheck().getYamlLintconfig();
         boolean found = false;
         for (String message : logTester.logs(LoggerLevel.DEBUG)) {

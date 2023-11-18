@@ -15,10 +15,13 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class KeyDuplicatesCheckTest extends TestCase {
-    public void testCheck() {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class KeyDuplicatesCheckTest {
+    @Test
+    void testCheck() {
         assertNotNull(new KeyDuplicatesCheck());
     }
 }

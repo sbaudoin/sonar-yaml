@@ -15,16 +15,17 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.rules;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinition.Rule;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class YamlRulesDefinitionTest extends TestCase {
-    public void testDefine() {
+class YamlRulesDefinitionTest {
+    @Test
+    void testDefine() {
         YamlRulesDefinition rulesDefinition = new YamlRulesDefinition();
         RulesDefinition.Context context = new RulesDefinition.Context();
         rulesDefinition.define(context);

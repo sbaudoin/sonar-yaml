@@ -15,21 +15,25 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.Plugin;
 import org.sonar.api.SonarEdition;
 import org.sonar.api.SonarQubeSide;
 import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.utils.Version;
 
-public class YamlPluginTest extends TestCase {
-    public void testExtensionCounts() {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class YamlPluginTest {
+    @Test
+    void testExtensionCounts() {
         Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6, 2), SonarQubeSide.SERVER, SonarEdition.COMMUNITY));
         new YamlPlugin().define(context);
         assertEquals(7, context.getExtensions().size());
     }
 
-    public void testExtensionCountsWithYamlBuiltinSupport() {
+    @Test
+    void testExtensionCountsWithYamlBuiltinSupport() {
         Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(YamlPlugin.SONARQUBE_WITH_YAML_SUPPORT_VERSION, SonarQubeSide.SERVER, SonarEdition.COMMUNITY));
         new YamlPlugin().define(context);
         assertEquals(5, context.getExtensions().size());

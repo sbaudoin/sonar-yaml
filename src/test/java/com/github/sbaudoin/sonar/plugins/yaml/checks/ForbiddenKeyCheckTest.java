@@ -16,29 +16,29 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.utils.log.LogTester;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class ForbiddenKeyCheckTest {
-    @Rule
-    public LogTester logTester = new LogTester();
+class ForbiddenKeyCheckTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
     @Test
-    public void testCheck() {
+    void testCheck() {
         assertNotNull(new ForbiddenKeyCheck());
     }
 
     @Test
-    public void testFailedValidateNoSource() {
+    void testFailedValidateNoSource() {
         ForbiddenKeyCheck c = new ForbiddenKeyCheck();
         try {
             c.validate();
@@ -49,7 +49,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testFailedValidateIOException() throws IOException {
+    void testFailedValidateIOException() throws IOException {
         // Prepare error
         YamlSourceCode code = getSourceCode("forbidden-key-01.yaml", false);
         YamlSourceCode spy = spy(code);
@@ -66,7 +66,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateSyntaxError() throws IOException {
+    void testValidateSyntaxError() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "forbidden";
 
@@ -85,7 +85,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateNoIssue() throws IOException {
+    void testValidateNoIssue() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "forbidden";
 
@@ -112,7 +112,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithForbiddenKey1() throws IOException {
+    void testValidateWithForbiddenKey1() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "forbidden";
 
@@ -127,7 +127,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithForbiddenKey2() throws IOException {
+    void testValidateWithForbiddenKey2() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "^forbid*en";
 
@@ -142,7 +142,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithForbiddenKey3() throws IOException {
+    void testValidateWithForbiddenKey3() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "^forbidden.*";
         check.includedAncestors = "<root>:nesting1:nesting2.*";
@@ -161,7 +161,7 @@ public class ForbiddenKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithForbiddenKey4() throws IOException {
+    void testValidateWithForbiddenKey4() throws IOException {
         ForbiddenKeyCheck check = new ForbiddenKeyCheck();
         check.keyName = "waitInterval.*|wait-interval.*";
         check.includedAncestors = ".*:circuitbreaker";
@@ -176,6 +176,7 @@ public class ForbiddenKeyCheckTest {
         assertEquals(5, code.getYamlIssues().get(0).getLine());
         assertEquals(5, code.getYamlIssues().get(0).getColumn());
     }
+
     private YamlSourceCode getSourceCode(String filename, boolean filter) throws IOException {
         return new YamlSourceCode(Utils.getInputFile("forbidden-key/" + filename), Optional.of(filter));
     }

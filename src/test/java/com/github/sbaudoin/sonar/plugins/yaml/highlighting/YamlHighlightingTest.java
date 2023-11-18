@@ -17,27 +17,25 @@ package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
-import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class YamlHighlightingTest {
-    @Rule
-    public LogTester logTester = new LogTester();
+class YamlHighlightingTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
     @Test
-    public void testConstructors() throws IOException {
+    void testConstructors() throws IOException {
         try {
             new YamlHighlighting(null);
             fail("Null values should not be accepted");
@@ -50,7 +48,7 @@ public class YamlHighlightingTest {
     }
 
     @Test
-    public void testBOM() throws IOException {
+    void testBOM() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("\ufeff---\nkey: value\n"));
 
         assertTrue(logTester.logs(LoggerLevel.DEBUG).contains("Document starts with BOM sequence"));
@@ -58,7 +56,7 @@ public class YamlHighlightingTest {
     }
 
     @Test
-    public void testBrokenYaml() throws IOException {
+    void testBrokenYaml() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("not: a: valid: yaml\n# Even with a comment"));
         // Only the first token is expected to be highlighted
         assertEquals(1, yh.getHighlightingData().size());
@@ -71,7 +69,7 @@ public class YamlHighlightingTest {
     }
 
     @Test
-    public void testHighlightWithStart() throws IOException {
+    void testHighlightWithStart() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("# Comment then document start mark\n---\nkey: value"));
 
         assertEquals(4, yh.getHighlightingData().size());
@@ -82,7 +80,7 @@ public class YamlHighlightingTest {
     }
 
     @Test
-    public void testHighlightNoStart() throws IOException {
+    void testHighlightNoStart() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("# Comment without document start mark\nkey: value"));
 
         assertEquals(3, yh.getHighlightingData().size());
@@ -93,7 +91,7 @@ public class YamlHighlightingTest {
     }
 
     @Test
-    public void testHighlightAllTokenTypes() throws IOException {
+    void testHighlightAllTokenTypes() throws IOException {
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("%YAML 1.1\n" +
                 "---\n" +
                 "# Comment line\n" +

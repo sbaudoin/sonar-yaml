@@ -16,29 +16,29 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.utils.log.LogTester;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class RequiredKeyCheckTest {
-    @Rule
-    public LogTester logTester = new LogTester();
+class RequiredKeyCheckTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
     @Test
-    public void testCheck() {
+    void testCheck() {
         assertNotNull(new RequiredKeyCheck());
     }
 
     @Test
-    public void testFailedValidateNoSource() {
+    void testFailedValidateNoSource() {
         RequiredKeyCheck c = new RequiredKeyCheck();
         try {
             c.validate();
@@ -49,7 +49,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testFailedValidateIOException() throws IOException {
+    void testFailedValidateIOException() throws IOException {
         // Prepare error
         YamlSourceCode code = getSourceCode("required-key-01.yaml", false);
         YamlSourceCode spy = spy(code);
@@ -67,7 +67,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateSyntaxError() throws IOException {
+    void testValidateSyntaxError() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "required";
         check.isParentKeyAtRoot = "yes";
@@ -87,7 +87,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateNoIssue() throws IOException {
+    void testValidateNoIssue() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         // Syntax 1
@@ -104,7 +104,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey1() throws IOException {
+    void testValidateWithRequiredKey1() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-04.yaml", false);
@@ -118,7 +118,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey2() throws IOException {
+    void testValidateWithRequiredKey2() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-05.yaml", false);
@@ -132,7 +132,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey3() throws IOException {
+    void testValidateWithRequiredKey3() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-06.yaml", false);
@@ -151,7 +151,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey4() throws IOException {
+    void testValidateWithRequiredKey4() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-07.yaml", false);
@@ -170,7 +170,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey5() throws IOException {
+    void testValidateWithRequiredKey5() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-08.yaml", false);
@@ -181,7 +181,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey6() throws IOException {
+    void testValidateWithRequiredKey6() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Deployment", "not", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-08.yaml", false);
@@ -195,7 +195,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKey7() throws IOException {
+    void testValidateWithRequiredKey7() throws IOException {
         RequiredKeyCheck check = getRequiredCheck("kind", "Pod", "yes", "readinessProbe");
 
         YamlSourceCode code = getSourceCode("required-key-09.yaml", false);
@@ -210,7 +210,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKeyAncestors1() throws IOException {
+    void testValidateWithRequiredKeyAncestors1() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "";//"parent1";
         check.parentKeyValue = "";//"value1";
@@ -234,7 +234,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKeyAncestors2() throws IOException {
+    void testValidateWithRequiredKeyAncestors2() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "parent1";
         check.parentKeyValue = "value1";
@@ -258,7 +258,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKeyAncestors3() throws IOException {
+    void testValidateWithRequiredKeyAncestors3() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "parent1";
         check.parentKeyValue = "value2";
@@ -275,7 +275,7 @@ public class RequiredKeyCheckTest {
 
     }
     @Test
-    public void testValidateWithRequiredKeyAncestors4() throws IOException {
+    void testValidateWithRequiredKeyAncestors4() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "parent2";
         check.parentKeyValue = "value2";
@@ -295,7 +295,7 @@ public class RequiredKeyCheckTest {
     }
 
     @Test
-    public void testValidateWithRequiredKeyAncestors5() throws IOException {
+    void testValidateWithRequiredKeyAncestors5() throws IOException {
         RequiredKeyCheck check = new RequiredKeyCheck();
         check.parentKeyName = "";
         check.parentKeyValue = "";
@@ -313,6 +313,7 @@ public class RequiredKeyCheckTest {
         assertEquals(3, code.getYamlIssues().get(0).getLine());
         assertEquals(1, code.getYamlIssues().get(0).getColumn());
     }
+
 
     private RequiredKeyCheck getRequiredCheck(String parentKeyName, String parentKeyValue, String isParentKeyAtRoot, String requiredKeyName) {
       RequiredKeyCheck check = new RequiredKeyCheck();

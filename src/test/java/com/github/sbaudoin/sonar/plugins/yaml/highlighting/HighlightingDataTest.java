@@ -15,14 +15,17 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.TextRange;
 import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 
-public class HighlightingDataTest extends TestCase {
-    public void test() {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class HighlightingDataTest {
+    @Test
+    void test() {
         NewHighlightingTester highlighting = new NewHighlightingTester();
 
         HighlightingData hd = new HighlightingData(1, 2, 3, 4, TypeOfText.COMMENT);
@@ -38,6 +41,7 @@ public class HighlightingDataTest extends TestCase {
         assertEquals(TypeOfText.COMMENT, hd.getTypeOfText());
         assertEquals(TypeOfText.COMMENT, highlighting.getTypeOfText());
     }
+
 
     private static class NewHighlightingTester implements NewHighlighting {
         private int startLine;
