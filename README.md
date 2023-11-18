@@ -63,8 +63,7 @@ Once installed, you may go to the profile management screens to create your own 
 
 ## Installation
 
-Plugin for SonarQube 7.9.6+ only (7.9 LTS), 8.0+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7
-and 9.9 LTS), 10.0+ (tested on 10.2 only).
+Plugin for SonarQube 8.1+ (including 8.9 LTS), 9.0+ (including SonarQube 9.2 as of version 1.7 and 9.9 LTS), 10.0+ (tested on 10.2 only).
 
 Just [download the plugin JAR file](https://github.com/sbaudoin/sonar-yaml/releases) and copy it to the `extensions/plugins` directory of SonarQube and restart.
 

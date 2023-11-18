@@ -15,11 +15,14 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.error.Mark;
 
-public class YamlLocationTest extends TestCase {
-    public void testConstructors() {
+import static org.junit.jupiter.api.Assertions.*;
+
+class YamlLocationTest {
+    @Test
+    void testConstructors() {
         String yaml = "---\nfoo: bar\n";
 
         YamlLocation location1 = new YamlLocation(yaml);
@@ -33,12 +36,14 @@ public class YamlLocationTest extends TestCase {
         assertTrue(location1.isSameAs(location2));
     }
 
-    public void testToString() {
+    @Test
+    void testToString() {
         String yaml = "---\nfoo: bar\n";
         assertEquals("{ content: \"" + yaml + "\"; line: 1; column: 1; characterOffset: 0 }", new YamlLocation(yaml).toString());
     }
 
-    public void testShift() {
+    @Test
+    void testShift() {
         String yaml = "---\nfoo: bar\n";
         YamlLocation location1 = new YamlLocation(yaml);
         YamlLocation location2 = location1.shift(7);
@@ -53,7 +58,8 @@ public class YamlLocationTest extends TestCase {
         }
     }
 
-    public void testMoveBefore() {
+    @Test
+    void testMoveBefore() {
         String yaml = "---\nfoo: bar\n";
         YamlLocation location1 = new YamlLocation(yaml);
         YamlLocation location2 = location1.moveBefore("bar");

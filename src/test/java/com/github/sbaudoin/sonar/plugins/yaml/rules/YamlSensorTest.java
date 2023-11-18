@@ -20,15 +20,12 @@ import com.github.sbaudoin.sonar.plugins.yaml.checks.CheckRepository;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import com.github.sbaudoin.sonar.plugins.yaml.languages.YamlLanguage;
 import com.github.sbaudoin.yamllint.Cli;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.AdditionalAnswers;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedConstruction;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -44,29 +41,27 @@ import org.sonar.api.config.Configuration;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import static com.github.sbaudoin.yamllint.Cli.XDG_CONFIG_HOME_ENV_VAR;
+import static com.github.sbaudoin.yamllint.Cli.YAMLLINT_CONFIG_FILE_ENV_VAR;
+import static com.github.stefanbirkner.systemlambda.SystemLambda.restoreSystemProperties;
+import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(YamlSensor.class)
-@PowerMockIgnore("jdk.internal.reflect.*")
-public class YamlSensorTest {
+class YamlSensorTest {
     private final RuleKey ruleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, "BracesCheck");
     private final String parsingErrorCheckKey = "ParsingErrorCheck";
     private final RuleKey parsingErrorCheckRuleKey = RuleKey.of(CheckRepository.REPOSITORY_KEY, parsingErrorCheckKey);
@@ -76,19 +71,15 @@ public class YamlSensorTest {
     private DefaultFileSystem fs;
 
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    @TempDir
+    Path temporaryFolder;
 
-    @Rule
-    public LogTester logTester = new LogTester();
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
-    @Rule
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
     @Test
-    public void testSensor1() throws Exception {
-        cleanEnv();
-
+    void testSensor1() throws Exception {
         init(false);
         fs.add(Utils.getInputFile("braces/min-spaces-02.yaml"));
 
@@ -107,38 +98,43 @@ public class YamlSensorTest {
     }
 
     @Test
-    public void testSensor2() throws Exception {
-        cleanEnv();
+    void testSensor2() throws Exception {
+        withEnvironmentVariable("XDG_CONFIG_HOME", "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG").execute(() -> {
+            init(false);
+            fs.add(Utils.getInputFile("braces/min-spaces-02.yaml"));
 
-        environmentVariables.set("XDG_CONFIG_HOME", "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG");
+            DummySensorDescriptor descriptor = new DummySensorDescriptor();
+            sensor.describe(descriptor);
+            sensor.execute(context);
 
-        init(false);
-        fs.add(Utils.getInputFile("braces/min-spaces-02.yaml"));
-
-        DummySensorDescriptor descriptor = new DummySensorDescriptor();
-        sensor.describe(descriptor);
-        sensor.execute(context);
-
-        assertEquals(0, context.allIssues().size());
+            assertEquals(0, context.allIssues().size());
+        });
     }
 
+    /**
+     * Test when YamlSourceCode throws an exception when constructed
+     *
+     * @throws Exception
+     */
     @Test
-    public void testSensorIOException() throws Exception {
+    void testSensorIOException() throws Exception {
         init(false);
 
         InputFile inputFile = Utils.getInputFile("braces/min-spaces-02.yaml");
         fs.add(inputFile);
         Optional<Boolean> optional = Optional.empty();
-        whenNew(YamlSourceCode.class).withArguments(inputFile, optional).thenThrow(new IOException("Boom!"));
-
-        sensor.execute(context);
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertEquals("Error reading source file min-spaces-02.yaml", logTester.logs(LoggerLevel.WARN).get(0));
-        assertEquals(0, context.allIssues().size());
+        try(MockedConstruction<YamlSourceCode> mocked = mockConstructionWithAnswer(YamlSourceCode.class, invocation -> {
+            throw new IOException("Boom!");
+        })) {
+            sensor.execute(context);
+            assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
+            assertEquals("Error reading source file min-spaces-02.yaml", logTester.logs(LoggerLevel.WARN).get(0));
+            assertEquals(0, context.allIssues().size());
+        }
     }
 
     @Test
-    public void testSensorSyntaxError() throws Exception {
+    void testSensorSyntaxError() throws Exception {
         init(true);
         fs.add(Utils.getInputFile("braces/min-spaces-01.yaml"));
 
@@ -153,7 +149,7 @@ public class YamlSensorTest {
     }
 
     @Test
-    public void testSensorHighlightingUnsupportedOperationException() throws Exception {
+    void testSensorHighlightingUnsupportedOperationException() throws Exception {
         init(false);
 
         SensorContextTester myContext = mock(SensorContextTester.class, AdditionalAnswers.delegatesTo(context));
@@ -171,52 +167,48 @@ public class YamlSensorTest {
     }
 
     @Test
-    public void testGlobalConfig0() throws Exception {
-        cleanEnv();
+    void testGlobalConfig0() throws Exception {
         init(false);
         assertNull(sensor.localConfig);
     }
 
     @Test
-    public void testGlobalConfig1() throws Exception {
-        cleanEnv();
-
-        environmentVariables.set(Cli.XDG_CONFIG_HOME_ENV_VAR, "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG");
-
-        init(false);
-        assertNotNull(sensor.localConfig);
-        assertNotNull(sensor.localConfig.getRuleConf("comments"));
-        assertNull(sensor.localConfig.getRuleConf("braces"));
+    void testGlobalConfig1() throws Exception {
+        withEnvironmentVariable(YAMLLINT_CONFIG_FILE_ENV_VAR, null).
+                and(Cli.XDG_CONFIG_HOME_ENV_VAR, "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG").execute(() -> {
+                    init(false);
+                    assertNotNull(sensor.localConfig);
+                    assertNotNull(sensor.localConfig.getRuleConf("comments"));
+                    assertNull(sensor.localConfig.getRuleConf("braces"));
+                });
     }
 
     @Test
-    public void testGlobalConfig2() throws Exception {
-        cleanEnv();
-
-        System.setProperty("user.home", System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "home");
-
-        init(false);
-        assertNotNull(sensor.localConfig);
-        assertNull(sensor.localConfig.getRuleConf("comments"));
-        assertNotNull(sensor.localConfig.getRuleConf("braces"));
+    void testGlobalConfig2() throws Exception {
+        withEnvironmentVariable(YAMLLINT_CONFIG_FILE_ENV_VAR, null).and(XDG_CONFIG_HOME_ENV_VAR, null).execute(() ->  // Need clean XDG_CONFIG_HOME because it may be set on the test environment
+                restoreSystemProperties(() -> {
+                    System.setProperty("user.home", System.getProperty("user.dir") + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "home");
+                    init(false);
+                    assertNotNull(sensor.localConfig);
+                    assertNull(sensor.localConfig.getRuleConf("comments"));
+                    assertNotNull(sensor.localConfig.getRuleConf("braces"));
+                })
+        );
     }
 
     @Test
-    public void testGlobalConfig3() throws Exception {
-        cleanEnv();
-
-        environmentVariables.set(Cli.YAMLLINT_CONFIG_FILE_ENV_VAR, "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG" + File.separator + "yamllint" + File.separator + "config");
-
-        init(false);
-        assertNotNull(sensor.localConfig);
-        assertNotNull(sensor.localConfig.getRuleConf("comments"));
-        assertNull(sensor.localConfig.getRuleConf("braces"));
+    void testGlobalConfig3() throws Exception {
+        withEnvironmentVariable(Cli.YAMLLINT_CONFIG_FILE_ENV_VAR, "src" + File.separator + "test" + File.separator + "resources" + File.separator + "config" + File.separator + "XDG" + File.separator + "yamllint" + File.separator + "config").
+                and(XDG_CONFIG_HOME_ENV_VAR, null).execute(() -> {
+                    init(false);
+                    assertNotNull(sensor.localConfig);
+                    assertNotNull(sensor.localConfig.getRuleConf("comments"));
+                    assertNull(sensor.localConfig.getRuleConf("braces"));
+        });
     }
 
     @Test
-    public void testLocalConfig1() throws Exception {
-        cleanEnv();
-
+    void testLocalConfig1() throws Exception {
         Files.copy(Paths.get("src", "test", "resources", "config", "local", Cli.USER_CONF_FILENAME), Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME), StandardCopyOption.REPLACE_EXISTING);
 
         init(false);
@@ -226,9 +218,7 @@ public class YamlSensorTest {
     }
 
     @Test
-    public void testLocalConfig2() throws Exception {
-        cleanEnv();
-
+    void testLocalConfig2() throws Exception {
         Files.copy(Paths.get("src", "test", "resources", "config", "local", Cli.USER_CONF_FILENAME), Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yaml"), StandardCopyOption.REPLACE_EXISTING);
 
         init(false);
@@ -238,9 +228,7 @@ public class YamlSensorTest {
     }
 
     @Test
-    public void testLocalConfig3() throws Exception {
-        cleanEnv();
-
+    void testLocalConfig3() throws Exception {
         Files.copy(Paths.get("src", "test", "resources", "config", "local", Cli.USER_CONF_FILENAME), Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yml"), StandardCopyOption.REPLACE_EXISTING);
 
         init(false);
@@ -249,11 +237,8 @@ public class YamlSensorTest {
         assertNotNull(sensor.localConfig.getRuleConf("braces"));
     }
 
-
-    @After
-    public void cleanEnv() throws IOException {
-//        System.clearProperty("user.home");
-        environmentVariables.clear(Cli.XDG_CONFIG_HOME_ENV_VAR, Cli.YAMLLINT_CONFIG_FILE_ENV_VAR);
+    @AfterEach
+    void cleanEnv() throws IOException {
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME));
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yaml"));
         Files.deleteIfExists(Utils.BASE_DIR.resolve(Cli.USER_CONF_FILENAME + ".yml"));
@@ -264,7 +249,9 @@ public class YamlSensorTest {
         context = Utils.getSensorContext();
 
         fs = Utils.getFileSystem();
-        fs.setWorkDir(temporaryFolder.newFolder("temp").toPath());
+        Path newFolder = temporaryFolder.resolveSibling("temp");
+        newFolder.toFile().mkdir();
+        fs.setWorkDir(newFolder);
 
         ActiveRules activeRules;
         if (activateParsingErrorCheck) {

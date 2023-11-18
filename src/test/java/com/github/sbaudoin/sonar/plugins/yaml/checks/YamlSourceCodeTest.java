@@ -17,29 +17,29 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.yamllint.LintProblem;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.batch.fs.InputFile;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class YamlSourceCodeTest {
+class YamlSourceCodeTest {
     InputFile inputFile;
     YamlSourceCode code;
 
-    @Before
-    public void setInputFile() throws IOException {
+    @BeforeEach
+    void setInputFile() throws IOException {
         inputFile = Utils.getInputFile("braces/min-spaces-01.yaml");
         code = new YamlSourceCode(inputFile, Optional.of(Boolean.FALSE));
     }
 
     @Test
-    public void testGetYamlFile() throws IOException {
+    void testGetYamlFile() throws IOException {
         assertEquals(inputFile, code.getYamlFile());
         assertEquals("---\n" +
                 "dict: {}\n" +
@@ -51,7 +51,7 @@ public class YamlSourceCodeTest {
     }
 
     @Test
-    public void testSyntaxError() {
+    void testSyntaxError() {
         assertFalse(code.hasCorrectSyntax());
         assertNotNull(code.getSyntaxError());
         assertNull(code.getSyntaxError().getRuleKey());
@@ -62,7 +62,7 @@ public class YamlSourceCodeTest {
     }
 
     @Test
-    public void testYamlIssue() {
+    void testYamlIssue() {
         // There is a brace issue in the tested file but as the sensor has not run and no rule has been enabled, nothing can be returned here yet
         assertEquals(0, code.getYamlIssues().size());
         YamlLintIssue issue1 = new YamlLintIssue(new LintProblem(7, 2, null, "brace error"), null);
@@ -75,7 +75,7 @@ public class YamlSourceCodeTest {
     }
 
     @Test
-    public void testFilter() throws IOException {
+    void testFilter() throws IOException {
         String code = "---\nlist: ['one',\u2028 'two']";
         InputFile file = Utils.getInputFile("dummy-file.yaml");
         InputFile spy = spy(file);

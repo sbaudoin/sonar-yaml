@@ -15,46 +15,48 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.languages;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.sonar.api.config.internal.MapSettings;
 import com.github.sbaudoin.sonar.plugins.yaml.settings.YamlSettings;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.resources.AbstractLanguage;
 
-public class YamlLanguageTest {
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class YamlLanguageTest {
     private MapSettings settings;
     private YamlLanguage yaml;
 
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         settings = new MapSettings();
         yaml = new YamlLanguage(settings.asConfig());
     }
 
     @Test
-    public void defaultSuffixes() {
+    void defaultSuffixes() {
         settings.setProperty(YamlSettings.FILE_SUFFIXES_KEY, "");
-        Assert.assertArrayEquals(new String[] { ".yaml", ".yml" }, yaml.getFileSuffixes());
+        assertArrayEquals(new String[] { ".yaml", ".yml" }, yaml.getFileSuffixes());
     }
 
     @Test
-    public void customSuffixes() {
+    void customSuffixes() {
         settings.setProperty(YamlSettings.FILE_SUFFIXES_KEY, ".myYaml, ");
-        Assert.assertArrayEquals(new String[] { ".myYaml" }, yaml.getFileSuffixes());
+        assertArrayEquals(new String[] { ".myYaml" }, yaml.getFileSuffixes());
     }
 
     @Test
-    public void testEquals() {
-        Assert.assertEquals(yaml, yaml);
-        Assert.assertEquals(yaml, new YamlLanguage(settings.asConfig()));
-        Assert.assertEquals(yaml, new FakeLanguage());
+    void testEquals() {
+        assertEquals(yaml, yaml);
+        assertEquals(yaml, new YamlLanguage(settings.asConfig()));
+        assertEquals(yaml, new FakeLanguage());
     }
 
     @Test
-    public void testHashCode() {
-        Assert.assertEquals("yaml".hashCode(), yaml.hashCode());
+    void testHashCode() {
+        assertEquals("yaml".hashCode(), yaml.hashCode());
     }
 
 

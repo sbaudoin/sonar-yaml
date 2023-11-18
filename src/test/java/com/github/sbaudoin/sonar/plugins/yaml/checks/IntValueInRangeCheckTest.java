@@ -16,29 +16,29 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.utils.log.LogTester;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class IntValueInRangeCheckTest {
-    @Rule
-    public LogTester logTester = new LogTester();
+class IntValueInRangeCheckTest {
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
     @Test
-    public void testCheck() {
+    void testCheck() {
         assertNotNull(new IntValueInRangeCheck());
     }
 
     @Test
-    public void testFailedValidateNoSource() {
+    void testFailedValidateNoSource() {
         IntValueInRangeCheck c = new IntValueInRangeCheck();
         try {
             c.validate();
@@ -49,7 +49,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testFailedValidateIOException() throws IOException {
+    void testFailedValidateIOException() throws IOException {
         // Prepare error
         YamlSourceCode code = getSourceCode("int-value-in-range-01.yaml", false);
         YamlSourceCode spy = spy(code);
@@ -68,7 +68,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateSyntaxError() throws IOException {
+    void testValidateSyntaxError() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "inRange";
         check.minValue = 1;
@@ -89,7 +89,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateNoIssue() throws IOException {
+    void testValidateNoIssue() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "inRange";
         check.minValue = 1;
@@ -118,7 +118,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateParseError() throws IOException {
+    void testValidateParseError() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "parseError\\d";
         check.minValue = 1;
@@ -141,7 +141,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateOutOfRange1() throws IOException {
+    void testValidateOutOfRange1() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "inRange";
         check.minValue = 1;
@@ -162,7 +162,7 @@ public class IntValueInRangeCheckTest {
 
 
     @Test
-    public void testValidateOutOfRange2() throws IOException {
+    void testValidateOutOfRange2() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.includedAncestors = "<root>:key1";
         check.keyName = ".*Range";
@@ -183,7 +183,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateOutOfRange3() throws IOException {
+    void testValidateOutOfRange3() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "connect(ion)?-?[tT]imeout.*";
         //check.includedAncestors = "<root>:[a-z\\-]+service[a-z0-9\\-]+:[a-z\\-]+endpoint[a-z0-9\\-]+";
@@ -202,7 +202,7 @@ public class IntValueInRangeCheckTest {
     }
 
     @Test
-    public void testValidateOutOfRange4() throws IOException {
+    void testValidateOutOfRange4() throws IOException {
         IntValueInRangeCheck check = new IntValueInRangeCheck();
         check.keyName = "connect(ion)?-?[tT]imeout.*";
         check.includedAncestors = "<root>:[a-z\\-]+service[a-z0-9\\-]+:[a-z\\-]+endpoint[a-z0-9\\-]+";

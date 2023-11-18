@@ -15,11 +15,14 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.languages;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 
-public class YamlQualityProfileTest extends TestCase {
-    public void testDefineWithoutYamlBuiltinSupport() {
+import static org.junit.jupiter.api.Assertions.*;
+
+class YamlQualityProfileTest {
+    @Test
+    void testDefineWithoutYamlBuiltinSupport() {
         BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
         YamlQualityProfile qp = new YamlQualityProfile(false);
         qp.define(context);
@@ -29,7 +32,8 @@ public class YamlQualityProfileTest extends TestCase {
         assertEquals(19, profile.rules().size());
     }
 
-    public void testDefineWithYamlBuiltinSupport() {
+    @Test
+    void testDefineWithYamlBuiltinSupport() {
         BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
         YamlQualityProfile qp = new YamlQualityProfile(true);
         qp.define(context);

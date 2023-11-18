@@ -15,13 +15,16 @@
  */
 package com.github.sbaudoin.sonar.plugins.yaml.settings;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.sonar.api.config.PropertyDefinition;
 
 import java.util.List;
 
-public class YamlLanguageSettingsTest extends TestCase {
-    public void testGetPropertiesWithoutYamlBuiltinSupport() {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class YamlLanguageSettingsTest {
+    @Test
+    void testGetPropertiesWithoutYamlBuiltinSupport() {
         List<PropertyDefinition> defs = YamlSettings.getProperties(false);
 
         assertEquals(3, defs.size());
@@ -33,7 +36,8 @@ public class YamlLanguageSettingsTest extends TestCase {
         assertEquals("", defs.get(2).defaultValue());
     }
 
-    public void testGetPropertiesWithYamlBuiltinSupport() {
+    @Test
+    void testGetPropertiesWithYamlBuiltinSupport() {
         List<PropertyDefinition> defs = YamlSettings.getProperties(true);
 
         assertEquals(2, defs.size());

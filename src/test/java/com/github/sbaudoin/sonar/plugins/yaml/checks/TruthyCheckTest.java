@@ -16,14 +16,18 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 
-public class TruthyCheckTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class TruthyCheckTest {
+    @Test
     @SuppressWarnings("unchecked")
-    public void testCheck() throws YamlLintConfigException {
+    void testCheck() throws YamlLintConfigException {
         TruthyCheck check = new TruthyCheck();
 
         // Default values

@@ -17,18 +17,15 @@ package com.github.sbaudoin.sonar.plugins.yaml.linecounter;
 
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.sonar.api.SonarEdition;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.utils.Version;
-import org.sonar.api.utils.log.LogTester;
+import org.sonar.api.utils.log.LogTesterJUnit5;
 import org.sonar.api.utils.log.LoggerLevel;
 
 import java.io.IOException;
@@ -36,21 +33,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-public class LineCounterTest {
+class LineCounterTest {
     private FileLinesContextFactory fileLinesContextFactory, bogusFileLinesContextFactory;
     private MyFileLinesContext fileLinesContext, bogusFileLinesContext;
 
-    @Rule
-    public LogTester logTester = new LogTester();
+    @RegisterExtension
+    LogTesterJUnit5 logTester = new LogTesterJUnit5();
 
-    @Before
-    public void init() {
+    @BeforeEach
+    void init() {
         // Working factory
         fileLinesContextFactory = mock(FileLinesContextFactory.class);
         fileLinesContext = new MyFileLinesContext();
@@ -63,7 +58,7 @@ public class LineCounterTest {
     }
 
     @Test
-    public void testNormal() throws IOException {
+    void testNormal() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
         String filePath = "dummy-file.yaml";
         InputFile inputFile = Utils.getInputFile(filePath);
@@ -73,7 +68,7 @@ public class LineCounterTest {
     }
 
     @Test
-    public void testIOException() throws IOException {
+    void testIOException() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
         InputFile inputFile = Utils.getInputFile("dummy-file.yaml");
         YamlSourceCode sourceCode = new YamlSourceCode(inputFile, Optional.of(false));
@@ -86,7 +81,7 @@ public class LineCounterTest {
     }
 
     @Test
-    public void testUnsupportedOperationException() throws IOException {
+    void testUnsupportedOperationException() throws IOException {
         SensorContextTester context = Utils.getSensorContext();
         InputFile inputFile = Utils.getInputFile("dummy-file.yaml");
         YamlSourceCode sourceCode = new YamlSourceCode(inputFile, Optional.of(false));
