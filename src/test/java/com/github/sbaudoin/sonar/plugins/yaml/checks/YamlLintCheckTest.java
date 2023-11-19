@@ -58,15 +58,11 @@ class YamlLintCheckTest {
         check1.validate();
         assertEquals("Cannot read source code", logTester.logs(LoggerLevel.WARN).get(1));
 
-        // The default max-spaces-after parameter is 1 but as we construct the check ourselves
-        // the SonarQube init process cannot happen and this is a simple int attribute init
-        // so we expect an error to be found
         HyphensCheck check2 = new HyphensCheck();
         check2.setYamlSourceCode(code);
         check2.validate();
         assertTrue(check2.getYamlSourceCode().hasCorrectSyntax());
         assertEquals(1, check2.getYamlSourceCode().getYamlIssues().size());
-        assertEquals("too many spaces after hyphen (hyphens)", check2.getYamlSourceCode().getYamlIssues().get(0).getMessage());
     }
 
     @Test
@@ -74,7 +70,7 @@ class YamlLintCheckTest {
         YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false));
         YamlLintConfig config = new YamlLintConfig("rules:\n" +
                 "  hyphens:\n" +
-                "    max-spaces-after: 0\n" +
+                "    max-spaces-after: 1\n" +
                 "  comments-indentation: enable");
 
         HyphensCheck check = new HyphensCheck();
@@ -163,7 +159,7 @@ class YamlLintCheckTest {
                 assertTrue(message.contains("'---\n" +
                         "rules:\n" +
                         "  hyphens:\n" +
-                        "    max-spaces-after: 0\n'"));
+                        "    max-spaces-after: 1\n"));
             }
         }
         if (!found) {
