@@ -323,7 +323,6 @@ public class YamlSensor implements Sensor {
             } else {
                 LOGGER.warn(msg);
             }
-            return;
         }
     }
 
