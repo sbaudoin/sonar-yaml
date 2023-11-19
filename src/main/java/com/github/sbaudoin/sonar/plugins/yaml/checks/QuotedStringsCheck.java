@@ -45,6 +45,9 @@ public class QuotedStringsCheck extends YamlLintCheck {
     @RuleProperty(key = "extra-allowed", description = "List of regexes to allow quoted string values, even if required=\"only-when-needed\" is set. One regex per line.", defaultValue = "", type="TEXT")
     String extraAllowed = "";
 
+    @RuleProperty(key = "allow-quoted-quotes", description = "Allows (\"true\") using disallowed quotes for strings with allowed quotes inside.", defaultValue = "false")
+    boolean allowQuotedQuotes = false;
+
 
     @Override
     protected YamlLintConfig getYamlLintconfig() throws YamlLintConfigException {
