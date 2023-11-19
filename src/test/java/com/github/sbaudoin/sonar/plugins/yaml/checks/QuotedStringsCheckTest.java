@@ -33,6 +33,7 @@ class QuotedStringsCheckTest {
         // Default values
         Map<String, Object> conf = (Map<String, Object>) check.getYamlLintconfig().getRuleConf("quoted-strings");
         assertEquals(true, conf.get("required"));
+        assertEquals(false, conf.get("allow-quoted-quotes"));
         assertTrue(conf.get("extra-required") instanceof List);
         assertEquals(0, ((List<?>) conf.get("extra-required")).size());
         assertTrue(conf.get("extra-allowed") instanceof List);
