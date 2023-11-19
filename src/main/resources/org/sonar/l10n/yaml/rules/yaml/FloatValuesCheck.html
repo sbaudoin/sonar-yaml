@@ -1,0 +1,55 @@
+<p>Use this rule to limit the permitted values for floating-point numbers.
+    YAML permits three classes of float expressions: approximation to real numbers,
+    positive and negative infinity and "not a number".</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>require-numeral-before-decimal</dt>
+    <dd>Use <code>require-numeral-before-decimal</code> to require floats to start
+        with a numeral (eg. <code>0.0</code> instead of <code>.0</code>).</dd>
+    <dt>forbid-scientific-notation</dt>
+    <dd>Use <code>forbid-scientific-notation</code> to forbid scientific notation.</dd>
+    <dt>forbid-nan</dt>
+    <dd>Use <code>forbid-nan</code> to forbid NaN (not a number) values.</dd>
+    <dt>forbid-inf</dt>
+    <dd>Use <code>forbid-inf</code> to forbid infinite values.</dd>
+</dl>
+
+<p>Examples</p>
+<p>With <code>float-values: {require-numeral-before-decimal: true}</code>
+    the following code snippets would <strong>PASS</strong>:</p>
+<pre>
+    anemometer:
+      angle: 0.0
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    anemometer:
+      angle: .0
+</pre>
+
+<p>With <code>float-values: {forbid-scientific-notation: true}</code>
+    the following code snippets would <strong>PASS</strong>:</p>
+<pre>
+    anemometer:
+      angle: 0.00001
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    anemometer:
+      angle: 10e-6
+</pre>
+
+<p>With <code>float-values: {forbid-nan: true}</code>
+    the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    anemometer:
+      angle: .NaN
+</pre>
+
+<p>With <code>float-values: {forbid-inf: true}</code>
+    the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    anemometer:
+      angle: .inf
+</pre>

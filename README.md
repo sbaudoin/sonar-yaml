@@ -52,6 +52,7 @@ The plugin comes with a default "Sonar way" profile with most common rules enabl
 Some additional rules are provided but not enabled by default:
 
 * Document end check
+* Float values check
 * Forbidden key check (template)
 * Forbidden value check (template, new in 1.3.0)
 * Key ordering check
