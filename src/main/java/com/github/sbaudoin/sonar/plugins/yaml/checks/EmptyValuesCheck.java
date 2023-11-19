@@ -23,9 +23,12 @@ import org.sonar.check.RuleProperty;
  */
 @Rule(key = "EmptyValuesCheck")
 public class EmptyValuesCheck extends YamlLintCheck {
-    @RuleProperty(key = "forbid-in-block-mappings", description = "Prevents or not empty values in block mappings", defaultValue = "false")
+    @RuleProperty(key = "forbid-in-block-mappings", description = "Prevent or not empty values in block mappings", defaultValue = "true")
     boolean forbidInBlockMappings;
 
-    @RuleProperty(key = "forbid-in-flow-mappings", description = "Prevents or not empty values in flow mappings", defaultValue = "false")
+    @RuleProperty(key = "forbid-in-flow-mappings", description = "Prevent or not empty values in flow mappings", defaultValue = "true")
     boolean forbidInFlowMappings;
+
+    @RuleProperty(key = "forbid-in-block-sequences", description = "Prevent empty values in block sequences", defaultValue = "true")
+    boolean forbidInBlockSequences;
 }
