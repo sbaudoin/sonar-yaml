@@ -28,7 +28,7 @@ class CheckRepositoryTest {
 
     @Test
     void testGetCheckClasses() {
-        assertEquals(26, CheckRepository.getCheckClasses().size());
+        assertEquals(27, CheckRepository.getCheckClasses().size());
         assertTrue(CheckRepository.getCheckClasses().contains(ParsingErrorCheck.class));
     }
 

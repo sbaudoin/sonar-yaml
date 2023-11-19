@@ -42,6 +42,7 @@ public class CheckRepository {
             DocumentStartCheck.class,
             EmptyLinesCheck.class,
             EmptyValuesCheck.class,
+            FloatValuesCheck.class,
             ForbiddenKeyCheck.class,
             ForbiddenValueCheck.class,
             HyphensCheck.class,
