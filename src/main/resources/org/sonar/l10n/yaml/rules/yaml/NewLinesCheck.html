@@ -7,6 +7,8 @@
 <h2>Parameters</h2>
 <dl>
     <dt>type</dt>
-    <dd>Set to <code>unix</code> to use UNIX-typed new line characters <code>\n</code>), or <code>dos</code> to use
-        DOS-typed new line characters (<code>\r\n</code>).</dd>
+    <dd>Set <code>type</code> to <code>unix</code> to enforce UNIX-typed new line characters (<code>\n</code>),
+        set <code>type</code> to <code>dos</code> to enforce DOS-typed new line characters (<code>\r\n</code>),
+        or set <code>type</code> to <code>platform</code> to infer the type from the system running yamllint
+        (<code>\n</code> on POSIX / UNIX / Linux / Mac OS systems or <code>\r\n</code> on DOS / Windows systems).</dd>
 </dl>
