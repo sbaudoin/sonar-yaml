@@ -3,7 +3,21 @@
 <h2>Parameters</h2>
 <dl>
     <dt>max-spaces-after</dt>
-    <dd>Defines the maximal number of spaces allowed after hyphens.</dd>
+    <dd>Defines the maximal number of spaces allowed after hyphens.
+        Set to a negative integer if you want to allow any number of spaces.
+        Cannot be set to 0.</dd>
+    <dt>min-spaces-after</dt>
+    <dd>Defines the minimal number of spaces allowed after hyphens.
+        Set to a negative integer if you want to allow any number of spaces. When set to a
+        positive value, cannot be greater than <code>max-spaces-after</code>.</dd>
+    <dt>check-scalars</dt>
+    <dd>YAMLLint will consider "-xx" as a scalar. However you may consider that, in your context,
+        such a syntax is a typo and is actually a sequence and as a consequence there should be
+        a space after the hyphen. As this is not a standard behaviour, you explicitly need to
+        enable this control by setting the option <code>check-scalars</code> to <code>true</code>.
+        <strong>Use with caution</strong> as all scalars will be checked and non-solvable false
+        positive might be identified. Has no effect when set to <code>true</code> but
+        <code>min-spaces-after</code> is disabled (&lt; 0).</dd>
 </dl>
 
 <p>Examples</p>
@@ -36,4 +50,40 @@
     -    key
     -   key2
     -  key42
+</pre>
+
+<p>With <code>hyphens: {min-spaces-after: 3}</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    list:
+    -   key
+    -    key2
+    -     key42
+    -foo:  # starter of a new sequence named "-foo"; without the colon, a syntax error will be raised.
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    -  key
+    -   key2
+    -  key42
+</pre>
+
+<p>With <code>hyphens: {min-spaces-after: 3, check-scalars: true}</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    list:
+    -   key
+    -    key2
+    -     key42
+    key: -value
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    ---
+    -item
+</pre>
+<p>or</p>
+<pre>
+    sequence:
+      -key  # Mind the spaces before the hyphen to enforce the sequence and avoid a syntax error
 </pre>
