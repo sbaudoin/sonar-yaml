@@ -1,0 +1,70 @@
+<p>Use this rule to report duplicated anchors and aliases referencing undeclared anchors.</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>forbid-undeclared-aliases</dt>
+    <dd>Set to <code>true</code> to avoid aliases that reference an anchor that
+        hasn't been declared (either not declared at all, or declared later in
+        the document).</dd>
+    <dt>forbid-duplicated-anchors</dt>
+    <dd>Set to <code>true</code> to avoid duplications of a same anchor.</dd>
+    <dt>forbid-unused-anchors</dt>
+    <dd>Set to <code>true</code> to avoid anchors being declared but
+        not used anywhere in the YAML document via alias.</dd>
+</dl>
+
+<h2>Examples</h2>
+<p>With <code>anchors: {forbid-undeclared-aliases: true}</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor
+      foo: bar
+    - *anchor
+</pre>
+<p>the following code snippets would <strong>FAIL</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor
+      foo: bar
+    - *unknown
+</pre>
+<pre>
+    ---
+    - &amp;anchor
+      foo: bar
+    - &lt;&lt;: *unknown
+      extra: value
+</pre>
+
+<p>With <code>anchors: {forbid-duplicated-anchors: true}</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor1 Foo Bar
+    - &amp;anchor2 [item 1, item 2]
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor Foo Bar
+    - &amp;anchor [item 1, item 2]
+</pre>
+
+<p>With <code>anchors: {forbid-unused-anchors: true}</code>
+    the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor
+      foo: bar
+    - *anchor
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+    ---
+    - &amp;anchor
+      foo: bar
+    - items:
+      - item1
+      - item2
+</pre>

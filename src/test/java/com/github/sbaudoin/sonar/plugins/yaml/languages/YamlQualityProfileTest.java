@@ -29,7 +29,7 @@ class YamlQualityProfileTest {
         BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile("yaml", "YAML Analyzer");
         assertNotNull(profile);
         assertTrue(profile.isDefault());
-        assertEquals(19, profile.rules().size());
+        assertEquals(20, profile.rules().size());
     }
 
     @Test
@@ -40,6 +40,6 @@ class YamlQualityProfileTest {
         BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile("yaml", "YAML Analyzer");
         assertNotNull(profile);
         assertFalse(profile.isDefault());
-        assertEquals(19, profile.rules().size());
+        assertEquals(20, profile.rules().size());
     }
 }
