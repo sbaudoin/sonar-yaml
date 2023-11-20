@@ -43,6 +43,7 @@ public class YamlQualityProfile implements BuiltInQualityProfilesDefinition {
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "ParsingErrorCheck");
 
         // Other regular checks
+        profile.activateRule(CheckRepository.REPOSITORY_KEY, "AnchorsCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "BracesCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "BracketsCheck");
         profile.activateRule(CheckRepository.REPOSITORY_KEY, "ColonsCheck");

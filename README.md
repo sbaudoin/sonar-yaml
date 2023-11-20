@@ -29,6 +29,7 @@ SonarQube plugin to analyze YAML code based on [yamllint](https://github.com/sba
 
 The plugin comes with a default "Sonar way" profile with most common rules enabled:
 
+* Anchors check
 * Syntax error check
 * Braces check
 * Brackets check

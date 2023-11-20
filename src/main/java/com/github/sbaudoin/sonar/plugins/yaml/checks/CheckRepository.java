@@ -32,6 +32,7 @@ public class CheckRepository {
     public static final String REPOSITORY_NAME = "YAML Analyzer";
 
     private static final List<Class<? extends YamlCheck>> CHECK_CLASSES = Arrays.asList(
+            AnchorsCheck.class,
             BracesCheck.class,
             BracketsCheck.class,
             ColonsCheck.class,

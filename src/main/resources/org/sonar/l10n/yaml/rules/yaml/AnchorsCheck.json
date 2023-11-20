@@ -1,0 +1,13 @@
+{
+  "title": "Avoid using references to undeclared anchors, or having duplicated or unused anchors",
+  "type": "BUG",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Major"
+}
