@@ -25,4 +25,10 @@ import org.sonar.check.RuleProperty;
 public class HyphensCheck extends YamlLintCheck {
     @RuleProperty(key = "max-spaces-after", description = "Maximal number of spaces allowed after hyphens", defaultValue = "1")
     int maxSpacesAfter = 1;
+
+    @RuleProperty(key = "min-spaces-after", description = "Minimal number of spaces allowed after hyphens", defaultValue = "-1")
+    int minSpacesAfter = -1;
+
+    @RuleProperty(key = "check-scalars", description = "Force scalars starting with an hyphen to be checked, i.e. forbid scalars to start with an hyphen. In other words, hyphen is meant to be used for sequences only.", defaultValue = "false")
+    boolean checkScalars;
 }
