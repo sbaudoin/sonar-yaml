@@ -1,0 +1,13 @@
+{
+  "title": "YAML documents should for a specified key only have duration values in a given range",
+  "type": "CODE_SMELL",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Critical"
+}

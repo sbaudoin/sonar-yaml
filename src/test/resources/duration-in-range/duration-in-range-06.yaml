@@ -1,0 +1,27 @@
+---
+key1:
+  subkey: value
+  other: 5
+  inRange: 4
+  map1: {key1: 4, key2: forbidden}
+  map2: {key1: 4, Range: 0} # violation, < 1 ms
+key2:
+  subkey: value
+  other: 5
+  inRange: 5ms
+key3:
+  inRange: 7ms #violation > 5ms
+key4:
+  inRange: 3s #violation > 5ms
+key5:
+  inRange: 7000us #violation > 5ms
+key6:
+  inRange: 3000us
+key7:
+  inRange: 5000000ns
+key8:
+  inRange: 2m #violation > 5ms
+key9:
+  inRange: 100us #violation < 1ms
+other-key:
+  inRange: 9h
