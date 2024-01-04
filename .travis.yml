@@ -24,7 +24,7 @@ script:
   - 'if [ -z "$SONAR_TOKEN" ]; then mvn clean package -P audit; else mvn clean package sonar:sonar -Dsonar.projectKey=sbaudoin_sonar-yaml -P audit; fi'
   - bash it/it.sh 8.9-community 4.5.0.2216 11 || travis_terminate 1
   - bash it/it.sh 9.9-community 4.8.1.3023 11 || travis_terminate 1
-  - bash it/it.sh 10.2-community 5.0.1.3006 17
+  - bash it/it.sh 10.3-community 5.0.1.3006 17
 deploy:
   - provider: script
     script: bash .travis/deploy.sh
