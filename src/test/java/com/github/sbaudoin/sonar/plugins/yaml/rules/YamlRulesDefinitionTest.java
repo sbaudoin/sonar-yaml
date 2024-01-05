@@ -39,7 +39,7 @@ class YamlRulesDefinitionTest {
         assertNotNull(aRule);
         assertEquals("For readability and maintenance YAML documents should have a consistent indentation", aRule.name());
 
-        assertEquals(4L, repository.rules().stream().filter(Rule::template).map(Rule::key).count());
+        assertEquals(5L, repository.rules().stream().filter(Rule::template).count());
 
         for (Rule rule : repository.rules()) {
             for (RulesDefinition.Param param : rule.params()) {

@@ -1,0 +1,66 @@
+<p>Use this rule to control that the YAML documents for a specified key, only contain <strong>Duration</strong> values within a specified range.
+    The simple format used by Spring boots' DurationStyle is used to parse the String and convert into a value in milliseconds. Options are: ns, us, ms, s, m, h, d.
+    The range can be defined with a minimum and a maximum milliseconds value. The specific key can be defined with a regular expression
+    and the location of the key can be defined with two ancestor regular expressions.
+</p>
+
+<h2>Parameters</h2>
+<dl>
+    <dt>key-name</dt>
+    <dd>Regular expression that matches keys for which the duration value must be in range. In order to match any key, set it to
+    <code>.*</code>. The start and end line markers <code>^</code> and <code>$</code> are implicit: this means that
+    setting <code>foo</code> is equivalent to <code>^foo$</code>.</dd>
+    <dt>included-ancestors</dt>
+    <dd>Regular expression that matches against an ancestor string made of joining the parent chain of the matching key.
+        The parents are separated by a colon (<code>:</code>) and always start with an implicit <code>&lt;root&gt;</code> parent.
+        So, the ancestor string for a connectionTimeout key could be: <code>&lt;root&gt;:resilience4j:circuitbreaker.*</code>.
+        If the includedAncestors regex matches the ancestor string of the key, the value is range checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no ancestor matching.</dd>
+    <dt>excluded-ancestors</dt>
+    <dd>Regular expression that matches against the ancestor string of the matching key, just like above.
+        However, if this regex matches, the value is *not* range checked.
+        The start and end line markers <code>^</code> and <code>$</code> are implicit, just like the key regex.
+        Leave empty for no ancestor matching.</dd>
+    <dt>minMillis</dt>
+    <dd>Integer defining the minimum allowed value in milliseconds.</dd>
+    <dt>maxMillis</dt>
+    <dd>Integer defining the maximum allowed value in milliseconds.</dd>
+</dl>
+
+<h2>Examples</h2>
+
+
+<p>With:</p>
+<pre>
+    key-name = waitDurationInOpenState|maxWaitDurationInHalfOpenState
+    included-ancestors = &lt;root&gt;:resilience4j:circuitbreaker.*
+    excluded-ancestors =
+    minMillis = 2000
+    maxMillis = 60000
+</pre>
+<p>the following code snippet would <strong>PASS</strong>:</p>
+<pre>
+resilience4j:
+  circuitbreaker:
+    instances:
+      CosmosDbClientGood:
+        waitDurationInOpenState: 50s
+        maxWaitDurationInHalfOpenState: 10s
+</pre>
+<p>the following code snippet would <strong>FAIL</strong>:</p>
+<pre>
+  resilience4j:
+  circuitbreaker:
+    instances:
+      CosmosDbClientBad:
+        waitDurationInOpenState: 1s # violation
+        maxWaitDurationInHalfOpenState: 5m # violation
+</pre>
+
+
+Current limitation: yaml list notation is not supported by ancestor matching.
+
+
+
+

@@ -59,14 +59,16 @@ public class CheckRepository {
             TrailingSpacesCheck.class,
             TruthyCheck.class,
             QuotedStringsCheck.class,
-            IntValueInRangeCheck.class
+            IntValueInRangeCheck.class,
+            DurationInRangeCheck.class
         );
 
     private static final List<String> TEMPLATE_RULE_KEYS = Arrays.asList(
             "ForbiddenKeyCheck",
             "ForbiddenValueCheck",
             "RequiredKeyCheck",
-            "IntValueInRangeCheck"
+            "IntValueInRangeCheck",
+            "DurationInRangeCheck"
     );
 
 

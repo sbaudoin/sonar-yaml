@@ -28,14 +28,15 @@ class CheckRepositoryTest {
 
     @Test
     void testGetCheckClasses() {
-        assertEquals(28, CheckRepository.getCheckClasses().size());
+        assertEquals(29, CheckRepository.getCheckClasses().size());
         assertTrue(CheckRepository.getCheckClasses().contains(ParsingErrorCheck.class));
     }
 
     @Test
     void testGetTemplateRuleKeys() {
-        assertEquals(4, CheckRepository.getTemplateRuleKeys().size());
+        assertEquals(5, CheckRepository.getTemplateRuleKeys().size());
         assertTrue(CheckRepository.getTemplateRuleKeys().contains("ForbiddenKeyCheck"));
         assertTrue(CheckRepository.getTemplateRuleKeys().contains("IntValueInRangeCheck"));
+        assertTrue(CheckRepository.getTemplateRuleKeys().contains("DurationInRangeCheck"));
     }
 }

@@ -1,0 +1,11 @@
+---
+key1:
+  subkey: value
+  allowed: 7
+  inRange: 7
+  map1: {key1: 4, not: 0}
+  map2: {key1: 4, inRange: 0}
+key2:
+  parseError1: "string"
+  parseError2: 1 s
+  parseError3: 1.0

@@ -1,0 +1,24 @@
+---
+resilience4j:
+  circuitbreaker:
+    instances:
+      CosmosDbClientGood:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 20
+        waitDurationInOpenState: 50s
+        failureRateThreshold: 5
+        eventConsumerBufferSize: 10
+        maxWaitDurationInHalfOpenState: 10s
+      CosmosDbClientBad:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 20
+        waitDurationInOpenState: 1s # violation
+        failureRateThreshold: 5
+        eventConsumerBufferSize: 10
+        maxWaitDurationInHalfOpenState: 5m # violation

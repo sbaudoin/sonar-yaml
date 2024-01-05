@@ -1,0 +1,17 @@
+---
+my-service-1:
+  my-endpoint-1:
+    connectionTimeout: 700 # violation, >= 700 ms
+    connectionTimeout2: 700ms # violation, >= 700 ms
+    connectionTimeout3: 1s # violation, >= 700 ms
+
+my-service-2:
+  my-endpoint-2:
+    connectionTimeout: 600 # no violation
+    connectionTimeout2: 600ms # no violation
+
+spring:
+  datasource:
+    hikari:
+      connectionTimeoutInMillis: 5000 # no violation
+      connectionTimeout2: 5000ms # no violation
