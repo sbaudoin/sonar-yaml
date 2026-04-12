@@ -19,6 +19,7 @@
         <jdk.min.version>1.8</jdk.min.version>
         <maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
         <jacoco.version>0.8.11</jacoco.version>
+        <argLine></argLine>
     </properties>
 
     <issueManagement>
