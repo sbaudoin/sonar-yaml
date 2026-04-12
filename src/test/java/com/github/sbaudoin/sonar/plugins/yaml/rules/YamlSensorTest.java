@@ -86,7 +86,6 @@ class YamlSensorTest {
         DummySensorDescriptor descriptor = new DummySensorDescriptor();
         sensor.describe(descriptor);
         assertEquals("YAML Sensor", descriptor.sensorName);
-        assertEquals(YamlLanguage.KEY, descriptor.languageKey);
 
         sensor.execute(context);
 

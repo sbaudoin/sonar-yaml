@@ -94,7 +94,6 @@ public class YamlSensor implements Sensor {
 
     @Override
     public void describe(SensorDescriptor descriptor) {
-        descriptor.onlyOnLanguage(YamlLanguage.KEY);
         descriptor.name("YAML Sensor");
         descriptor.processesHiddenFiles();
     }
