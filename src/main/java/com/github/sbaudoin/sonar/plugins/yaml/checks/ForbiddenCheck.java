@@ -16,8 +16,8 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.yamllint.LintScanner;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
 import org.yaml.snakeyaml.tokens.BlockEndToken;
@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * Abstract class used to implement to forbidden key/scalar value checks
  */
 public abstract class ForbiddenCheck extends YamlCheck {
-    private static final Logger LOGGER = Loggers.get(ForbiddenCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ForbiddenCheck.class);
 
 
     @RuleProperty(key = "key-name", description = "Regexp that matches the forbidden key name")

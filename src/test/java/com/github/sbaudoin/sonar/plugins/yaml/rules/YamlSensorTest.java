@@ -41,8 +41,8 @@ import org.sonar.api.config.Configuration;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,8 +127,8 @@ class YamlSensorTest {
             throw new IOException("Boom!");
         })) {
             sensor.execute(context);
-            assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-            assertEquals("Error reading source file min-spaces-02.yaml", logTester.logs(LoggerLevel.WARN).get(0));
+            assertEquals(1, logTester.logs(Level.WARN).size());
+            assertEquals("Error reading source file min-spaces-02.yaml", logTester.logs(Level.WARN).get(0));
             assertEquals(0, context.allIssues().size());
         }
     }
@@ -161,8 +161,8 @@ class YamlSensorTest {
         fs.add(inputFile);
 
         sensor.execute(myContext);
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertEquals("Cannot save highlighting for file k8s.yml, ignoring", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals(1, logTester.logs(Level.WARN).size());
+        assertEquals("Cannot save highlighting for file k8s.yml, ignoring", logTester.logs(Level.WARN).get(0));
         assertEquals(0, myContext.allIssues().size());
     }
 
@@ -312,16 +312,6 @@ class YamlSensorTest {
         }
 
         @Override
-        public SensorDescriptor requireProperty(String... propertyKey) {
-            return this;
-        }
-
-        @Override
-        public SensorDescriptor requireProperties(String... propertyKeys) {
-            return this;
-        }
-
-        @Override
         public SensorDescriptor global() {
             return this;
         }
@@ -330,6 +320,16 @@ class YamlSensorTest {
         public SensorDescriptor onlyWhenConfiguration(Predicate<Configuration> predicate) {
             return this;
         }
+
+		@Override
+		public SensorDescriptor processesFilesIndependently() {
+			return this;
+		}
+
+		@Override
+		public SensorDescriptor processesHiddenFiles() {
+			return this;
+		}
     }
 
     private static class RedundantHighlighting extends DefaultHighlighting {

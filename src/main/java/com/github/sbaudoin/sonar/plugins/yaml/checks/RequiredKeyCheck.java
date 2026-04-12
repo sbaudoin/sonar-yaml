@@ -16,8 +16,8 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.yamllint.LintScanner;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.reader.StreamReader;
@@ -39,7 +39,7 @@ import java.io.IOException;
  */
 @Rule(key = "RequiredKeyCheck")
 public class RequiredKeyCheck extends YamlCheck {
-    private static final Logger LOGGER = Loggers.get(RequiredKeyCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequiredKeyCheck.class);
     private static final int FIRST_COLUMN = 0;
 
     private int issueLine = 0;

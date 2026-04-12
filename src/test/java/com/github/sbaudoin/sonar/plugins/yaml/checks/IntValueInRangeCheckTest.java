@@ -18,8 +18,8 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 import com.github.sbaudoin.sonar.plugins.yaml.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -62,8 +62,8 @@ class IntValueInRangeCheckTest {
 
         check.setYamlSourceCode(spy);
         check.validate();
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertTrue(logTester.logs(LoggerLevel.WARN).get(0).contains("Cannot read source code"));
+        assertEquals(1, logTester.logs(Level.WARN).size());
+        assertTrue(logTester.logs(Level.WARN).get(0).contains("Cannot read source code"));
         assertEquals(0, spy.getYamlIssues().size());
     }
 
@@ -78,8 +78,8 @@ class IntValueInRangeCheckTest {
         YamlSourceCode code = getSourceCode("int-value-in-range-01.yaml", false);
         check.setYamlSourceCode(code);
         check.validate();
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertTrue(logTester.logs(LoggerLevel.WARN).get(0).contains("Syntax error found, cannot continue checking keys: syntax error: expected <block end>, but found '-'"));
+        assertEquals(1, logTester.logs(Level.WARN).size());
+        assertTrue(logTester.logs(Level.WARN).get(0).contains("Syntax error found, cannot continue checking keys: syntax error: expected <block end>, but found '-'"));
         assertFalse(code.hasCorrectSyntax());
         assertNull(code.getSyntaxError().getRuleKey());
         assertEquals("syntax error: expected <block end>, but found '-'", code.getSyntaxError().getMessage());

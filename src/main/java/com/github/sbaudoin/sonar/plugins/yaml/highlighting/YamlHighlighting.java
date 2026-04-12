@@ -17,8 +17,8 @@ package com.github.sbaudoin.sonar.plugins.yaml.highlighting;
 
 import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.tokens.Token;
 import com.github.sbaudoin.yamllint.Parser;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * Class in charge of YAML code highlighting in SonarQube
  */
 public class YamlHighlighting {
-    private static final Logger LOGGER = Loggers.get(YamlHighlighting.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YamlHighlighting.class);
 
     /**
      * The optional series of 3 bytes that mark the beginning of an UTF-8 file

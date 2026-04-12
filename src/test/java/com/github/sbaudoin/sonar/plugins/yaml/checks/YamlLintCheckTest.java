@@ -21,8 +21,9 @@ import com.github.sbaudoin.yamllint.YamlLintConfig;
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.slf4j.event.Level;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 import org.sonar.check.RuleProperty;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ class YamlLintCheckTest {
         }
 
         getDummyCheck().validate();
-        assertEquals("Cannot get YamlLintConfig for rule 'yaml-lint-check-test$-dummy-yaml'", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals("Cannot get YamlLintConfig for rule 'yaml-lint-check-test$-dummy-yaml'", logTester.logs(Level.WARN).get(0));
 
         YamlSourceCode code = new YamlSourceCode(Utils.getInputFile("dummy-file.yaml"), Optional.of(false));
         YamlSourceCode spy = spy(code);
@@ -56,7 +57,7 @@ class YamlLintCheckTest {
         DummyYamlCheck check1 = new DummyYamlCheck();
         check1.setYamlSourceCode(spy);
         check1.validate();
-        assertEquals("Cannot read source code", logTester.logs(LoggerLevel.WARN).get(1));
+        assertEquals("Cannot read source code", logTester.logs(Level.WARN).get(1));
 
         HyphensCheck check2 = new HyphensCheck();
         check2.setYamlSourceCode(code);
@@ -133,9 +134,10 @@ class YamlLintCheckTest {
 
     @Test
     void testGetYamlLintconfig() throws YamlLintConfigException {
+        logTester.setLevel(Level.DEBUG);
         new CommentsIndentationCheck().getYamlLintconfig();
         boolean found = false;
-        for (String message : logTester.logs(LoggerLevel.DEBUG)) {
+        for (String message : logTester.logs(Level.DEBUG)) {
             if (!message.startsWith("Got RuleProperty ")) {
                 found = true;
                 assertTrue(message.contains("'---\n" +
@@ -153,7 +155,7 @@ class YamlLintCheckTest {
         // the SonarQube init process cannot happen and this is a simple int attribute init
         new HyphensCheck().getYamlLintconfig();
         found = false;
-        for (String message : logTester.logs(LoggerLevel.DEBUG)) {
+        for (String message : logTester.logs(Level.DEBUG)) {
             if (!message.startsWith("Got RuleProperty ")) {
                 found = true;
                 assertTrue(message.contains("'---\n" +
@@ -169,7 +171,7 @@ class YamlLintCheckTest {
         // Test what happens if the check contains a private property
         logTester.clear();
         assertNull(new BrokenYamlCheck().getYamlLintconfig());
-        assertEquals("Cannot get field value for 'maxSpacesBefore'", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals("Cannot get field value for 'maxSpacesBefore'", logTester.logs(Level.WARN).get(0));
     }
 
 

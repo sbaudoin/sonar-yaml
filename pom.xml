@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.sbaudoin</groupId>
     <artifactId>sonar-yaml-plugin</artifactId>
-    <version>1.9.1</version>
+    <version>2.0.0</version>
     <packaging>sonar-plugin</packaging>
 
     <name>YAML Analyzer</name>
@@ -15,8 +15,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2</release.repo.url>
         <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots</snapshot.repo.url>
-        <sonar.apiVersion>8.1.0.31237</sonar.apiVersion>
-        <jdk.min.version>1.8</jdk.min.version>
+        <!-- Please see: https://github.com/SonarSource/sonar-plugin-api -->
+        <sonarapi.version>12.0.0.2960</sonarapi.version>
+        <sonarqube.version>25.6.0.109173</sonarqube.version>
+        <jdk.min.version>17</jdk.min.version>
         <maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
         <jacoco.version>0.8.11</jacoco.version>
         <argLine></argLine>
@@ -87,9 +89,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
+            <groupId>org.sonarsource.api.plugin</groupId>
             <artifactId>sonar-plugin-api</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonarapi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sonarsource.api.plugin</groupId>
+            <artifactId>sonar-plugin-api-test-fixtures</artifactId>
+            <version>${sonarapi.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -125,23 +133,18 @@
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-plugin-api-impl</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonarqube.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonarqube.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -208,10 +211,11 @@
             <plugin>
                 <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
                 <artifactId>sonar-packaging-maven-plugin</artifactId>
-                <version>1.17</version>
+                <version>1.25.1.3002</version>
                 <extensions>true</extensions>
                 <configuration>
                     <pluginKey>yaml</pluginKey>
+                    <pluginApiMinVersion>${sonarapi.min.version}</pluginApiMinVersion>
                     <pluginClass>com.github.sbaudoin.sonar.plugins.yaml.YamlPlugin</pluginClass>
                 </configuration>
             </plugin>
