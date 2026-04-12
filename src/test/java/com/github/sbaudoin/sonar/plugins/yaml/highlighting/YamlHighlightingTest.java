@@ -20,10 +20,11 @@ import com.github.sbaudoin.sonar.plugins.yaml.checks.YamlSourceCode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,9 +50,10 @@ class YamlHighlightingTest {
 
     @Test
     void testBOM() throws IOException {
+        logTester.setLevel(Level.DEBUG);
         YamlHighlighting yh = new YamlHighlighting(getSourceCode("\ufeff---\nkey: value\n"));
 
-        assertTrue(logTester.logs(LoggerLevel.DEBUG).contains("Document starts with BOM sequence"));
+        assertTrue(logTester.logs(Level.DEBUG).contains("Document starts with BOM sequence"));
         assertEquals(3, yh.getHighlightingData().size());
     }
 

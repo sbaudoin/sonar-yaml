@@ -32,8 +32,8 @@ import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.github.sbaudoin.sonar.plugins.yaml.linecounter.LineCounter;
 import com.github.sbaudoin.sonar.plugins.yaml.checks.*;
 import com.github.sbaudoin.sonar.plugins.yaml.highlighting.HighlightingData;
@@ -54,7 +54,7 @@ import static com.github.sbaudoin.yamllint.Cli.*;
  * Main sensor
  */
 public class YamlSensor implements Sensor {
-    private static final Logger LOGGER = Loggers.get(YamlSensor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YamlSensor.class);
 
     private final Checks<Object> checks;
     private final FileSystem fileSystem;
@@ -94,8 +94,8 @@ public class YamlSensor implements Sensor {
 
     @Override
     public void describe(SensorDescriptor descriptor) {
-        descriptor.onlyOnLanguage(YamlLanguage.KEY);
         descriptor.name("YAML Sensor");
+        descriptor.processesHiddenFiles();
     }
 
     @Override

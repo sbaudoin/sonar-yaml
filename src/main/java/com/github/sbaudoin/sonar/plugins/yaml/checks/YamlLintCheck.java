@@ -16,8 +16,8 @@
 package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import org.sonar.api.utils.WildcardPattern;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.check.RuleProperty;
 import com.github.sbaudoin.yamllint.LintProblem;
 import com.github.sbaudoin.yamllint.Linter;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * Abstract class for all YAML checks representing a YAML lint rule
  */
 public abstract class YamlLintCheck extends YamlCheck {
-    private static final Logger LOGGER = Loggers.get(YamlLintCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YamlLintCheck.class);
 
 
     @Override

@@ -29,8 +29,8 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -69,8 +69,8 @@ class YamlSensorNoRuleTest {
         YamlSensor sensor = new YamlSensor(fs, new CheckFactory(activeRules), fileLinesContextFactory);
 
         sensor.execute(context);
-        assertEquals(1, logTester.logs(LoggerLevel.INFO).size());
-        assertEquals("No active rules found for this plugin, skipping.", logTester.logs(LoggerLevel.INFO).get(0));
+        assertEquals(1, logTester.logs(Level.INFO).size());
+        assertEquals("No active rules found for this plugin, skipping.", logTester.logs(Level.INFO).get(0));
         assertEquals(0, context.allIssues().size());
     }
 }

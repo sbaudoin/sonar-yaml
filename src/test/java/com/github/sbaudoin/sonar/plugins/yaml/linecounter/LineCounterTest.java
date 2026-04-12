@@ -25,8 +25,8 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.utils.log.LogTesterJUnit5;
-import org.sonar.api.utils.log.LoggerLevel;
+import org.sonar.api.testfixtures.log.LogTesterJUnit5;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -76,8 +76,8 @@ class LineCounterTest {
         when(spy.getContent()).thenThrow(new IOException("Cannot read file"));
 
         LineCounter.analyse(context, fileLinesContextFactory, spy);
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertEquals("Unable to count lines for file " + inputFile.filename() + ", ignoring measures", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals(1, logTester.logs(Level.WARN).size());
+        assertEquals("Unable to count lines for file " + inputFile.filename() + ", ignoring measures", logTester.logs(Level.WARN).get(0));
     }
 
     @Test
@@ -87,8 +87,8 @@ class LineCounterTest {
         YamlSourceCode sourceCode = new YamlSourceCode(inputFile, Optional.of(false));
 
         LineCounter.analyse(context, bogusFileLinesContextFactory, sourceCode);
-        assertEquals(1, logTester.logs(LoggerLevel.WARN).size());
-        assertEquals("Cannot save measures for file " + inputFile.filename() + ", ignoring them", logTester.logs(LoggerLevel.WARN).get(0));
+        assertEquals(1, logTester.logs(Level.WARN).size());
+        assertEquals("Cannot save measures for file " + inputFile.filename() + ", ignoring them", logTester.logs(Level.WARN).get(0));
     }
 
 

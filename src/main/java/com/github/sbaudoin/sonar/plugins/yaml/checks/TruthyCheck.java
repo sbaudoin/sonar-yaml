@@ -17,8 +17,8 @@ package com.github.sbaudoin.sonar.plugins.yaml.checks;
 
 import com.github.sbaudoin.yamllint.YamlLintConfig;
 import com.github.sbaudoin.yamllint.YamlLintConfigException;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.yaml.snakeyaml.Yaml;
@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
  */
 @Rule(key = "TruthyCheck")
 public class TruthyCheck extends YamlLintCheck {
-    private static final Logger LOGGER = Loggers.get(TruthyCheck.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TruthyCheck.class);
 
 
     @RuleProperty(key = "allowed-values", description = "Comma-separated list of truthy values which will be ignored during linting", defaultValue = "true, false")

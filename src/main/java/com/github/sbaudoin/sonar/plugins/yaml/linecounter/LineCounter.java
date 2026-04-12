@@ -22,8 +22,8 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.measures.Metric;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import java.io.Serializable;
  * Class used to count the code and comment lines of a YAML file and save these "facts" into SonarQube as measures
  */
 public class LineCounter {
-    private static final Logger LOGGER = Loggers.get(LineCounter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LineCounter.class);
 
     /**
      * Hide constructor
